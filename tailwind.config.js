@@ -59,7 +59,7 @@ module.exports = {
                 white: {
                     DEFAULT: '#ffffff',
                     light: '#e0e6ed',
-                    dark: '#888ea8',
+                    dark: '#c9d1d9',
                 },
             },
             fontFamily: {

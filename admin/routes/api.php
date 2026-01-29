@@ -58,6 +58,8 @@ Route::prefix('v1')->middleware('auth:sanctum')->group(function () {
     Route::apiResource('inbound-routes', \App\Http\Controllers\Api\V1\Connectivity\InboundRouteController::class);
 
     // Organization
+    Route::apiResource('companies', \App\Http\Controllers\Api\V1\Organization\CompanyController::class);
+    Route::apiResource('head-offices', \App\Http\Controllers\Api\V1\Organization\HeadOfficeController::class);
     Route::apiResource('branches', \App\Http\Controllers\Api\V1\Organization\BranchController::class);
     Route::apiResource('sub-branches', \App\Http\Controllers\Api\V1\Organization\SubBranchController::class);
 

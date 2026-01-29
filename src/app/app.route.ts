@@ -65,6 +65,9 @@ export const routes: Routes = [
             // tables
             { path: 'tables', loadComponent: () => import('./tables').then((d) => d.TablesComponent), data: { title: 'Tables | SmartUCX' } },
             { path: 'datatables', loadChildren: () => import('./datatables/datatables.routes').then((d) => d.DATATABLES_ROUTES) },
+
+            // organization
+            { path: 'organization', loadChildren: () => import('./organization/organization.routes').then((d) => d.ORGANIZATION_ROUTES) },
         ],
     },
 
