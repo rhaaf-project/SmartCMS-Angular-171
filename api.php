@@ -182,6 +182,15 @@ try {
 
                 // Add relations for branches
                 if ($table === 'branches') {
+                    // Filter by customer_id if provided
+                    $customerId = $_GET['customer_id'] ?? null;
+                    if ($customerId) {
+                        $rows = array_filter($rows, function ($row) use ($customerId) {
+                            return $row['customer_id'] == $customerId;
+                        });
+                        $rows = array_values($rows);
+                    }
+
                     foreach ($rows as &$row) {
                         if ($row['customer_id']) {
                             $stmt2 = $pdo->prepare("SELECT id, name FROM customers WHERE id = ?");
@@ -195,6 +204,27 @@ try {
                         }
                         if ($row['call_server_id']) {
                             $stmt4 = $pdo->prepare("SELECT id, name FROM call_servers WHERE id = ?");
+                            $stmt4->execute([$row['call_server_id']]);
+                            $row['call_server'] = $stmt4->fetch(PDO::FETCH_ASSOC);
+                        }
+                    }
+                }
+
+                // Add relations for sub_branches
+                if ($table === 'sub_branches') {
+                    foreach ($rows as &$row) {
+                        if ($row['customer_id']) {
+                            $stmt2 = $pdo->prepare("SELECT id, name FROM customers WHERE id = ?");
+                            $stmt2->execute([$row['customer_id']]);
+                            $row['customer'] = $stmt2->fetch(PDO::FETCH_ASSOC);
+                        }
+                        if ($row['branch_id']) {
+                            $stmt3 = $pdo->prepare("SELECT id, name FROM branches WHERE id = ?");
+                            $stmt3->execute([$row['branch_id']]);
+                            $row['branch'] = $stmt3->fetch(PDO::FETCH_ASSOC);
+                        }
+                        if ($row['call_server_id']) {
+                            $stmt4 = $pdo->prepare("SELECT id, name, host FROM call_servers WHERE id = ?");
                             $stmt4->execute([$row['call_server_id']]);
                             $row['call_server'] = $stmt4->fetch(PDO::FETCH_ASSOC);
                         }

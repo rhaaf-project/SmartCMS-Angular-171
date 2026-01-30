@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { DataTableModule } from '@bhplugin/ng-datatable';
+import { OrganizationService } from '../services/organization.service';
 
 @Component({
     selector: 'app-sub-branch-list',
@@ -15,11 +16,12 @@ export class SubBranchListComponent implements OnInit {
 
     cols = [
         { field: 'company', title: 'Company' },
-        { field: 'parentBranch', title: 'Parent Branch' },
         { field: 'code', title: 'Code' },
         { field: 'name', title: 'Sub Branch Name' },
+        { field: 'parentBranch', title: 'Parent Branch' },
         { field: 'city', title: 'City' },
         { field: 'district', title: 'District' },
+        { field: 'callServer', title: 'Call Server' },
         { field: 'active', title: 'Active', sort: false, headerClass: 'justify-center', cellClass: 'justify-center' },
         { field: 'actions', title: '', sort: false, headerClass: '!text-center', cellClass: '!text-center' },
     ];
@@ -27,7 +29,7 @@ export class SubBranchListComponent implements OnInit {
     rows: any[] = [];
     filteredRows: any[] = [];
 
-    constructor() { }
+    constructor(private organizationService: OrganizationService) { }
 
     ngOnInit(): void {
         this.loadData();
@@ -35,63 +37,48 @@ export class SubBranchListComponent implements OnInit {
 
     loadData() {
         this.loading = true;
-        // Sample data - replace with API call
-        this.rows = [
-            {
-                id: 1,
-                company: 'Smart Infinite Prosperity',
-                parentBranch: 'Branch Bandung',
-                code: 'SB-001',
-                name: 'Sub Branch Cimahi',
-                city: 'Cimahi',
-                district: 'Cimahi Tengah',
-                active: true,
+        this.organizationService.getSubBranches({ search: this.search }).subscribe({
+            next: (response) => {
+                this.rows = (response.data || []).map((sb: any) => ({
+                    id: sb.id,
+                    company: sb.customer?.name || '-',
+                    code: sb.code || '-',
+                    name: sb.name,
+                    parentBranch: sb.branch?.name || '-',
+                    city: sb.city || '-',
+                    district: sb.district || '-',
+                    callServer: sb.call_server?.name || '-',
+                    active: sb.is_active,
+                }));
+                this.filteredRows = [...this.rows];
+                this.loading = false;
             },
-            {
-                id: 2,
-                company: 'Smart Infinite Prosperity',
-                parentBranch: 'Branch Bandung',
-                code: 'SB-002',
-                name: 'Sub Branch Lembang',
-                city: 'Lembang',
-                district: 'Lembang',
-                active: true,
-            },
-            {
-                id: 3,
-                company: 'Smart Infinite Prosperity',
-                parentBranch: 'Branch Semarang',
-                code: 'SB-003',
-                name: 'Sub Branch Ungaran',
-                city: 'Ungaran',
-                district: 'Ungaran Barat',
-                active: false,
-            },
-        ];
-        this.filteredRows = [...this.rows];
-        this.loading = false;
+            error: (err) => {
+                console.error('Failed to load sub branches:', err);
+                this.rows = [];
+                this.filteredRows = [];
+                this.loading = false;
+            }
+        });
     }
 
     onSearch() {
-        if (!this.search) {
-            this.filteredRows = [...this.rows];
-            return;
-        }
-        const searchLower = this.search.toLowerCase();
-        this.filteredRows = this.rows.filter(
-            (row) =>
-                row.company.toLowerCase().includes(searchLower) ||
-                row.parentBranch.toLowerCase().includes(searchLower) ||
-                row.code.toLowerCase().includes(searchLower) ||
-                row.name.toLowerCase().includes(searchLower) ||
-                row.city.toLowerCase().includes(searchLower)
-        );
+        this.loadData();
     }
 
     deleteSubBranch(row: any) {
         if (confirm('Are you sure you want to delete this sub branch?')) {
-            this.rows = this.rows.filter((r) => r.id !== row.id);
-            this.filteredRows = this.filteredRows.filter((r) => r.id !== row.id);
+            this.organizationService.deleteSubBranch(row.id).subscribe({
+                next: () => {
+                    this.rows = this.rows.filter((r) => r.id !== row.id);
+                    this.filteredRows = this.filteredRows.filter((r) => r.id !== row.id);
+                },
+                error: (err) => {
+                    console.error('Failed to delete sub branch:', err);
+                    alert('Failed to delete sub branch');
+                }
+            });
         }
     }
 }
+

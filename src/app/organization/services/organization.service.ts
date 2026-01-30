@@ -143,9 +143,10 @@ export class OrganizationService {
     }
 
     // Branches
-    getBranches(params?: { search?: string; head_office_id?: number; page?: number; per_page?: number }): Observable<PaginatedResponse<Branch>> {
+    getBranches(params?: { search?: string; customer_id?: number; head_office_id?: number; page?: number; per_page?: number }): Observable<PaginatedResponse<Branch>> {
         let httpParams = new HttpParams();
         if (params?.search) httpParams = httpParams.set('search', params.search);
+        if (params?.customer_id) httpParams = httpParams.set('customer_id', params.customer_id.toString());
         if (params?.head_office_id) httpParams = httpParams.set('head_office_id', params.head_office_id.toString());
         if (params?.page) httpParams = httpParams.set('page', params.page.toString());
         if (params?.per_page) httpParams = httpParams.set('per_page', params.per_page.toString());

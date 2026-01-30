@@ -4,7 +4,7 @@
             <!-- Sub Branch Details Section -->
             <div class="panel mb-5" style="padding: 15px;">
                 <h5 class="mb-2 text-medium font-medium dark:text-white-light">Sub Branch Details</h5>
-                <div class="grid grid-cols-1 gap-4 sm:grid-cols-3">
+                <div class="grid grid-cols-1 gap-4 sm:grid-cols-4">
                     <div>
                         <label for="companyId">Company <span class="text-danger">*</span></label>
                         <select id="companyId" name="companyId" [(ngModel)]="subBranch.companyId"
@@ -22,6 +22,15 @@
                         </select>
                     </div>
                     <div>
+                        <label for="callServerId">Call Server</label>
+                        <select id="callServerId" name="callServerId" [(ngModel)]="subBranch.callServerId"
+                            class="form-select form-input-sm">
+                            <option [ngValue]="null">-</option>
+                            <option *ngFor="let cs of availableCallServers" [ngValue]="cs.id">{{ cs.name }} - {{ cs.host
+                                }}</option>
+                        </select>
+                    </div>
+                    <div>
                         <label for="active">Active</label>
                         <div class="mt-2">
                             <label class="relative h-6 w-12">
@@ -34,7 +43,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="grid grid-cols-1 gap-4 sm:grid-cols-3 mt-4">
+                <div class="grid grid-cols-1 gap-4 sm:grid-cols-4 mt-4">
                     <div>
                         <label for="name">Name <span class="text-danger">*</span></label>
                         <input id="name" type="text" name="name" [(ngModel)]="subBranch.name"
