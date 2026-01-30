@@ -4,7 +4,8 @@
         <div class="h-full bg-white dark:bg-[#0e1726]">
             <div class="flex items-center justify-between px-4 py-3">
                 <a routerLink="/" class="main-logo flex shrink-0 items-center">
-                    <img src="/assets/images/SMART_UCX_logo.jpg" alt="SMART UCX" class="flex-none" />
+                    <img src="/assets/images/SMART_UCX_logo.jpg" alt="SMART UCX" class="flex-none"
+                        style="max-width: 80%;" />
                 </a>
                 <a href="javascript:;"
                     class="collapse-icon flex h-8 w-8 items-center rounded-full transition duration-300 hover:bg-gray-500/10 hover:text-primary dark:text-white-light dark:hover:bg-dark-light/10 rtl:rotate-180"
@@ -87,7 +88,7 @@
                                         </div>
                                     </button>
                                     <div [@slideDownUp]="!activeDropdown.includes('feature')" class="accordion-content">
-                                        <ul class="sub-menu text-gray-500 !pl-8">
+                                        <ul class="sub-menu text-gray-500 !pl-4">
                                             <li><a routerLink="/connectivity/feature/black-list"
                                                     routerLinkActive="active" (click)="toggleMobileMenu()">Black
                                                     List</a></li>

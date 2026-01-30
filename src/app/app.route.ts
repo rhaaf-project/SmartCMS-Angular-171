@@ -68,6 +68,9 @@ export const routes: Routes = [
 
             // organization
             { path: 'organization', loadChildren: () => import('./organization/organization.routes').then((d) => d.ORGANIZATION_ROUTES) },
+
+            // connectivity
+            { path: 'connectivity', loadChildren: () => import('./connectivity/connectivity.routes').then((d) => d.CONNECTIVITY_ROUTES) },
         ],
     },
 
@@ -89,3 +92,4 @@ export const routes: Routes = [
     // Catch-all - 404
     { path: '**', loadComponent: () => import('./not-found').then((d) => d.NotFoundComponent) },
 ];
+

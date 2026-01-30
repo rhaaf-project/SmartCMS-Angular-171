@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, ActivatedRoute, RouterModule } from '@angular/router';
+import { OrganizationService, Company } from '../services/organization.service';
+import Swal from 'sweetalert2';
 
 @Component({
     selector: 'app-company-form',
@@ -12,6 +14,7 @@ export class CompanyFormComponent implements OnInit {
     isEdit = false;
     companyId: number | null = null;
     additionalInfoExpanded = false;
+    isLoading = false;
 
     company = {
         name: '',
@@ -25,7 +28,8 @@ export class CompanyFormComponent implements OnInit {
 
     constructor(
         private router: Router,
-        private route: ActivatedRoute
+        private route: ActivatedRoute,
+        private organizationService: OrganizationService
     ) { }
 
     ngOnInit(): void {
@@ -38,44 +42,99 @@ export class CompanyFormComponent implements OnInit {
     }
 
     loadCompany(id: number) {
-        // TODO: Replace with API call
-        if (id === 1) {
-            this.company = {
-                name: 'Smart Infinite Prosperity',
-                code: 'Smart',
-                active: true,
-                contactPerson: 'Joni Me Ow',
-                email: 'joni@smart.com',
-                phone: '02150877432',
-                address: 'Jakarta, Indonesia',
-            };
-        }
+        this.organizationService.getCompany(id).subscribe({
+            next: (response: any) => {
+                const data = response.data || response;
+                this.company = {
+                    name: data.name || '',
+                    code: data.code || '',
+                    active: data.is_active ?? true,
+                    contactPerson: data.contact_person || '',
+                    email: data.email || '',
+                    phone: data.phone || '',
+                    address: data.address || '',
+                };
+            },
+            error: (error) => {
+                console.error('Failed to load company:', error);
+                Swal.fire('Error', 'Failed to load company data', 'error');
+            },
+        });
     }
 
     submit() {
-        if (this.isEdit) {
-            console.log('Updating company:', this.company);
+        this.isLoading = true;
+        const payload: Company = {
+            name: this.company.name,
+            code: this.company.code,
+            is_active: this.company.active,
+            contact_person: this.company.contactPerson,
+            email: this.company.email,
+            phone: this.company.phone,
+            address: this.company.address,
+        };
+
+        if (this.isEdit && this.companyId) {
+            this.organizationService.updateCompany(this.companyId, payload).subscribe({
+                next: () => {
+                    this.isLoading = false;
+                    Swal.fire('Success', 'Company updated successfully', 'success');
+                    this.router.navigate(['/admin/organization/company']);
+                },
+                error: (error) => {
+                    this.isLoading = false;
+                    console.error('Failed to update company:', error);
+                    Swal.fire('Error', 'Failed to update company', 'error');
+                },
+            });
         } else {
-            console.log('Creating company:', this.company);
+            this.organizationService.createCompany(payload).subscribe({
+                next: () => {
+                    this.isLoading = false;
+                    Swal.fire('Success', 'Company created successfully', 'success');
+                    this.router.navigate(['/admin/organization/company']);
+                },
+                error: (error) => {
+                    this.isLoading = false;
+                    console.error('Failed to create company:', error);
+                    Swal.fire('Error', 'Failed to create company', 'error');
+                },
+            });
         }
-        this.router.navigate(['/admin/organization/company']);
     }
 
     submitAndCreateAnother() {
-        if (this.isEdit) {
-            this.submit();
-        } else {
-            console.log('Creating company:', this.company);
-            this.company = {
-                name: '',
-                code: '',
-                active: true,
-                contactPerson: '',
-                email: '',
-                phone: '',
-                address: '',
-            };
-        }
+        this.isLoading = true;
+        const payload: Company = {
+            name: this.company.name,
+            code: this.company.code,
+            is_active: this.company.active,
+            contact_person: this.company.contactPerson,
+            email: this.company.email,
+            phone: this.company.phone,
+            address: this.company.address,
+        };
+
+        this.organizationService.createCompany(payload).subscribe({
+            next: () => {
+                this.isLoading = false;
+                Swal.fire('Success', 'Company created successfully', 'success');
+                this.company = {
+                    name: '',
+                    code: '',
+                    active: true,
+                    contactPerson: '',
+                    email: '',
+                    phone: '',
+                    address: '',
+                };
+            },
+            error: (error) => {
+                this.isLoading = false;
+                console.error('Failed to create company:', error);
+                Swal.fire('Error', 'Failed to create company', 'error');
+            },
+        });
     }
 
     cancel() {

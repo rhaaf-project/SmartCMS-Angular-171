@@ -53,6 +53,7 @@ Route::prefix('v1')->middleware('auth:sanctum')->group(function () {
     Route::get('stats', [\App\Http\Controllers\Api\V1\StatsController::class, 'index']);
 
     // Connectivity
+    Route::apiResource('call-servers', AppHttpControllersApiV1CallServerController::class);
     Route::apiResource('extensions', \App\Http\Controllers\Api\V1\Connectivity\ExtensionController::class);
     Route::apiResource('trunks', \App\Http\Controllers\Api\V1\Connectivity\TrunkController::class);
     Route::apiResource('inbound-routes', \App\Http\Controllers\Api\V1\Connectivity\InboundRouteController::class);

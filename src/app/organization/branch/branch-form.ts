@@ -1,7 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, ActivatedRoute, RouterModule } from '@angular/router';
+import { HttpClient } from '@angular/common/http';
+import { OrganizationService, Company, HeadOffice, Branch } from '../services/organization.service';
+import { environment } from '../../../environments/environment';
+import Swal from 'sweetalert2';
 
 @Component({
     selector: 'app-branch-form',
@@ -12,25 +16,14 @@ export class BranchFormComponent implements OnInit {
     isEdit = false;
     branchId: number | null = null;
     contactExpanded = false;
+    isLoading = false;
 
-    companies = [
-        { id: 1, name: 'Smart Infinite Prosperity' },
-        { id: 2, name: 'ABC Corporation' },
-    ];
+    companies: Company[] = [];
+    headOffices: HeadOffice[] = [];
+    callServers: any[] = [];
+    filteredHeadOffices: HeadOffice[] = [];
 
-    headOffices = [
-        { id: 1, name: 'HO Jakarta', companyId: 1 },
-        { id: 2, name: 'HO Surabaya', companyId: 1 },
-        { id: 3, name: 'HO Medan', companyId: 2 },
-    ];
-
-    callServers = [
-        { id: 1, name: 'CS-01' },
-        { id: 2, name: 'CS-02' },
-        { id: 3, name: 'CS-03' },
-    ];
-
-    filteredHeadOffices: any[] = [];
+    private http = inject(HttpClient);
 
     branch = {
         companyId: null as number | null,
@@ -51,10 +44,14 @@ export class BranchFormComponent implements OnInit {
 
     constructor(
         private router: Router,
-        private route: ActivatedRoute
+        private route: ActivatedRoute,
+        private organizationService: OrganizationService
     ) { }
 
     ngOnInit(): void {
+        this.loadCompanies();
+        this.loadCallServers();
+
         const id = this.route.snapshot.params['id'];
         if (id) {
             this.isEdit = true;
@@ -63,55 +60,153 @@ export class BranchFormComponent implements OnInit {
         }
     }
 
+    loadCompanies() {
+        this.organizationService.getCompanies().subscribe({
+            next: (response) => {
+                this.companies = response.data || [];
+            },
+            error: (err) => console.error('Failed to load companies:', err)
+        });
+    }
+
+    loadHeadOffices(customerId: number) {
+        this.organizationService.getHeadOffices({ customer_id: customerId }).subscribe({
+            next: (response) => {
+                this.filteredHeadOffices = response.data || [];
+            },
+            error: (err) => console.error('Failed to load head offices:', err)
+        });
+    }
+
+    loadCallServers() {
+        const apiUrl = `${environment.apiUrl}/v1/call-servers`;
+        this.http.get<any>(apiUrl).subscribe({
+            next: (response) => {
+                this.callServers = response.data || [];
+            },
+            error: (err) => console.error('Failed to load call servers:', err)
+        });
+    }
+
     loadBranch(id: number) {
-        // TODO: Replace with API call
-        if (id === 1) {
-            this.branch = {
-                companyId: 1,
-                headOfficeId: 1,
-                callServerId: 1,
-                name: 'Branch Bandung',
-                code: 'BR-001',
-                active: true,
-                country: 'Indonesia',
-                province: 'Jawa Barat',
-                city: 'Bandung',
-                district: 'Cicadas',
-                address: 'Jl. Asia Afrika No. 1',
-                contactName: 'Jane Doe',
-                contactPhone: '022-123456',
-                description: '',
-            };
-            this.onCompanyChange();
-        }
+        this.organizationService.getBranch(id).subscribe({
+            next: (response: any) => {
+                const data = response.data || response;
+                this.branch = {
+                    companyId: data.customer_id,
+                    headOfficeId: data.head_office_id,
+                    callServerId: data.call_server_id,
+                    name: data.name || '',
+                    code: data.code || '',
+                    active: data.is_active ?? true,
+                    country: data.country || 'Indonesia',
+                    province: data.province || '',
+                    city: data.city || '',
+                    district: data.district || '',
+                    address: data.address || '',
+                    contactName: data.contact_name || '',
+                    contactPhone: data.contact_phone || '',
+                    description: data.description || '',
+                };
+                if (this.branch.companyId) {
+                    this.loadHeadOffices(this.branch.companyId);
+                }
+            },
+            error: (err) => {
+                console.error('Failed to load branch:', err);
+                Swal.fire('Error', 'Failed to load branch data', 'error');
+            }
+        });
     }
 
     onCompanyChange() {
         if (this.branch.companyId) {
-            this.filteredHeadOffices = this.headOffices.filter(
-                (ho) => ho.companyId === this.branch.companyId
-            );
+            this.loadHeadOffices(this.branch.companyId);
         } else {
             this.filteredHeadOffices = [];
         }
-        // Reset head office if not in filtered list
-        if (this.branch.headOfficeId && !this.filteredHeadOffices.find((ho) => ho.id === this.branch.headOfficeId)) {
-            this.branch.headOfficeId = null;
-        }
+        this.branch.headOfficeId = null;
     }
 
     submit() {
-        if (this.isEdit) {
-            console.log('Updating branch:', this.branch);
+        this.isLoading = true;
+        const payload: Branch = {
+            customer_id: this.branch.companyId || undefined,
+            head_office_id: this.branch.headOfficeId || undefined,
+            call_server_id: this.branch.callServerId || undefined,
+            name: this.branch.name,
+            code: this.branch.code,
+            is_active: this.branch.active,
+            country: this.branch.country,
+            province: this.branch.province,
+            city: this.branch.city,
+            district: this.branch.district,
+            address: this.branch.address,
+            contact_name: this.branch.contactName,
+            contact_phone: this.branch.contactPhone,
+            description: this.branch.description,
+        };
+
+        if (this.isEdit && this.branchId) {
+            this.organizationService.updateBranch(this.branchId, payload).subscribe({
+                next: () => {
+                    this.isLoading = false;
+                    Swal.fire('Success', 'Branch updated successfully', 'success');
+                    this.router.navigate(['/admin/organization/branch']);
+                },
+                error: (err) => {
+                    this.isLoading = false;
+                    console.error('Failed to update branch:', err);
+                    Swal.fire('Error', 'Failed to update branch', 'error');
+                }
+            });
         } else {
-            console.log('Creating branch:', this.branch);
+            this.organizationService.createBranch(payload).subscribe({
+                next: () => {
+                    this.isLoading = false;
+                    Swal.fire('Success', 'Branch created successfully', 'success');
+                    this.router.navigate(['/admin/organization/branch']);
+                },
+                error: (err) => {
+                    this.isLoading = false;
+                    console.error('Failed to create branch:', err);
+                    Swal.fire('Error', 'Failed to create branch', 'error');
+                }
+            });
         }
-        this.router.navigate(['/admin/organization/branch']);
     }
 
     submitAndCreateAnother() {
-        console.log('Creating branch:', this.branch);
-        this.resetForm();
+        this.isLoading = true;
+        const payload: Branch = {
+            customer_id: this.branch.companyId || undefined,
+            head_office_id: this.branch.headOfficeId || undefined,
+            call_server_id: this.branch.callServerId || undefined,
+            name: this.branch.name,
+            code: this.branch.code,
+            is_active: this.branch.active,
+            country: this.branch.country,
+            province: this.branch.province,
+            city: this.branch.city,
+            district: this.branch.district,
+            address: this.branch.address,
+            contact_name: this.branch.contactName,
+            contact_phone: this.branch.contactPhone,
+            description: this.branch.description,
+        };
+
+        this.organizationService.createBranch(payload).subscribe({
+            next: () => {
+                this.isLoading = false;
+                Swal.fire('Success', 'Branch created successfully', 'success');
+                this.resetForm();
+            },
+            error: (err) => {
+                this.isLoading = false;
+                console.error('Failed to create branch:', err);
+                Swal.fire('Error', 'Failed to create branch', 'error');
+            }
+        });
     }
 
     resetForm() {
@@ -142,3 +237,4 @@ export class BranchFormComponent implements OnInit {
         this.contactExpanded = !this.contactExpanded;
     }
 }
+

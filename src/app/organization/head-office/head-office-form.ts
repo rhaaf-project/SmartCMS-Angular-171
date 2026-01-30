@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, ActivatedRoute, RouterModule } from '@angular/router';
+import { OrganizationService, Company, HeadOffice } from '../services/organization.service';
+import Swal from 'sweetalert2';
 
 @Component({
     selector: 'app-head-office-form',
@@ -12,11 +14,9 @@ export class HeadOfficeFormComponent implements OnInit {
     isEdit = false;
     headOfficeId: number | null = null;
     contactExpanded = false;
+    isLoading = false;
 
-    companies = [
-        { id: 1, name: 'Smart Infinite Prosperity' },
-        { id: 2, name: 'ABC Corporation' },
-    ];
+    companies: Company[] = [];
 
     siteTypes = [
         { value: 'basic', label: 'Basic (Single Site)' },
@@ -42,10 +42,13 @@ export class HeadOfficeFormComponent implements OnInit {
 
     constructor(
         private router: Router,
-        private route: ActivatedRoute
+        private route: ActivatedRoute,
+        private organizationService: OrganizationService
     ) { }
 
     ngOnInit(): void {
+        this.loadCompanies();
+
         const id = this.route.snapshot.params['id'];
         if (id) {
             this.isEdit = true;
@@ -54,39 +57,121 @@ export class HeadOfficeFormComponent implements OnInit {
         }
     }
 
+    loadCompanies() {
+        this.organizationService.getCompanies().subscribe({
+            next: (response) => {
+                this.companies = response.data || [];
+            },
+            error: (err) => {
+                console.error('Failed to load companies:', err);
+            }
+        });
+    }
+
     loadHeadOffice(id: number) {
-        // TODO: Replace with API call
-        if (id === 1) {
-            this.headOffice = {
-                companyId: 1,
-                name: 'HO Jakarta',
-                code: 'HO-JKT',
-                active: true,
-                type: 'ha',
-                country: 'Indonesia',
-                province: 'DKI Jakarta',
-                city: 'Jakarta',
-                district: 'Menteng',
-                address: 'Jl. Sudirman No. 1',
-                contactName: 'John Doe',
-                contactPhone: '021-123456',
-                description: 'Main head office',
-            };
-        }
+        this.organizationService.getHeadOffice(id).subscribe({
+            next: (response: any) => {
+                const data = response.data || response;
+                this.headOffice = {
+                    companyId: data.customer_id,
+                    name: data.name || '',
+                    code: data.code || '',
+                    active: data.is_active ?? true,
+                    type: data.type || 'ha',
+                    country: data.country || 'Indonesia',
+                    province: data.province || '',
+                    city: data.city || '',
+                    district: data.district || '',
+                    address: data.address || '',
+                    contactName: data.contact_name || '',
+                    contactPhone: data.contact_phone || '',
+                    description: data.description || '',
+                };
+            },
+            error: (err) => {
+                console.error('Failed to load head office:', err);
+                Swal.fire('Error', 'Failed to load head office data', 'error');
+            }
+        });
     }
 
     submit() {
-        if (this.isEdit) {
-            console.log('Updating head office:', this.headOffice);
+        this.isLoading = true;
+        const payload: HeadOffice = {
+            customer_id: this.headOffice.companyId!,
+            name: this.headOffice.name,
+            code: this.headOffice.code,
+            is_active: this.headOffice.active,
+            type: this.headOffice.type as 'basic' | 'ha' | 'fo',
+            country: this.headOffice.country,
+            province: this.headOffice.province,
+            city: this.headOffice.city,
+            district: this.headOffice.district,
+            address: this.headOffice.address,
+            contact_name: this.headOffice.contactName,
+            contact_phone: this.headOffice.contactPhone,
+            description: this.headOffice.description,
+        };
+
+        if (this.isEdit && this.headOfficeId) {
+            this.organizationService.updateHeadOffice(this.headOfficeId, payload).subscribe({
+                next: () => {
+                    this.isLoading = false;
+                    Swal.fire('Success', 'Head Office updated successfully', 'success');
+                    this.router.navigate(['/admin/organization/head-office']);
+                },
+                error: (err) => {
+                    this.isLoading = false;
+                    console.error('Failed to update head office:', err);
+                    Swal.fire('Error', 'Failed to update head office', 'error');
+                }
+            });
         } else {
-            console.log('Creating head office:', this.headOffice);
+            this.organizationService.createHeadOffice(payload).subscribe({
+                next: () => {
+                    this.isLoading = false;
+                    Swal.fire('Success', 'Head Office created successfully', 'success');
+                    this.router.navigate(['/admin/organization/head-office']);
+                },
+                error: (err) => {
+                    this.isLoading = false;
+                    console.error('Failed to create head office:', err);
+                    Swal.fire('Error', 'Failed to create head office', 'error');
+                }
+            });
         }
-        this.router.navigate(['/admin/organization/head-office']);
     }
 
     submitAndCreateAnother() {
-        console.log('Creating head office:', this.headOffice);
-        this.resetForm();
+        this.isLoading = true;
+        const payload: HeadOffice = {
+            customer_id: this.headOffice.companyId!,
+            name: this.headOffice.name,
+            code: this.headOffice.code,
+            is_active: this.headOffice.active,
+            type: this.headOffice.type as 'basic' | 'ha' | 'fo',
+            country: this.headOffice.country,
+            province: this.headOffice.province,
+            city: this.headOffice.city,
+            district: this.headOffice.district,
+            address: this.headOffice.address,
+            contact_name: this.headOffice.contactName,
+            contact_phone: this.headOffice.contactPhone,
+            description: this.headOffice.description,
+        };
+
+        this.organizationService.createHeadOffice(payload).subscribe({
+            next: () => {
+                this.isLoading = false;
+                Swal.fire('Success', 'Head Office created successfully', 'success');
+                this.resetForm();
+            },
+            error: (err) => {
+                this.isLoading = false;
+                console.error('Failed to create head office:', err);
+                Swal.fire('Error', 'Failed to create head office', 'error');
+            }
+        });
     }
 
     resetForm() {
@@ -115,3 +200,4 @@ export class HeadOfficeFormComponent implements OnInit {
         this.contactExpanded = !this.contactExpanded;
     }
 }
+

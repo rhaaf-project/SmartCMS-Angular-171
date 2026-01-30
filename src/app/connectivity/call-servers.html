@@ -1,5 +1,5 @@
 <div>
-    <div class="panel">
+    <div class="panel" style="padding: 15px;">
         <div class="mb-5 flex flex-col gap-5 md:flex-row md:items-center">
             <h5 class="text-medium font-medium dark:text-white-light">Call Servers</h5>
             <div class="flex ltr:ml-auto rtl:mr-auto">
@@ -33,27 +33,30 @@
                 <table class="table-hover">
                     <thead>
                         <tr>
-                            <th>Head Office</th>
+                            <th>HO Site</th>
                             <th>Name</th>
-                            <th>Host</th>
+                            <th>Host / IP</th>
                             <th>Port</th>
-                            <th>Status</th>
-                            <th>Description</th>
+                            <th class="text-center">Active</th>
+                            <th>Ext</th>
+                            <th>Lines</th>
+                            <th>Trunks</th>
                             <th class="text-center">Actions</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr *ngIf="isLoading">
-                            <td colspan="7" class="text-center">
+                            <td colspan="10" class="text-center">
                                 <div
                                     class="inline-block h-8 w-8 animate-spin rounded-full border-4 border-primary border-l-transparent align-middle">
                                 </div>
                             </td>
                         </tr>
                         <tr *ngIf="!isLoading && callServers.length === 0">
-                            <td colspan="7" class="text-center">No call servers found</td>
+                            <td colspan="10" class="text-center">No call servers found</td>
                         </tr>
                         <tr *ngFor="let server of callServers">
+
                             <td>
                                 <div class="whitespace-nowrap">{{ server.head_office?.name || '-' }}</div>
                             </td>
@@ -62,28 +65,22 @@
                             </td>
                             <td>{{ server.host }}</td>
                             <td>{{ server.port }}</td>
-                            <td>
-                                <span class="badge"
-                                    [ngClass]="server.is_active ? 'badge-outline-success' : 'badge-outline-danger'">
-                                    {{ server.is_active ? 'Active' : 'Inactive' }}
-                                </span>
+                            <td class="text-center">
+                                <icon-circle-check *ngIf="server.is_active" class="text-success" />
                             </td>
-                            <td>
-                                <div class="line-clamp-2 max-w-xs">{{ server.description || '-' }}</div>
-                            </td>
+                            <td>{{ server.ext_count || 0 }}</td>
+                            <td>{{ server.lines_count || 0 }}</td>
+                            <td>{{ server.trunks_count || 0 }}</td>
                             <td class="text-center">
                                 <div class="flex items-center justify-center gap-2">
-                                    <button type="button" class="btn btn-sm btn-outline-primary"
-                                        (click)="openViewModal(server)" title="View">
-                                        <icon-eye />
-                                    </button>
-                                    <button type="button" class="btn btn-sm btn-outline-warning"
+
+                                    <button type="button" class="btn btn-sm btn-outline-warning border-0 px-1"
                                         (click)="openEditModal(server)" title="Edit">
-                                        <icon-pencil />
+                                        <icon-pencil class="mr-1" /> Edit
                                     </button>
-                                    <button type="button" class="btn btn-sm btn-outline-danger"
+                                    <button type="button" class="btn btn-sm btn-outline-danger border-0 px-1"
                                         (click)="deleteCallServer(server.id!)" title="Delete">
-                                        <icon-trash-lines />
+                                        <icon-trash-lines class="mr-1" /> Delete
                                     </button>
                                 </div>
                             </td>
@@ -168,7 +165,7 @@
                             <button type="button" class="btn btn-outline-danger" (click)="closeModal()">
                                 {{ modalMode === 'view' ? 'Close' : 'Cancel' }}
                             </button>
-                            <button *ngIf="modalMode !== 'view'" type="submit" class="btn btn-primary">
+                            <button *ngIf="modalMode !== 'view'" type="submit" class="btn btn-warning">
                                 {{ modalMode === 'create' ? 'Create' : 'Update' }}
                             </button>
                         </div>

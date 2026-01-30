@@ -10,6 +10,7 @@ import { IconPlusComponent } from '../shared/icon/icon-plus';
 import { IconPencilComponent } from '../shared/icon/icon-pencil';
 import { IconTrashLinesComponent } from '../shared/icon/icon-trash-lines';
 import { IconEyeComponent } from '../shared/icon/icon-eye';
+import { IconCircleCheckComponent } from '../shared/icon/icon-circle-check';
 import Swal from 'sweetalert2';
 
 interface CallServer {
@@ -26,6 +27,10 @@ interface CallServer {
     description: string | null;
     created_at?: string;
     updated_at?: string;
+    // Mock stats
+    ext_count?: number;
+    lines_count?: number;
+    trunks_count?: number;
 }
 
 interface HeadOffice {
@@ -46,6 +51,7 @@ interface HeadOffice {
         IconPencilComponent,
         IconTrashLinesComponent,
         IconEyeComponent,
+        IconCircleCheckComponent,
     ],
 })
 export class CallServersComponent implements OnInit {

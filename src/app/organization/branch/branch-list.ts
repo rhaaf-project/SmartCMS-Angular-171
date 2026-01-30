@@ -1,8 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { DataTableModule } from '@bhplugin/ng-datatable';
+import { OrganizationService } from '../services/organization.service';
 
 @Component({
     selector: 'app-branch-list',
@@ -28,7 +29,7 @@ export class BranchListComponent implements OnInit {
     rows: any[] = [];
     filteredRows: any[] = [];
 
-    constructor() { }
+    constructor(private organizationService: OrganizationService) { }
 
     ngOnInit(): void {
         this.loadData();
@@ -36,65 +37,48 @@ export class BranchListComponent implements OnInit {
 
     loadData() {
         this.loading = true;
-        // Sample data - replace with API call
-        this.rows = [
-            {
-                id: 1,
-                company: 'Smart Infinite Prosperity',
-                code: 'BR-001',
-                name: 'Branch Bandung',
-                headOffice: 'HO Jakarta',
-                city: 'Bandung',
-                district: 'Cicadas',
-                callServer: 'CS-01',
-                active: true,
+        this.organizationService.getBranches({ search: this.search }).subscribe({
+            next: (response) => {
+                this.rows = (response.data || []).map((b: any) => ({
+                    id: b.id,
+                    company: b.customer?.name || '-',
+                    code: b.code || '-',
+                    name: b.name,
+                    headOffice: b.head_office?.name || '-',
+                    city: b.city || '-',
+                    district: b.district || '-',
+                    callServer: b.call_server?.name || '-',
+                    active: b.is_active,
+                }));
+                this.filteredRows = [...this.rows];
+                this.loading = false;
             },
-            {
-                id: 2,
-                company: 'Smart Infinite Prosperity',
-                code: 'BR-002',
-                name: 'Branch Semarang',
-                headOffice: 'HO Jakarta',
-                city: 'Semarang',
-                district: 'Simpang Lima',
-                callServer: 'CS-02',
-                active: true,
-            },
-            {
-                id: 3,
-                company: 'Smart Infinite Prosperity',
-                code: 'BR-003',
-                name: 'Branch Malang',
-                headOffice: 'HO Surabaya',
-                city: 'Malang',
-                district: 'Klojen',
-                callServer: '-',
-                active: false,
-            },
-        ];
-        this.filteredRows = [...this.rows];
-        this.loading = false;
+            error: (err) => {
+                console.error('Failed to load branches:', err);
+                this.rows = [];
+                this.filteredRows = [];
+                this.loading = false;
+            }
+        });
     }
 
     onSearch() {
-        if (!this.search) {
-            this.filteredRows = [...this.rows];
-            return;
-        }
-        const searchLower = this.search.toLowerCase();
-        this.filteredRows = this.rows.filter(
-            (row) =>
-                row.company.toLowerCase().includes(searchLower) ||
-                row.code.toLowerCase().includes(searchLower) ||
-                row.name.toLowerCase().includes(searchLower) ||
-                row.city.toLowerCase().includes(searchLower)
-        );
+        this.loadData();
     }
 
     deleteBranch(row: any) {
         if (confirm('Are you sure you want to delete this branch?')) {
-            this.rows = this.rows.filter((r) => r.id !== row.id);
-            this.filteredRows = this.filteredRows.filter((r) => r.id !== row.id);
+            this.organizationService.deleteBranch(row.id).subscribe({
+                next: () => {
+                    this.rows = this.rows.filter((r) => r.id !== row.id);
+                    this.filteredRows = this.filteredRows.filter((r) => r.id !== row.id);
+                },
+                error: (err) => {
+                    console.error('Failed to delete branch:', err);
+                    alert('Failed to delete branch');
+                }
+            });
         }
     }
 }
+
