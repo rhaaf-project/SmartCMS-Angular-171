@@ -34,11 +34,36 @@ export class CompanyFormComponent implements OnInit {
 
     ngOnInit(): void {
         const id = this.route.snapshot.params['id'];
+        const copyId = this.route.snapshot.queryParams['copy'];
+
         if (id) {
             this.isEdit = true;
             this.companyId = +id;
             this.loadCompany(this.companyId);
+        } else if (copyId) {
+            this.loadCompanyForCopy(+copyId);
         }
+    }
+
+    loadCompanyForCopy(id: number) {
+        this.organizationService.getCompany(id).subscribe({
+            next: (response: any) => {
+                const data = response.data || response;
+                this.company = {
+                    name: (data.name || '') + ' - Copy',
+                    code: (data.code || '') + '-copy',
+                    active: data.is_active ?? true,
+                    contactPerson: data.contact_person || '',
+                    email: data.email || '',
+                    phone: data.phone || '',
+                    address: data.address || '',
+                };
+            },
+            error: (error) => {
+                console.error('Failed to load company for copy:', error);
+                Swal.fire('Error', 'Failed to load company data', 'error');
+            },
+        });
     }
 
     loadCompany(id: number) {

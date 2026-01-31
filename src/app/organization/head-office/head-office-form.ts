@@ -65,11 +65,57 @@ export class HeadOfficeFormComponent implements OnInit {
         this.initCallServerSlots();
 
         const id = this.route.snapshot.params['id'];
+        const copyId = this.route.snapshot.queryParams['copy'];
+
         if (id) {
             this.isEdit = true;
             this.headOfficeId = +id;
             this.loadHeadOffice(this.headOfficeId);
+        } else if (copyId) {
+            this.loadHeadOfficeForCopy(+copyId);
         }
+    }
+
+    loadHeadOfficeForCopy(id: number) {
+        this.organizationService.getHeadOffice(id).subscribe({
+            next: (response: any) => {
+                const data = response.data || response;
+                this.headOffice = {
+                    companyId: data.customer_id,
+                    name: (data.name || '') + ' - Copy',
+                    code: (data.code || '') + '-copy',
+                    active: data.is_active ?? true,
+                    type: data.type || 'ha',
+                    country: data.country || 'Indonesia',
+                    province: data.province || '',
+                    city: data.city || '',
+                    district: data.district || '',
+                    address: data.address || '',
+                    contactName: data.contact_name || '',
+                    contactPhone: data.contact_phone || '',
+                    description: data.description || '',
+                    bcpDrcServerId: data.bcp_drc_server_id || null,
+                    bcpDrcEnabled: data.bcp_drc_enabled ?? false,
+                };
+                if (data.call_servers_json) {
+                    try {
+                        const parsed = JSON.parse(data.call_servers_json);
+                        this.callServerSlots = parsed.map((s: any) => ({
+                            callServerId: s.call_server_id,
+                            isEnabled: s.is_enabled ?? true
+                        }));
+                    } catch (e) {
+                        this.initCallServerSlots();
+                    }
+                } else {
+                    this.initCallServerSlots();
+                }
+            },
+            error: (err) => {
+                console.error('Failed to load head office for copy:', err);
+                Swal.fire('Error', 'Failed to load head office data', 'error');
+            }
+        });
     }
 
     loadCompanies() {

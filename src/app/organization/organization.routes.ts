@@ -1,6 +1,12 @@
 import { Routes } from '@angular/router';
 
 export const ORGANIZATION_ROUTES: Routes = [
+    // Connectivity Diagram
+    {
+        path: 'connectivity-diagram',
+        loadComponent: () => import('./connectivity-diagram/connectivity-diagram').then((d) => d.ConnectivityDiagramComponent),
+        data: { title: 'Connectivity Diagram | SmartUCX' },
+    },
     // Company routes
     {
         path: 'company',

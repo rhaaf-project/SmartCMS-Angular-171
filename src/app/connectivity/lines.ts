@@ -9,40 +9,36 @@ import { environment } from '../../environments/environment';
 import { IconPlusComponent } from '../shared/icon/icon-plus';
 import { IconPencilComponent } from '../shared/icon/icon-pencil';
 import { IconTrashLinesComponent } from '../shared/icon/icon-trash-lines';
-import { IconEyeComponent } from '../shared/icon/icon-eye';
 import { IconCircleCheckComponent } from '../shared/icon/icon-circle-check';
 import { IconCopyComponent } from '../shared/icon/icon-copy';
 import Swal from 'sweetalert2';
 
-interface CallServer {
+interface Line {
     id?: number;
-    head_office_id: number | null;
-    head_office?: {
+    call_server_id: number | null;
+    call_server?: {
         id: number;
         name: string;
     };
     name: string;
-    host: string;
-    port: number;
-    is_active: boolean;
+    line_number: string;
+    type: string;
+    channel_count: number;
+    trunk_id: number | null;
     description: string | null;
+    secret: string | null;
+    is_active: boolean;
     created_at?: string;
     updated_at?: string;
-    // Mock stats
-    ext_count?: number;
-    lines_count?: number;
-    trunks_count?: number;
 }
 
-interface HeadOffice {
+interface CallServer {
     id: number;
     name: string;
-    customer_id: number;
-    type: string;
 }
 
 @Component({
-    templateUrl: './call-servers.html',
+    templateUrl: './lines.html',
     animations: [toggleAnimation],
     imports: [
         CommonModule,
@@ -51,27 +47,36 @@ interface HeadOffice {
         IconPlusComponent,
         IconPencilComponent,
         IconTrashLinesComponent,
-        IconEyeComponent,
         IconCircleCheckComponent,
         IconCopyComponent,
     ],
 })
-export class CallServersComponent implements OnInit {
+export class LinesComponent implements OnInit {
     store: any;
+    lines: Line[] = [];
     callServers: CallServer[] = [];
-    headOffices: HeadOffice[] = [];
     isLoading = false;
     search = '';
     showModal = false;
     modalMode: 'create' | 'edit' | 'view' = 'create';
 
-    formData: CallServer = {
-        head_office_id: null,
+    lineTypes = [
+        { value: 'pstn', label: 'PSTN (Analog)' },
+        { value: 'sip', label: 'SIP Trunk' },
+        { value: 'pri', label: 'PRI (E1/T1)' },
+        { value: 'bri', label: 'BRI (ISDN)' },
+    ];
+
+    formData: Line = {
+        call_server_id: null,
         name: '',
-        host: '',
-        port: 5060,
-        is_active: true,
+        line_number: '',
+        type: 'sip',
+        channel_count: 1,
+        trunk_id: null,
         description: null,
+        secret: null,
+        is_active: true,
     };
 
     private http = inject(HttpClient);
@@ -92,36 +97,36 @@ export class CallServersComponent implements OnInit {
     }
 
     ngOnInit() {
+        this.loadLines();
         this.loadCallServers();
-        this.loadHeadOffices();
+    }
+
+    loadLines() {
+        this.isLoading = true;
+        const apiUrl = `${environment.apiUrl}/v1/lines`;
+
+        this.http.get<any>(apiUrl).subscribe({
+            next: (response) => {
+                this.lines = response.data || [];
+                this.isLoading = false;
+            },
+            error: (error) => {
+                console.error('Failed to load lines:', error);
+                this.isLoading = false;
+                this.showErrorMessage('Failed to load lines');
+            },
+        });
     }
 
     loadCallServers() {
-        this.isLoading = true;
         const apiUrl = `${environment.apiUrl}/v1/call-servers`;
 
         this.http.get<any>(apiUrl).subscribe({
             next: (response) => {
                 this.callServers = response.data || [];
-                this.isLoading = false;
             },
             error: (error) => {
                 console.error('Failed to load call servers:', error);
-                this.isLoading = false;
-                this.showErrorMessage('Failed to load call servers');
-            },
-        });
-    }
-
-    loadHeadOffices() {
-        const apiUrl = `${environment.apiUrl}/v1/head-offices`;
-
-        this.http.get<any>(apiUrl).subscribe({
-            next: (response) => {
-                this.headOffices = response.data || [];
-            },
-            error: (error) => {
-                console.error('Failed to load head offices:', error);
             },
         });
     }
@@ -132,21 +137,21 @@ export class CallServersComponent implements OnInit {
         this.showModal = true;
     }
 
-    openEditModal(callServer: CallServer) {
+    openEditModal(line: Line) {
         this.modalMode = 'edit';
-        this.formData = { ...callServer };
+        this.formData = { ...line };
         this.showModal = true;
     }
 
-    openViewModal(callServer: CallServer) {
+    openViewModal(line: Line) {
         this.modalMode = 'view';
-        this.formData = { ...callServer };
+        this.formData = { ...line };
         this.showModal = true;
     }
 
-    copyRecord(callServer: CallServer) {
+    copyRecord(line: Line) {
         this.modalMode = 'create';
-        this.formData = { ...callServer, id: undefined, name: callServer.name + ' - Copy' };
+        this.formData = { ...line, id: undefined, name: line.name + ' - Copy', line_number: line.line_number + '-copy' };
         this.showModal = true;
     }
 
@@ -157,79 +162,88 @@ export class CallServersComponent implements OnInit {
 
     resetForm() {
         this.formData = {
-            head_office_id: null,
+            call_server_id: null,
             name: '',
-            host: '',
-            port: 5060,
-            is_active: true,
+            line_number: '',
+            type: 'sip',
+            channel_count: 1,
+            trunk_id: null,
             description: null,
+            secret: null,
+            is_active: true,
         };
     }
 
     handleSubmit() {
         if (this.modalMode === 'create') {
-            this.createCallServer();
+            this.createLine();
         } else if (this.modalMode === 'edit') {
-            this.updateCallServer();
+            this.updateLine();
         }
     }
 
-    createCallServer() {
-        const apiUrl = `${environment.apiUrl}/v1/call-servers`;
+    createLine() {
+        const apiUrl = `${environment.apiUrl}/v1/lines`;
 
         // Only send valid database fields, exclude relation objects
         const createData = {
-            head_office_id: this.formData.head_office_id,
+            call_server_id: this.formData.call_server_id,
             name: this.formData.name,
-            host: this.formData.host,
-            port: this.formData.port,
-            is_active: this.formData.is_active,
+            line_number: this.formData.line_number,
+            type: this.formData.type || 'sip',
+            channel_count: this.formData.channel_count || 1,
+            trunk_id: this.formData.trunk_id,
             description: this.formData.description,
+            secret: this.formData.secret,
+            is_active: this.formData.is_active,
         };
 
         this.http.post<any>(apiUrl, createData).subscribe({
             next: (response) => {
-                this.showSuccessMessage('Call server created successfully');
+                this.showSuccessMessage('Line created successfully');
                 this.closeModal();
-                this.loadCallServers();
+                this.loadLines();
             },
             error: (error) => {
-                console.error('Failed to create call server:', error);
-                this.showErrorMessage(error.error?.message || 'Failed to create call server');
+                console.error('Failed to create line:', error);
+                this.showErrorMessage(error.error?.message || 'Failed to create line');
             },
         });
     }
 
-    updateCallServer() {
-        const apiUrl = `${environment.apiUrl}/v1/call-servers/${this.formData.id}`;
+    updateLine() {
+        const apiUrl = `${environment.apiUrl}/v1/lines/${this.formData.id}`;
 
         // Only send valid database fields
         const updateData = {
-            head_office_id: this.formData.head_office_id,
+            call_server_id: this.formData.call_server_id,
             name: this.formData.name,
-            host: this.formData.host,
-            port: this.formData.port,
-            is_active: this.formData.is_active,
+            line_number: this.formData.line_number,
+            type: this.formData.type,
+            channel_count: this.formData.channel_count,
+            trunk_id: this.formData.trunk_id,
             description: this.formData.description,
+            secret: this.formData.secret,
+            is_active: this.formData.is_active,
         };
 
         this.http.put<any>(apiUrl, updateData).subscribe({
             next: (response) => {
-                this.showSuccessMessage('Call server updated successfully');
+                this.showSuccessMessage('Line updated successfully');
                 this.closeModal();
-                this.loadCallServers();
+                this.loadLines();
             },
             error: (error) => {
-                console.error('Failed to update call server:', error);
-                this.showErrorMessage(error.error?.message || 'Failed to update call server');
+                console.error('Failed to update line:', error);
+                this.showErrorMessage(error.error?.message || 'Failed to update line');
             },
         });
     }
 
-    deleteCallServer(id: number) {
+    deleteLine(id: number) {
         Swal.fire({
             title: 'Are you sure?',
-            text: 'You will not be able to recover this call server!',
+            text: 'You will not be able to recover this line!',
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#3085d6',
@@ -238,16 +252,16 @@ export class CallServersComponent implements OnInit {
             cancelButtonText: 'Cancel',
         }).then((result) => {
             if (result.isConfirmed) {
-                const apiUrl = `${environment.apiUrl}/v1/call-servers/${id}`;
+                const apiUrl = `${environment.apiUrl}/v1/lines/${id}`;
 
                 this.http.delete<any>(apiUrl).subscribe({
                     next: (response) => {
-                        this.showSuccessMessage('Call server deleted successfully');
-                        this.loadCallServers();
+                        this.showSuccessMessage('Line deleted successfully');
+                        this.loadLines();
                     },
                     error: (error) => {
-                        console.error('Failed to delete call server:', error);
-                        this.showErrorMessage(error.error?.message || 'Failed to delete call server');
+                        console.error('Failed to delete line:', error);
+                        this.showErrorMessage(error.error?.message || 'Failed to delete line');
                     },
                 });
             }

@@ -48,30 +48,32 @@
                     </span>
                 </ng-template>
                 <ng-template slot="actions" let-value="data">
-                    <div class="flex items-center justify-center gap-3">
-                        <a [routerLink]="['/admin/organization/branch/edit', value.id]"
-                            class="flex items-center text-info hover:underline">
+                    <div class="flex items-center justify-center gap-1">
+                        <a [routerLink]="['/admin/organization/branch/create']" [queryParams]="{copy: value.id}"
+                            class="btn btn-sm btn-outline-primary border-0 p-1" title="Copy">
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
-                                fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
-                                stroke-linejoin="round" class="mr-1">
+                                fill="none" stroke="currentColor" stroke-width="1.5">
+                                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                            </svg>
+                        </a>
+                        <a [routerLink]="['/admin/organization/branch/edit', value.id]"
+                            class="btn btn-sm btn-outline-warning border-0 p-1" title="Edit">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="1.5">
                                 <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
                                 <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
                             </svg>
-                            Edit
                         </a>
                         <button type="button" (click)="deleteBranch(value)"
-                            class="flex items-center text-danger hover:underline">
+                            class="btn btn-sm btn-outline-danger border-0 p-1" title="Delete">
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
-                                fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
-                                stroke-linejoin="round" class="mr-1">
+                                fill="none" stroke="currentColor" stroke-width="1.5">
                                 <polyline points="3 6 5 6 21 6"></polyline>
                                 <path
                                     d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2">
                                 </path>
-                                <line x1="10" y1="11" x2="10" y2="17"></line>
-                                <line x1="14" y1="11" x2="14" y2="17"></line>
                             </svg>
-                            Delete
                         </button>
                     </div>
                 </ng-template>

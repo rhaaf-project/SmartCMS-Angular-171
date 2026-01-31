@@ -53,11 +53,47 @@ export class SubBranchFormComponent implements OnInit {
         this.loadCallServers();
 
         const id = this.route.snapshot.params['id'];
+        const copyId = this.route.snapshot.queryParams['copy'];
+
         if (id) {
             this.isEdit = true;
             this.subBranchId = +id;
             this.loadSubBranch(this.subBranchId);
+        } else if (copyId) {
+            // Copy mode: load source record data but don't set isEdit
+            this.loadSubBranchForCopy(+copyId);
         }
+    }
+
+    loadSubBranchForCopy(id: number) {
+        this.organizationService.getSubBranch(id).subscribe({
+            next: (response: any) => {
+                const data = response.data || response;
+                this.subBranch = {
+                    companyId: data.customer_id,
+                    parentBranchId: data.branch_id,
+                    callServerId: data.call_server_id || null,
+                    name: (data.name || '') + ' - Copy',
+                    code: (data.code || '') + '-copy',
+                    active: data.is_active ?? true,
+                    country: data.country || 'Indonesia',
+                    province: data.province || '',
+                    city: data.city || '',
+                    district: data.district || '',
+                    address: data.address || '',
+                    contactName: data.contact_name || '',
+                    contactPhone: data.contact_phone || '',
+                    description: data.description || '',
+                };
+                if (this.subBranch.companyId) {
+                    this.loadBranches(this.subBranch.companyId);
+                }
+            },
+            error: (err) => {
+                console.error('Failed to load sub branch for copy:', err);
+                Swal.fire('Error', 'Failed to load sub branch data', 'error');
+            }
+        });
     }
 
     loadCompanies() {

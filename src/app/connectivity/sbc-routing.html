@@ -1,0 +1,260 @@
+<div>
+    <div class="panel" style="padding: 15px;">
+        <div class="mb-5 flex flex-col gap-5 md:flex-row md:items-center">
+            <h5 class="text-medium font-medium dark:text-white-light">SBC Routing</h5>
+            <div class="flex ltr:ml-auto rtl:mr-auto">
+                <div class="relative mr-4">
+                    <input type="text" placeholder="Search..." class="form-input-sm form-input w-auto pr-8"
+                        [(ngModel)]="search" />
+                    <div class="absolute top-1/2 right-2 -translate-y-1/2"><svg width="16" height="16"
+                            viewBox="0 0 24 24" fill="none" class="text-white-dark">
+                            <circle cx="11.5" cy="11.5" r="9.5" stroke="currentColor" stroke-width="1.5" opacity="0.5">
+                            </circle>
+                            <path d="M18.5 18.5L22 22" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+                            </path>
+                        </svg></div>
+                </div>
+                <button type="button" class="btn btn-warning btn-sm" (click)="openCreateModal()">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="1.5" class="ltr:mr-1 rtl:ml-1">
+                        <line x1="12" y1="5" x2="12" y2="19"></line>
+                        <line x1="5" y1="12" x2="19" y2="12"></line>
+                    </svg>
+                    New Route
+                </button>
+            </div>
+        </div>
+        <div class="mb-5">
+            <div class="table-responsive">
+                <table class="table-hover">
+                    <thead>
+                        <tr>
+                            <th>Source SBC</th>
+                            <th>Source Pattern</th>
+                            <th>Dest SBC</th>
+                            <th>Dest Pattern</th>
+                            <th>Priority</th>
+                            <th class="text-center">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngIf="isLoading">
+                            <td colspan="6" class="text-center">
+                                <div
+                                    class="inline-block h-8 w-8 animate-spin rounded-full border-4 border-primary border-l-transparent">
+                                </div>
+                            </td>
+                        </tr>
+                        <tr *ngIf="!isLoading && routes.length === 0">
+                            <td colspan="6" class="text-center">No routes found</td>
+                        </tr>
+                        <tr *ngFor="let route of routes">
+                            <td>{{ getSbcName(route.src_from_sbc_id) }}</td>
+                            <td>
+                                <div class="font-semibold">{{ route.src_pattern }}</div>
+                            </td>
+                            <td>{{ getSbcName(route.dest_from_sbc_id) }}</td>
+                            <td>{{ route.dest_pattern }}</td>
+                            <td>{{ route.src_priority }}</td>
+                            <td class="text-center">
+                                <div class="flex items-center justify-center gap-1">
+                                    <button type="button" class="btn btn-sm btn-outline-primary border-0 p-1"
+                                        (click)="copyRecord(route)" title="Copy"><icon-copy /></button>
+                                    <button type="button" class="btn btn-sm btn-outline-warning border-0 p-1"
+                                        (click)="openEditModal(route)" title="Edit"><icon-pencil /></button>
+                                    <button type="button" class="btn btn-sm btn-outline-danger border-0 p-1"
+                                        (click)="deleteRoute(route.id!)" title="Delete"><icon-trash-lines /></button>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="text-sm text-gray-500">Showing 1 to {{ routes.length }} of {{ routes.length }} results</div>
+    </div>
+
+    <!-- Modal - 2 Column Layout matching Filament -->
+    <div *ngIf="showModal" class="fixed inset-0 z-[999] overflow-y-auto bg-[black]/60" (click)="closeModal()">
+        <div class="flex min-h-screen items-start justify-center px-4 py-8">
+            <div class="panel my-8 w-full max-w-6xl overflow-hidden rounded-lg border-0 p-0"
+                (click)="$event.stopPropagation()" [@toggleAnimation]>
+                <div class="flex items-center justify-between bg-[#fbfbfb] px-5 py-3 dark:bg-[#121c2c]">
+                    <h5 class="text-lg font-bold">{{ modalMode === 'create' ? 'Create SBC Routing' : 'Edit SBC Routing'
+                        }}</h5>
+                    <button type="button" class="text-white-dark hover:text-dark" (click)="closeModal()"><svg width="20"
+                            height="20" viewBox="0 0 24 24" fill="none">
+                            <path d="M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+                            <path d="M6 6L18 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+                        </svg></button>
+                </div>
+                <div class="p-5">
+                    <form (ngSubmit)="handleSubmit()">
+                        <!-- 2 Column Grid: Source | Destination -->
+                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+
+                            <!-- SOURCE Column -->
+                            <div>
+                                <h3 class="text-xl font-bold text-white mb-4">Source</h3>
+
+                                <!-- Route Details Box -->
+                                <div class="panel p-4 mb-4">
+                                    <h6 class="font-semibold mb-4">Route Details</h6>
+                                    <div class="grid grid-cols-2 gap-4">
+                                        <div>
+                                            <label>Call Server</label>
+                                            <select [(ngModel)]="formData.src_call_server_id" name="src_call_server_id"
+                                                class="form-select">
+                                                <option [ngValue]="null">Select an option</option>
+                                                <option *ngFor="let cs of callServers" [ngValue]="cs.id">{{ cs.name }}
+                                                </option>
+                                            </select>
+                                        </div>
+                                        <div>
+                                            <label>Description</label>
+                                            <input type="text" [(ngModel)]="formData.src_description"
+                                                name="src_description" class="form-input" />
+                                        </div>
+                                        <div>
+                                            <label>DID / Number <span class="text-danger">*</span></label>
+                                            <input type="text" [(ngModel)]="formData.src_pattern" name="src_pattern"
+                                                class="form-input" required />
+                                        </div>
+                                        <div>
+                                            <label>Caller ID Filter</label>
+                                            <input type="text" [(ngModel)]="formData.src_cid_filter"
+                                                name="src_cid_filter" class="form-input" />
+                                        </div>
+                                        <div>
+                                            <label>Priority</label>
+                                            <input type="number" [(ngModel)]="formData.src_priority" name="src_priority"
+                                                class="form-input" />
+                                        </div>
+                                        <div class="flex items-center pt-6">
+                                            <label>Active</label>
+                                            <label class="w-12 h-6 relative ml-4">
+                                                <input type="checkbox" [(ngModel)]="formData.src_is_active"
+                                                    name="src_is_active"
+                                                    class="custom_switch absolute w-full h-full opacity-0 z-10 cursor-pointer peer" />
+                                                <span
+                                                    class="bg-[#ebedf2] dark:bg-dark block h-full rounded-full before:absolute before:left-1 before:bg-white dark:before:bg-white-dark dark:peer-checked:before:bg-white before:bottom-1 before:w-4 before:h-4 before:rounded-full peer-checked:before:left-7 peer-checked:bg-warning before:transition-all before:duration-300"></span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- From SBC / Destination Box -->
+                                <div class="panel p-4">
+                                    <div class="grid grid-cols-2 gap-4">
+                                        <div>
+                                            <label>From SBC</label>
+                                            <select [(ngModel)]="formData.src_from_sbc_id" name="src_from_sbc_id"
+                                                class="form-select">
+                                                <option [ngValue]="null">Select an option</option>
+                                                <option *ngFor="let sbc of sbcs" [ngValue]="sbc.id">{{ sbc.name }}
+                                                </option>
+                                            </select>
+                                        </div>
+                                        <div>
+                                            <label>Destination</label>
+                                            <select [(ngModel)]="formData.src_destination_id" name="src_destination_id"
+                                                class="form-select">
+                                                <option [ngValue]="null">Select an option</option>
+                                                <option *ngFor="let trunk of trunks" [ngValue]="trunk.id">{{ trunk.name
+                                                    }}</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- DESTINATION Column -->
+                            <div>
+                                <h3 class="text-xl font-bold text-white mb-4">Destination</h3>
+
+                                <!-- Route Details Box -->
+                                <div class="panel p-4 mb-4">
+                                    <h6 class="font-semibold mb-4">Route Details</h6>
+                                    <div class="grid grid-cols-2 gap-4">
+                                        <div>
+                                            <label>Call Server</label>
+                                            <select [(ngModel)]="formData.dest_call_server_id"
+                                                name="dest_call_server_id" class="form-select">
+                                                <option [ngValue]="null">Select an option</option>
+                                                <option *ngFor="let cs of callServers" [ngValue]="cs.id">{{ cs.name }}
+                                                </option>
+                                            </select>
+                                        </div>
+                                        <div>
+                                            <label>Description</label>
+                                            <input type="text" [(ngModel)]="formData.dest_description"
+                                                name="dest_description" class="form-input" />
+                                        </div>
+                                        <div>
+                                            <label>DID / Number <span class="text-danger">*</span></label>
+                                            <input type="text" [(ngModel)]="formData.dest_pattern" name="dest_pattern"
+                                                class="form-input" required />
+                                        </div>
+                                        <div>
+                                            <label>Caller ID Filter</label>
+                                            <input type="text" [(ngModel)]="formData.dest_cid_filter"
+                                                name="dest_cid_filter" class="form-input" />
+                                        </div>
+                                        <div>
+                                            <label>Priority</label>
+                                            <input type="number" [(ngModel)]="formData.dest_priority"
+                                                name="dest_priority" class="form-input" />
+                                        </div>
+                                        <div class="flex items-center pt-6">
+                                            <label>Active</label>
+                                            <label class="w-12 h-6 relative ml-4">
+                                                <input type="checkbox" [(ngModel)]="formData.dest_is_active"
+                                                    name="dest_is_active"
+                                                    class="custom_switch absolute w-full h-full opacity-0 z-10 cursor-pointer peer" />
+                                                <span
+                                                    class="bg-[#ebedf2] dark:bg-dark block h-full rounded-full before:absolute before:left-1 before:bg-white dark:before:bg-white-dark dark:peer-checked:before:bg-white before:bottom-1 before:w-4 before:h-4 before:rounded-full peer-checked:before:left-7 peer-checked:bg-warning before:transition-all before:duration-300"></span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- From SBC / Destination Box -->
+                                <div class="panel p-4">
+                                    <div class="grid grid-cols-2 gap-4">
+                                        <div>
+                                            <label>From SBC</label>
+                                            <select [(ngModel)]="formData.dest_from_sbc_id" name="dest_from_sbc_id"
+                                                class="form-select">
+                                                <option [ngValue]="null">Select an option</option>
+                                                <option *ngFor="let sbc of sbcs" [ngValue]="sbc.id">{{ sbc.name }}
+                                                </option>
+                                            </select>
+                                        </div>
+                                        <div>
+                                            <label>Destination</label>
+                                            <select [(ngModel)]="formData.dest_destination_id"
+                                                name="dest_destination_id" class="form-select">
+                                                <option [ngValue]="null">Select an option</option>
+                                                <option *ngFor="let trunk of trunks" [ngValue]="trunk.id">{{ trunk.name
+                                                    }}</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Buttons -->
+                        <div class="mt-8 flex items-center gap-3">
+                            <button type="submit" class="btn btn-warning">{{ modalMode === 'create' ? 'Create' : 'Save
+                                changes' }}</button>
+                            <button *ngIf="modalMode === 'create'" type="button" class="btn btn-outline-warning">Create
+                                & create another</button>
+                            <button type="button" class="btn btn-dark" (click)="closeModal()">Cancel</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,75 @@
+<div class="space-y-6">
+    <!-- Header -->
+    <div class="flex items-center justify-between">
+        <h1 class="text-2xl font-bold text-gray-800 dark:text-white">Connectivity Diagram</h1>
+        <button (click)="refresh()" class="btn btn-outline-primary flex items-center gap-2">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd"
+                    d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 010 2H4a1 1 0 01-1-1V3a1 1 0 011-1zm.008 9.057a1 1 0 011.276.61A5.002 5.002 0 0014.001 13H11a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0v-2.101a7.002 7.002 0 01-11.601-2.566 1 1 0 01.61-1.276z"
+                    clip-rule="evenodd" />
+            </svg>
+            Refresh
+        </button>
+    </div>
+
+    <!-- Loading -->
+    <div *ngIf="isLoading" class="flex justify-center items-center h-[400px]">
+        <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+    </div>
+
+    <!-- Topology Container -->
+    <div *ngIf="!isLoading"
+        class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-4">
+        <div id="topology-network" class="w-full rounded-lg"
+            style="height: 600px; border: 1px solid #e5e7eb; background: #ffffff;">
+        </div>
+    </div>
+
+    <!-- Stats Cards -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-4">
+            <div class="text-sm text-gray-500 dark:text-gray-400">Total Head Offices</div>
+            <div class="text-2xl font-bold text-gray-900 dark:text-white">{{ hoCount }}</div>
+        </div>
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-4">
+            <div class="text-sm text-gray-500 dark:text-gray-400">Total Branches</div>
+            <div class="text-2xl font-bold text-gray-900 dark:text-white">{{ branchCount }}</div>
+        </div>
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-4">
+            <div class="text-sm text-gray-500 dark:text-gray-400">Active Connections</div>
+            <div class="text-2xl font-bold text-green-500">{{ connectionCount }}</div>
+        </div>
+    </div>
+
+    <!-- Legend -->
+    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-4">
+        <h3 class="text-lg font-semibold text-gray-800 dark:text-white mb-4">Legend</h3>
+        <div class="flex flex-wrap gap-6">
+            <div class="flex items-center gap-2">
+                <img src="assets/images/topology/head-office.png" alt="Head Office" class="w-10 h-10">
+                <span class="text-gray-600 dark:text-gray-300">Head Office</span>
+            </div>
+            <div class="flex items-center gap-2">
+                <img src="assets/images/topology/branch.png" alt="Branch" class="w-10 h-10">
+                <span class="text-gray-600 dark:text-gray-300">Branch</span>
+            </div>
+            <div class="flex items-center gap-2">
+                <img src="assets/images/topology/branch-sbc.png" alt="Branch with SBC" class="w-10 h-10">
+                <span class="text-gray-600 dark:text-gray-300">Branch with SBC</span>
+            </div>
+            <div class="flex items-center gap-2">
+                <div class="w-8 h-1 bg-green-500 rounded"></div>
+                <span class="text-gray-600 dark:text-gray-300">Active Connection</span>
+            </div>
+            <div class="flex items-center gap-2">
+                <div class="w-8 h-1 bg-red-500 rounded"></div>
+                <span class="text-gray-600 dark:text-gray-300">Inactive Connection</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Info -->
+    <div class="text-sm text-gray-500 dark:text-gray-400">
+        <span class="font-medium">Tip:</span> Click on any node to view/edit its details.
+    </div>
+</div>

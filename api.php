@@ -50,8 +50,17 @@ $tableMap = [
     'branches' => 'branches',
     'sub-branches' => 'sub_branches',
     'call-servers' => 'call_servers',
+    'lines' => 'lines',
     'extensions' => 'extensions',
+    'vpws' => 'vpws',
+    'cas' => 'cas',
+    'device-3rd-parties' => 'device_3rd_parties',
+    'private-wires' => 'private_wires',
     'trunks' => 'trunks',
+    'sbcs' => 'sbcs',
+    'inbound-routings' => 'inbound_routings',
+    'outbound-routings' => 'outbound_routings',
+    'sbc-routes' => 'sbc_routes',
     'ring-groups' => 'ring_groups',
     'ivr' => 'ivr',
     'time-conditions' => 'time_conditions',
@@ -59,6 +68,93 @@ $tableMap = [
 ];
 
 $table = $tableMap[$resource] ?? null;
+
+// Special endpoint: topology for Connectivity Diagram
+if ($resource === 'topology') {
+    $nodes = [];
+    $edges = [];
+
+    // Get all head offices with branches
+    $stmt = $pdo->query("SELECT * FROM head_offices WHERE is_active = 1");
+    $headOffices = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    foreach ($headOffices as $ho) {
+        // Get customer name
+        $custStmt = $pdo->prepare("SELECT name FROM customers WHERE id = ?");
+        $custStmt->execute([$ho['customer_id']]);
+        $customer = $custStmt->fetch(PDO::FETCH_ASSOC);
+
+        // Add head office node
+        $nodes[] = [
+            'id' => 'ho_' . $ho['id'],
+            'label' => $ho['name'],
+            'title' => "HO: {$ho['name']}\nType: {$ho['type']}\nCompany: " . ($customer['name'] ?? 'N/A'),
+            'group' => 'headoffice',
+        ];
+
+        // Get branches for this head office
+        $brStmt = $pdo->prepare("SELECT * FROM branches WHERE head_office_id = ?");
+        $brStmt->execute([$ho['id']]);
+        $branches = $brStmt->fetchAll(PDO::FETCH_ASSOC);
+
+        foreach ($branches as $branch) {
+            // Get call server IP
+            $ip = 'N/A';
+            if ($branch['call_server_id']) {
+                $csStmt = $pdo->prepare("SELECT host FROM call_servers WHERE id = ?");
+                $csStmt->execute([$branch['call_server_id']]);
+                $cs = $csStmt->fetch(PDO::FETCH_ASSOC);
+                $ip = $cs['host'] ?? 'N/A';
+            }
+
+            $status = $branch['is_active'] ? 'OK' : 'Offline';
+
+            $nodes[] = [
+                'id' => 'br_' . $branch['id'],
+                'label' => $branch['name'],
+                'title' => "{$branch['name']}\nType: peer\nIP: {$ip}\nStatus: {$status}",
+                'group' => 'branch',
+                'status' => $status,
+                'ip' => $ip,
+                'has_sbc' => false,
+            ];
+
+            // Add edge from head office to branch
+            $edges[] = [
+                'from' => 'ho_' . $ho['id'],
+                'to' => 'br_' . $branch['id'],
+                'label' => '2',
+                'color' => $branch['is_active'] ? '#22c55e' : '#ef4444',
+            ];
+        }
+    }
+
+    // Get orphan branches (no head office)
+    $orphanStmt = $pdo->query("SELECT * FROM branches WHERE head_office_id IS NULL AND is_active = 1");
+    $orphanBranches = $orphanStmt->fetchAll(PDO::FETCH_ASSOC);
+
+    foreach ($orphanBranches as $branch) {
+        $ip = 'N/A';
+        if ($branch['call_server_id']) {
+            $csStmt = $pdo->prepare("SELECT host FROM call_servers WHERE id = ?");
+            $csStmt->execute([$branch['call_server_id']]);
+            $cs = $csStmt->fetch(PDO::FETCH_ASSOC);
+            $ip = $cs['host'] ?? 'N/A';
+        }
+
+        $nodes[] = [
+            'id' => 'br_' . $branch['id'],
+            'label' => $branch['name'],
+            'title' => "{$branch['name']}\nType: standalone\nIP: {$ip}",
+            'group' => 'standalone',
+            'ip' => $ip,
+            'has_sbc' => false,
+        ];
+    }
+
+    echo json_encode(['data' => ['nodes' => $nodes, 'edges' => $edges]]);
+    exit;
+}
 
 if (!$table) {
     http_response_code(404);
@@ -71,7 +167,7 @@ try {
         case 'GET':
             if ($id) {
                 // Get single record
-                $stmt = $pdo->prepare("SELECT * FROM $table WHERE id = ?");
+                $stmt = $pdo->prepare("SELECT * FROM `$table` WHERE id = ?");
                 $stmt->execute([$id]);
                 $data = $stmt->fetch(PDO::FETCH_ASSOC);
 
@@ -109,12 +205,12 @@ try {
                 }
 
                 // Count total
-                $countStmt = $pdo->prepare("SELECT COUNT(*) FROM $table $where");
+                $countStmt = $pdo->prepare("SELECT COUNT(*) FROM `$table` $where");
                 $countStmt->execute($params);
                 $total = $countStmt->fetchColumn();
 
                 // Get data
-                $sql = "SELECT * FROM $table $where ORDER BY id DESC LIMIT $perPage OFFSET $offset";
+                $sql = "SELECT * FROM `$table` $where ORDER BY id DESC LIMIT $perPage OFFSET $offset";
                 $stmt = $pdo->prepare($sql);
                 $stmt->execute($params);
                 $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -231,6 +327,159 @@ try {
                     }
                 }
 
+                // Add call_server relation for lines
+                if ($table === 'lines') {
+                    foreach ($rows as &$row) {
+                        if ($row['call_server_id']) {
+                            $stmt2 = $pdo->prepare("SELECT id, name FROM call_servers WHERE id = ?");
+                            $stmt2->execute([$row['call_server_id']]);
+                            $row['call_server'] = $stmt2->fetch(PDO::FETCH_ASSOC);
+                        }
+                    }
+                }
+
+                // Add call_server relation for extensions
+                if ($table === 'extensions') {
+                    foreach ($rows as &$row) {
+                        if ($row['call_server_id']) {
+                            $stmt2 = $pdo->prepare("SELECT id, name FROM call_servers WHERE id = ?");
+                            $stmt2->execute([$row['call_server_id']]);
+                            $row['call_server'] = $stmt2->fetch(PDO::FETCH_ASSOC);
+                        }
+                    }
+                }
+
+                // Add call_server relation for vpws
+                if ($table === 'vpws') {
+                    foreach ($rows as &$row) {
+                        if ($row['call_server_id']) {
+                            $stmt2 = $pdo->prepare("SELECT id, name FROM call_servers WHERE id = ?");
+                            $stmt2->execute([$row['call_server_id']]);
+                            $row['call_server'] = $stmt2->fetch(PDO::FETCH_ASSOC);
+                        }
+                    }
+                }
+
+                // Add call_server relation for cas
+                if ($table === 'cas') {
+                    foreach ($rows as &$row) {
+                        if ($row['call_server_id']) {
+                            $stmt2 = $pdo->prepare("SELECT id, name FROM call_servers WHERE id = ?");
+                            $stmt2->execute([$row['call_server_id']]);
+                            $row['call_server'] = $stmt2->fetch(PDO::FETCH_ASSOC);
+                        }
+                    }
+                }
+
+                // Add call_server relation for sbcs
+                if ($table === 'sbcs') {
+                    foreach ($rows as &$row) {
+                        if ($row['call_server_id']) {
+                            $stmt2 = $pdo->prepare("SELECT id, name FROM call_servers WHERE id = ?");
+                            $stmt2->execute([$row['call_server_id']]);
+                            $row['call_server'] = $stmt2->fetch(PDO::FETCH_ASSOC);
+                        }
+                    }
+                }
+
+                // Add relations for sbc_routes (SBC, call_server, trunk)
+                if ($table === 'sbc_routes') {
+                    foreach ($rows as &$row) {
+                        // Source relations
+                        if ($row['src_call_server_id']) {
+                            $stmt2 = $pdo->prepare("SELECT id, name FROM call_servers WHERE id = ?");
+                            $stmt2->execute([$row['src_call_server_id']]);
+                            $row['src_call_server'] = $stmt2->fetch(PDO::FETCH_ASSOC);
+                        }
+                        if ($row['src_from_sbc_id']) {
+                            $stmt2 = $pdo->prepare("SELECT id, name FROM sbcs WHERE id = ?");
+                            $stmt2->execute([$row['src_from_sbc_id']]);
+                            $row['src_from_sbc'] = $stmt2->fetch(PDO::FETCH_ASSOC);
+                        }
+                        if ($row['src_destination_id']) {
+                            $stmt2 = $pdo->prepare("SELECT id, name FROM trunks WHERE id = ?");
+                            $stmt2->execute([$row['src_destination_id']]);
+                            $row['src_destination'] = $stmt2->fetch(PDO::FETCH_ASSOC);
+                        }
+                        // Destination relations
+                        if ($row['dest_call_server_id']) {
+                            $stmt2 = $pdo->prepare("SELECT id, name FROM call_servers WHERE id = ?");
+                            $stmt2->execute([$row['dest_call_server_id']]);
+                            $row['dest_call_server'] = $stmt2->fetch(PDO::FETCH_ASSOC);
+                        }
+                        if ($row['dest_from_sbc_id']) {
+                            $stmt2 = $pdo->prepare("SELECT id, name FROM sbcs WHERE id = ?");
+                            $stmt2->execute([$row['dest_from_sbc_id']]);
+                            $row['dest_from_sbc'] = $stmt2->fetch(PDO::FETCH_ASSOC);
+                        }
+                        if ($row['dest_destination_id']) {
+                            $stmt2 = $pdo->prepare("SELECT id, name FROM trunks WHERE id = ?");
+                            $stmt2->execute([$row['dest_destination_id']]);
+                            $row['dest_destination'] = $stmt2->fetch(PDO::FETCH_ASSOC);
+                        }
+                    }
+                }
+
+                // Add call_server relation for trunks
+                if ($table === 'trunks') {
+                    foreach ($rows as &$row) {
+                        if ($row['call_server_id']) {
+                            $stmt2 = $pdo->prepare("SELECT id, name FROM call_servers WHERE id = ?");
+                            $stmt2->execute([$row['call_server_id']]);
+                            $row['call_server'] = $stmt2->fetch(PDO::FETCH_ASSOC);
+                        }
+                    }
+                }
+
+                // Add call_server relation for private_wires
+                if ($table === 'private_wires') {
+                    foreach ($rows as &$row) {
+                        if ($row['call_server_id']) {
+                            $stmt2 = $pdo->prepare("SELECT id, name FROM call_servers WHERE id = ?");
+                            $stmt2->execute([$row['call_server_id']]);
+                            $row['call_server'] = $stmt2->fetch(PDO::FETCH_ASSOC);
+                        }
+                    }
+                }
+
+                // Add call_server relation for device_3rd_parties
+                if ($table === 'device_3rd_parties') {
+                    foreach ($rows as &$row) {
+                        if ($row['call_server_id']) {
+                            $stmt2 = $pdo->prepare("SELECT id, name FROM call_servers WHERE id = ?");
+                            $stmt2->execute([$row['call_server_id']]);
+                            $row['call_server'] = $stmt2->fetch(PDO::FETCH_ASSOC);
+                        }
+                    }
+                }
+
+                // Add call_server relation for inbound_routings
+                if ($table === 'inbound_routings') {
+                    foreach ($rows as &$row) {
+                        if ($row['call_server_id']) {
+                            $stmt2 = $pdo->prepare("SELECT id, name FROM call_servers WHERE id = ?");
+                            $stmt2->execute([$row['call_server_id']]);
+                            $row['call_server'] = $stmt2->fetch(PDO::FETCH_ASSOC);
+                        }
+                    }
+                }
+
+                // Add relations for outbound_routings
+                if ($table === 'outbound_routings') {
+                    foreach ($rows as &$row) {
+                        if ($row['call_server_id']) {
+                            $stmt2 = $pdo->prepare("SELECT id, name FROM call_servers WHERE id = ?");
+                            $stmt2->execute([$row['call_server_id']]);
+                            $row['call_server'] = $stmt2->fetch(PDO::FETCH_ASSOC);
+                        }
+                        if ($row['trunk_id']) {
+                            $stmt2 = $pdo->prepare("SELECT id, name FROM trunks WHERE id = ?");
+                            $stmt2->execute([$row['trunk_id']]);
+                            $row['trunk'] = $stmt2->fetch(PDO::FETCH_ASSOC);
+                        }
+                    }
+                }
+
                 echo json_encode([
                     'data' => $rows,
                     'current_page' => $page,
@@ -244,12 +493,12 @@ try {
         case 'POST':
             $columns = array_keys($input);
             $placeholders = array_fill(0, count($columns), '?');
-            $sql = "INSERT INTO $table (" . implode(',', $columns) . ") VALUES (" . implode(',', $placeholders) . ")";
+            $sql = "INSERT INTO `$table` (" . implode(',', $columns) . ") VALUES (" . implode(',', $placeholders) . ")";
             $stmt = $pdo->prepare($sql);
             $stmt->execute(array_values($input));
             $newId = $pdo->lastInsertId();
 
-            $stmt2 = $pdo->prepare("SELECT * FROM $table WHERE id = ?");
+            $stmt2 = $pdo->prepare("SELECT * FROM `$table` WHERE id = ?");
             $stmt2->execute([$newId]);
             $data = $stmt2->fetch(PDO::FETCH_ASSOC);
 
@@ -272,11 +521,11 @@ try {
             }
             $values[] = $id;
 
-            $sql = "UPDATE $table SET " . implode(', ', $sets) . " WHERE id = ?";
+            $sql = "UPDATE `$table` SET " . implode(', ', $sets) . " WHERE id = ?";
             $stmt = $pdo->prepare($sql);
             $stmt->execute($values);
 
-            $stmt2 = $pdo->prepare("SELECT * FROM $table WHERE id = ?");
+            $stmt2 = $pdo->prepare("SELECT * FROM `$table` WHERE id = ?");
             $stmt2->execute([$id]);
             $data = $stmt2->fetch(PDO::FETCH_ASSOC);
 
@@ -290,7 +539,7 @@ try {
                 exit;
             }
 
-            $stmt = $pdo->prepare("DELETE FROM $table WHERE id = ?");
+            $stmt = $pdo->prepare("DELETE FROM `$table` WHERE id = ?");
             $stmt->execute([$id]);
 
             echo json_encode(['message' => 'Deleted successfully']);

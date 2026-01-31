@@ -137,26 +137,25 @@
                                     </button>
                                     <div [@slideDownUp]="!activeDropdown.includes('line')" class="accordion-content">
                                         <ul class="sub-menu text-gray-500 !pl-4">
-                                            <li><a routerLink="/connectivity/line/line" routerLinkActive="active"
+                                            <li><a routerLink="/admin/connectivity/lines" routerLinkActive="active"
                                                     (click)="toggleMobileMenu()">Line</a></li>
-                                            <li><a routerLink="/connectivity/line/extension" routerLinkActive="active"
+                                            <li><a routerLink="/admin/connectivity/extensions" routerLinkActive="active"
                                                     (click)="toggleMobileMenu()">Extension</a></li>
-                                            <li><a routerLink="/connectivity/line/private-wire"
-                                                    routerLinkActive="active" (click)="toggleMobileMenu()">Private
-                                                    Wire</a></li>
-                                            <li><a routerLink="/connectivity/line/cas" routerLinkActive="active"
+                                            <li><a routerLink="/admin/connectivity/vpw" routerLinkActive="active"
+                                                    (click)="toggleMobileMenu()">VPW</a></li>
+                                            <li><a routerLink="/admin/connectivity/cas" routerLinkActive="active"
                                                     (click)="toggleMobileMenu()">CAS</a></li>
-                                            <li><a routerLink="/connectivity/line/sip-3rd-party"
+                                            <li><a routerLink="/admin/connectivity/sip-3rd-party"
                                                     routerLinkActive="active" (click)="toggleMobileMenu()">SIP/3rd
                                                     Party</a></li>
                                         </ul>
                                     </div>
                                 </li>
-                                <li><a routerLink="/connectivity/private-wire" routerLinkActive="active"
+                                <li><a routerLink="/admin/connectivity/private-wire" routerLinkActive="active"
                                         (click)="toggleMobileMenu()">Private Wire</a></li>
-                                <li><a routerLink="/connectivity/trunk" routerLinkActive="active"
+                                <li><a routerLink="/admin/connectivity/trunk" routerLinkActive="active"
                                         (click)="toggleMobileMenu()">Trunk</a></li>
-                                <li><a routerLink="/connectivity/call-routing" routerLinkActive="active"
+                                <li><a routerLink="/admin/connectivity/call-routing" routerLinkActive="active"
                                         (click)="toggleMobileMenu()">Call Routing</a></li>
                             </ul>
                         </div>
@@ -177,11 +176,11 @@
                         </button>
                         <div [@slideDownUp]="!activeDropdown.includes('sbc')" class="accordion-content">
                             <ul class="sub-menu text-gray-500">
-                                <li><a routerLink="/sbc/sbc" routerLinkActive="active"
+                                <li><a routerLink="/admin/connectivity/sbc" routerLinkActive="active"
                                         (click)="toggleMobileMenu()">SBC</a></li>
-                                <li><a routerLink="/sbc/connection" routerLinkActive="active"
+                                <li><a routerLink="/admin/connectivity/sbc-connections" routerLinkActive="active"
                                         (click)="toggleMobileMenu()">Connection</a></li>
-                                <li><a routerLink="/sbc/routing" routerLinkActive="active"
+                                <li><a routerLink="/admin/connectivity/sbc-routing" routerLinkActive="active"
                                         (click)="toggleMobileMenu()">Routing</a></li>
                             </ul>
                         </div>
@@ -371,12 +370,14 @@
                         </button>
                         <div [@slideDownUp]="!activeDropdown.includes('cms-admin')" class="accordion-content">
                             <ul class="sub-menu text-gray-500">
-                                <li><a routerLink="/cms-admin/user-management" routerLinkActive="active"
+                                <li><a routerLink="/admin/cms-admin/user-management" routerLinkActive="active"
                                         (click)="toggleMobileMenu()">CMS User Management</a></li>
-                                <li><a routerLink="/cms-admin/group" routerLinkActive="active"
+                                <li><a routerLink="/admin/cms-admin/group" routerLinkActive="active"
                                         (click)="toggleMobileMenu()">CMS Group</a></li>
-                                <li><a routerLink="/cms-admin/policy" routerLinkActive="active"
+                                <li><a routerLink="/admin/cms-admin/policy" routerLinkActive="active"
                                         (click)="toggleMobileMenu()">CMS Policy/Privilege</a></li>
+                                <li><a routerLink="/admin/cms-admin/layout-customizer" routerLinkActive="active"
+                                        (click)="toggleMobileMenu()">Layout Customizer</a></li>
                             </ul>
                         </div>
                     </li>
@@ -403,7 +404,8 @@
                                 <li><a routerLink="/alarm-log/activity-log" routerLinkActive="active"
                                         (click)="toggleMobileMenu()">Activity Log</a></li>
                                 <li><a routerLink="/alarm-log/call-log" routerLinkActive="active"
-                                        (click)="toggleMobileMenu()">Call Log</a></li>
+                                        (click)="toggleMobileMenu()">Call
+                                        Log</a></li>
                                 <li><a routerLink="/alarm-log/alarm-notification" routerLinkActive="active"
                                         (click)="toggleMobileMenu()">Alarm & Notification</a></li>
                             </ul>

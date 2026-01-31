@@ -1,0 +1,150 @@
+<div>
+    <div class="panel" style="padding: 15px;">
+        <div class="mb-5 flex flex-col gap-5 md:flex-row md:items-center">
+            <h5 class="text-medium font-medium dark:text-white-light">Extensions</h5>
+            <div class="flex ltr:ml-auto rtl:mr-auto">
+                <div class="relative mr-4">
+                    <input type="text" placeholder="Search..." class="form-input-sm form-input w-auto pr-8"
+                        [(ngModel)]="search" />
+                    <div class="absolute top-1/2 right-2 -translate-y-1/2">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" class="text-white-dark">
+                            <circle cx="11.5" cy="11.5" r="9.5" stroke="currentColor" stroke-width="1.5" opacity="0.5">
+                            </circle>
+                            <path d="M18.5 18.5L22 22" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+                            </path>
+                        </svg>
+                    </div>
+                </div>
+                <button type="button" class="btn btn-warning btn-sm" (click)="openCreateModal()">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"
+                        class="ltr:mr-1 rtl:ml-1">
+                        <line x1="12" y1="5" x2="12" y2="19"></line>
+                        <line x1="5" y1="12" x2="19" y2="12"></line>
+                    </svg>
+                    New Extension
+                </button>
+            </div>
+        </div>
+
+        <div class="mb-5">
+            <div class="table-responsive">
+                <table class="table-hover">
+                    <thead>
+                        <tr>
+                            <th>Call Server</th>
+                            <th>Extension</th>
+                            <th>Name</th>
+                            <th class="text-center">Active</th>
+                            <th class="text-center">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngIf="isLoading">
+                            <td colspan="5" class="text-center">
+                                <div
+                                    class="inline-block h-8 w-8 animate-spin rounded-full border-4 border-primary border-l-transparent align-middle">
+                                </div>
+                            </td>
+                        </tr>
+                        <tr *ngIf="!isLoading && extensions.length === 0">
+                            <td colspan="5" class="text-center">No extensions found</td>
+                        </tr>
+                        <tr *ngFor="let ext of extensions">
+                            <td>
+                                <div class="whitespace-nowrap">{{ ext.call_server?.name || '-' }}</div>
+                            </td>
+                            <td>{{ ext.extension }}</td>
+                            <td>
+                                <div class="font-semibold">{{ ext.name }}</div>
+                            </td>
+                            <td class="text-center"><icon-circle-check *ngIf="ext.is_active" class="text-success" />
+                            </td>
+                            <td class="text-center">
+                                <div class="flex items-center justify-center gap-1">
+                                    <button type="button" class="btn btn-sm btn-outline-primary border-0 p-1"
+                                        (click)="copyRecord(ext)" title="Copy"><icon-copy /></button>
+                                    <button type="button" class="btn btn-sm btn-outline-warning border-0 p-1"
+                                        (click)="openEditModal(ext)" title="Edit"><icon-pencil /></button>
+                                    <button type="button" class="btn btn-sm btn-outline-danger border-0 p-1"
+                                        (click)="deleteExtension(ext.id!)" title="Delete"><icon-trash-lines /></button>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="text-sm text-gray-500 dark:text-gray-400">Showing 1 to {{ extensions.length }} of {{
+            extensions.length }} results</div>
+    </div>
+
+    <!-- Modal -->
+    <div *ngIf="showModal" class="fixed inset-0 z-[999] overflow-y-auto bg-[black]/60" (click)="closeModal()">
+        <div class="flex min-h-screen items-start justify-center px-4 py-8">
+            <div class="panel my-8 w-full max-w-2xl overflow-hidden rounded-lg border-0 p-0"
+                (click)="$event.stopPropagation()" [@toggleAnimation]>
+                <div class="flex items-center justify-between bg-[#fbfbfb] px-5 py-3 dark:bg-[#121c2c]">
+                    <h5 class="text-lg font-bold">{{ modalMode === 'create' ? 'Create Extension' : 'Edit Extension' }}
+                    </h5>
+                    <button type="button" class="text-white-dark hover:text-dark" (click)="closeModal()">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                            <path d="M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round" />
+                            <path d="M6 6L18 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round" />
+                        </svg>
+                    </button>
+                </div>
+                <div class="p-5">
+                    <h6 class="text-base font-semibold mb-4">Extension Details</h6>
+                    <form (ngSubmit)="handleSubmit()">
+                        <div class="mb-5 grid grid-cols-1 gap-5 md:grid-cols-2">
+                            <div>
+                                <label for="call_server_id">Call Server <span class="text-danger">*</span></label>
+                                <select id="call_server_id" [(ngModel)]="formData.call_server_id" name="call_server_id"
+                                    class="form-select" [disabled]="modalMode === 'view'" required>
+                                    <option [ngValue]="null">Select Call Server</option>
+                                    <option *ngFor="let cs of callServers" [ngValue]="cs.id">{{ cs.name }}</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label for="extension">Extension <span class="text-danger">*</span></label>
+                                <input id="extension" type="text" [(ngModel)]="formData.extension" name="extension"
+                                    placeholder="Enter extension (e.g., 1001)" class="form-input"
+                                    [disabled]="modalMode === 'view'" required />
+                            </div>
+                            <div>
+                                <label for="name">Name <span class="text-danger">*</span></label>
+                                <input id="name" type="text" [(ngModel)]="formData.name" name="name"
+                                    placeholder="Enter name" class="form-input" [disabled]="modalMode === 'view'"
+                                    required />
+                            </div>
+                            <div>
+                                <label for="secret">Secret</label>
+                                <input id="secret" type="password" [(ngModel)]="formData.secret" name="secret"
+                                    placeholder="Enter secret" class="form-input" [disabled]="modalMode === 'view'" />
+                            </div>
+                            <div class="md:col-span-2">
+                                <label for="description">Description</label>
+                                <textarea id="description" [(ngModel)]="formData.description" name="description"
+                                    rows="3" class="form-textarea" placeholder="Enter description (optional)"
+                                    [disabled]="modalMode === 'view'"></textarea>
+                            </div>
+                            <div class="md:col-span-2">
+                                <label class="inline-flex cursor-pointer"><input type="checkbox"
+                                        [(ngModel)]="formData.is_active" name="is_active" class="form-checkbox"
+                                        [disabled]="modalMode === 'view'" /><span class="ml-2">Active</span></label>
+                            </div>
+                        </div>
+                        <div class="mt-8 flex items-center justify-start gap-3">
+                            <button *ngIf="modalMode !== 'view'" type="submit" class="btn btn-warning">Save
+                                changes</button>
+                            <button type="button" class="btn btn-dark" (click)="closeModal()">Cancel</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

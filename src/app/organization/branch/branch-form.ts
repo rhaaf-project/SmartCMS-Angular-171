@@ -53,11 +53,46 @@ export class BranchFormComponent implements OnInit {
         this.loadCallServers();
 
         const id = this.route.snapshot.params['id'];
+        const copyId = this.route.snapshot.queryParams['copy'];
+
         if (id) {
             this.isEdit = true;
             this.branchId = +id;
             this.loadBranch(this.branchId);
+        } else if (copyId) {
+            this.loadBranchForCopy(+copyId);
         }
+    }
+
+    loadBranchForCopy(id: number) {
+        this.organizationService.getBranch(id).subscribe({
+            next: (response: any) => {
+                const data = response.data || response;
+                this.branch = {
+                    companyId: data.customer_id,
+                    headOfficeId: data.head_office_id,
+                    callServerId: data.call_server_id,
+                    name: (data.name || '') + ' - Copy',
+                    code: (data.code || '') + '-copy',
+                    active: data.is_active ?? true,
+                    country: data.country || 'Indonesia',
+                    province: data.province || '',
+                    city: data.city || '',
+                    district: data.district || '',
+                    address: data.address || '',
+                    contactName: data.contact_name || '',
+                    contactPhone: data.contact_phone || '',
+                    description: data.description || '',
+                };
+                if (this.branch.companyId) {
+                    this.loadHeadOffices(this.branch.companyId);
+                }
+            },
+            error: (err) => {
+                console.error('Failed to load branch for copy:', err);
+                Swal.fire('Error', 'Failed to load branch data', 'error');
+            }
+        });
     }
 
     loadCompanies() {

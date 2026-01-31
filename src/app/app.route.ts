@@ -71,6 +71,13 @@ export const routes: Routes = [
 
             // connectivity
             { path: 'connectivity', loadChildren: () => import('./connectivity/connectivity.routes').then((d) => d.CONNECTIVITY_ROUTES) },
+
+            // CMS Administration
+            {
+                path: 'cms-admin/layout-customizer',
+                loadComponent: () => import('./cms-admin/layout-customizer').then((d) => d.LayoutCustomizerComponent),
+                data: { title: 'Layout Customizer | SmartUCX' }
+            },
         ],
     },
 
