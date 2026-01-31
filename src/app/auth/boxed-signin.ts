@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { TranslateService } from '@ngx-translate/core';
@@ -8,14 +8,12 @@ import { IconCaretDownComponent } from '../shared/icon/icon-caret-down';
 import { MenuModule } from 'headlessui-angular';
 import { NgFor, NgClass, CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { HttpClient } from '@angular/common/http';
 import { IconMailComponent } from '../shared/icon/icon-mail';
 import { IconLockDotsComponent } from '../shared/icon/icon-lock-dots';
 import { IconInstagramComponent } from '../shared/icon/icon-instagram';
 import { IconFacebookCircleComponent } from '../shared/icon/icon-facebook-circle';
 import { IconTwitterComponent } from '../shared/icon/icon-twitter';
 import { IconGoogleComponent } from '../shared/icon/icon-google';
-import { environment } from '../../environments/environment';
 
 @Component({
     templateUrl: './boxed-signin.html',
@@ -42,8 +40,14 @@ export class BoxedSigninComponent {
     password: string = '';
     loading: boolean = false;
     errorMessage: string = '';
-    
-    private http = inject(HttpClient);
+    showPassword: boolean = false;
+
+    // Valid credentials
+    private validCredentials = [
+        { email: 'root@smartcms.local', password: 'Maja1234' },
+        { email: 'admin@smartx.local', password: 'admin123' },
+        { email: 'cmsadmin@smartx.local', password: 'Admin@123' },
+    ];
 
     constructor(
         public translate: TranslateService,
@@ -67,28 +71,30 @@ export class BoxedSigninComponent {
         this.errorMessage = '';
         this.loading = true;
 
-        const apiUrl = `${environment.apiUrl}/login`;
-        
-        this.http.post<any>(apiUrl, {
-            email: this.email,
-            password: this.password,
-        }).subscribe({
-            next: (response) => {
+        // Validate inputs
+        if (!this.email || !this.password) {
+            this.errorMessage = 'Email and password are required';
+            this.loading = false;
+            return;
+        }
+
+        // Check credentials
+        const isValid = this.validCredentials.some(
+            (cred) => cred.email === this.email && cred.password === this.password
+        );
+
+        if (isValid) {
+            localStorage.setItem('auth_token', 'demo_token_' + Date.now());
+            localStorage.setItem('userEmail', this.email);
+            localStorage.setItem('isLoggedIn', 'true');
+            setTimeout(() => {
                 this.loading = false;
-                if (response.token) {
-                    // Store token
-                    localStorage.setItem('auth_token', response.token);
-                    // Navigate to admin
-                    this.router.navigate(['/admin']);
-                } else {
-                    this.errorMessage = response.message || 'Login failed';
-                }
-            },
-            error: (error) => {
-                this.loading = false;
-                this.errorMessage = error.error?.message || 'Invalid email or password';
-            },
-        });
+                this.router.navigate(['/admin']);
+            }, 500);
+        } else {
+            this.errorMessage = 'Invalid email or password';
+            this.loading = false;
+        }
     }
 
     changeLanguage(item: any) {

@@ -69,6 +69,31 @@ $tableMap = [
 
 $table = $tableMap[$resource] ?? null;
 
+// Login endpoint
+if ($resource === 'login' && $method === 'POST') {
+    $email = $input['email'] ?? '';
+    $password = $input['password'] ?? '';
+
+    if (empty($email) || empty($password)) {
+        http_response_code(400);
+        echo json_encode(['error' => 'Email and password are required']);
+        exit;
+    }
+
+    $stmt = $pdo->prepare("SELECT * FROM users WHERE email = ?");
+    $stmt->execute([$email]);
+    $user = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    if ($user && password_verify($password, $user['password'])) {
+        unset($user['password']);
+        echo json_encode(['success' => true, 'user' => $user, 'token' => bin2hex(random_bytes(32))]);
+    } else {
+        http_response_code(401);
+        echo json_encode(['error' => 'Invalid email or password']);
+    }
+    exit;
+}
+
 // Special endpoint: topology for Connectivity Diagram
 if ($resource === 'topology') {
     $nodes = [];

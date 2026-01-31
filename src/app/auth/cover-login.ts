@@ -6,7 +6,7 @@ import { toggleAnimation } from '../shared/animations';
 import { AppService } from '../service/app.service';
 import { MenuModule } from 'headlessui-angular';
 import { IconCaretDownComponent } from '../shared/icon/icon-caret-down';
-import { NgClass, NgFor } from '@angular/common';
+import { NgClass, NgFor, NgIf } from '@angular/common';
 import { IconMailComponent } from '../shared/icon/icon-mail';
 import { IconLockDotsComponent } from '../shared/icon/icon-lock-dots';
 import { IconInstagramComponent } from '../shared/icon/icon-instagram';
@@ -22,6 +22,7 @@ import { FormsModule } from '@angular/forms';
         RouterModule,
         NgFor,
         NgClass,
+        NgIf,
         MenuModule,
         FormsModule,
         IconCaretDownComponent,
@@ -40,6 +41,7 @@ export class CoverLoginComponent {
     password: string = '';
     errorMessage: string = '';
     isLoading: boolean = false;
+    showPassword: boolean = false;
 
     // Valid credentials
     private validCredentials = [
@@ -84,7 +86,7 @@ export class CoverLoginComponent {
             // Store user info in localStorage
             localStorage.setItem('userEmail', this.email);
             localStorage.setItem('isLoggedIn', 'true');
-            
+
             setTimeout(() => {
                 this.isLoading = false;
                 this.router.navigate(['/']);
