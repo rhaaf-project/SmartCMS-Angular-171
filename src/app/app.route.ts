@@ -71,6 +71,8 @@ export const routes: Routes = [
 
             // connectivity
             { path: 'connectivity', loadChildren: () => import('./connectivity/connectivity.routes').then((d) => d.CONNECTIVITY_ROUTES) },
+            // logs
+            { path: 'logs', loadChildren: () => import('./logs/logs.routes').then((d) => d.logsRoutes) },
 
             // CMS Administration
             {

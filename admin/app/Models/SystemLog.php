@@ -6,32 +6,23 @@ use Illuminate\Database\Eloquent\Model;
 
 class SystemLog extends Model
 {
-    protected $table = 'system_logs';
-
     protected $fillable = [
-        'date',
-        'time',
-        'system',
-        'application',
+        'user_id',
         'level',
-        'alarm',
         'message',
+        'context',
+        'ip_address',
+        'user_agent',
+        'created_at',
     ];
 
-    // Sample data for display
-    public static function getSampleData(): array
+    protected $casts = [
+        'context' => 'array',
+        'created_at' => 'datetime',
+    ];
+
+    public function user()
     {
-        return [
-            [
-                'id' => 1,
-                'date' => '24/01/2025',
-                'time' => '20:12:32',
-                'system' => 'SmartUCX-1-HO',
-                'application' => 'call server',
-                'level' => 'minor',
-                'alarm' => 'extension disconnect',
-                'message' => 'unreacheable',
-            ],
-        ];
+        return $this->belongsTo(User::class);
     }
 }

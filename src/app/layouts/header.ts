@@ -76,6 +76,8 @@ import { IconMenuMoreComponent } from '../shared/icon/menu/icon-menu-more';
 export class HeaderComponent {
     store: any;
     search = false;
+    userName: string = '';
+    userEmail: string = '';
     notifications = [
         {
             id: 1,
@@ -161,6 +163,10 @@ export class HeaderComponent {
                 this.setActiveDropdown();
             }
         });
+
+        // Load user info from localStorage
+        this.userName = localStorage.getItem('userName') || 'Guest';
+        this.userEmail = localStorage.getItem('userEmail') || '';
     }
 
     setActiveDropdown() {
@@ -204,9 +210,23 @@ export class HeaderComponent {
     }
 
     logout() {
-        // Clear the auth token
-        localStorage.removeItem('auth_token');
-        // Redirect to login
-        this.router.navigate(['/login']);
+        // Log logout activity
+        const userEmail = localStorage.getItem('userEmail') || '';
+        const userName = localStorage.getItem('userName') || '';
+
+        fetch(`http://localhost:8000/api/v1/logout`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email: userEmail, name: userName })
+        }).finally(() => {
+            // Clear all user data
+            localStorage.removeItem('auth_token');
+            localStorage.removeItem('token');
+            localStorage.removeItem('userEmail');
+            localStorage.removeItem('userName');
+            localStorage.removeItem('isLoggedIn');
+            // Redirect to login
+            this.router.navigate(['/login']);
+        });
     }
 }

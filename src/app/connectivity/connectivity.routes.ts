@@ -42,6 +42,11 @@ export const CONNECTIVITY_ROUTES: Routes = [
         title: 'Trunk | SmartUCX',
     },
     {
+        path: 'intercoms',
+        loadComponent: () => import('./intercoms').then((d) => d.IntercomsComponent),
+        title: 'Intercom | SmartUCX',
+    },
+    {
         path: 'call-routing',
         loadComponent: () => import('./call-routing').then((d) => d.CallRoutingComponent),
         title: 'Call Routing | SmartUCX',

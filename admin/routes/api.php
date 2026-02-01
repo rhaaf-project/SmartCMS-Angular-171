@@ -57,6 +57,7 @@ Route::prefix('v1')->middleware('auth:sanctum')->group(function () {
     Route::apiResource('extensions', \App\Http\Controllers\Api\V1\Connectivity\ExtensionController::class);
     Route::apiResource('trunks', \App\Http\Controllers\Api\V1\Connectivity\TrunkController::class);
     Route::apiResource('inbound-routes', \App\Http\Controllers\Api\V1\Connectivity\InboundRouteController::class);
+    Route::apiResource('intercoms', \App\Http\Controllers\Api\V1\Connectivity\IntercomController::class);
 
     // Organization
     Route::apiResource('companies', \App\Http\Controllers\Api\V1\Organization\CompanyController::class);
@@ -71,5 +72,10 @@ Route::prefix('v1')->middleware('auth:sanctum')->group(function () {
     // SBC
     Route::apiResource('sbcs', \App\Http\Controllers\Api\V1\Sbc\SbcController::class);
     Route::apiResource('sbc-routes', \App\Http\Controllers\Api\V1\Sbc\SbcRouteController::class);
+    
+    // Logs
+    Route::apiResource('system-logs', \App\Http\Controllers\Api\V1\Logs\SystemLogController::class);
+    Route::apiResource('activity-logs', \App\Http\Controllers\Api\V1\Logs\ActivityLogController::class);
+    Route::apiResource('call-logs', \App\Http\Controllers\Api\V1\Logs\CallLogController::class);
 });
 

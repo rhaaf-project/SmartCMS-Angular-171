@@ -14,8 +14,12 @@ import { IconFacebookComponent } from '../shared/icon/icon-facebook';
 import { IconTwitterComponent } from '../shared/icon/icon-twitter';
 import { IconGoogleComponent } from '../shared/icon/icon-google';
 import { FormsModule } from '@angular/forms';
+import { HttpClient } from '@angular/common/http';
+import { environment } from '../../environments/environment';
 
 @Component({
+    selector: 'app-cover-login',
+    standalone: true,
     templateUrl: './cover-login.html',
     animations: [toggleAnimation],
     imports: [
@@ -43,18 +47,12 @@ export class CoverLoginComponent {
     isLoading: boolean = false;
     showPassword: boolean = false;
 
-    // Valid credentials
-    private validCredentials = [
-        { email: 'root@smartcms.local', password: 'Maja1234' },
-        { email: 'admin@smartx.local', password: 'admin123' },
-        { email: 'cmsadmin@smartx.local', password: 'Admin@123' },
-    ];
-
     constructor(
         public translate: TranslateService,
         public storeData: Store<any>,
         public router: Router,
         private appSetting: AppService,
+        private http: HttpClient,
     ) {
         this.initStore();
     }
@@ -77,24 +75,28 @@ export class CoverLoginComponent {
             return;
         }
 
-        // Check credentials
-        const isValidCredential = this.validCredentials.some(
-            (cred) => cred.email === this.email && cred.password === this.password
-        );
+        // Call login API
+        this.http.post<any>(`${environment.apiUrl}/v1/login`, {
+            email: this.email,
+            password: this.password,
+        }).subscribe({
+            next: (response) => {
+                if (response.success) {
+                    // Store user info in localStorage
+                    localStorage.setItem('userEmail', response.user.email);
+                    localStorage.setItem('userName', response.user.name);
+                    localStorage.setItem('isLoggedIn', 'true');
+                    localStorage.setItem('token', response.token);
 
-        if (isValidCredential) {
-            // Store user info in localStorage
-            localStorage.setItem('userEmail', this.email);
-            localStorage.setItem('isLoggedIn', 'true');
-
-            setTimeout(() => {
+                    this.isLoading = false;
+                    this.router.navigate(['/']);
+                }
+            },
+            error: (error) => {
+                this.errorMessage = error.error?.error || 'Invalid email or password';
                 this.isLoading = false;
-                this.router.navigate(['/']);
-            }, 500);
-        } else {
-            this.errorMessage = 'Invalid email or password';
-            this.isLoading = false;
-        }
+            },
+        });
     }
 
     changeLanguage(item: any) {

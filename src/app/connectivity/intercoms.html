@@ -1,0 +1,164 @@
+<div>
+    <div class="panel" style="padding: 15px;">
+        <div class="mb-5 flex flex-col gap-5 md:flex-row md:items-center">
+            <h5 class="text-medium font-medium dark:text-white-light">Intercom</h5>
+            <div class="flex ltr:ml-auto rtl:mr-auto">
+                <button type="button" class="btn btn-warning btn-sm" (click)="openCreateModal()">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="1.5" class="ltr:mr-1 rtl:ml-1">
+                        <line x1="12" y1="5" x2="12" y2="19"></line>
+                        <line x1="5" y1="12" x2="19" y2="12"></line>
+                    </svg>
+                    New Intercom
+                </button>
+            </div>
+        </div>
+        <div class="mb-5">
+            <div class="table-responsive">
+                <table class="table-hover">
+                    <thead>
+                        <tr>
+                            <th>Call Server</th>
+                            <th>Branch</th>
+                            <th>Name</th>
+                            <th>Extension</th>
+                            <th class="text-center">Status</th>
+                            <th>Description</th>
+                            <th class="text-center">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngIf="isLoading">
+                            <td colspan="7" class="text-center">
+                                <div
+                                    class="inline-block h-8 w-8 animate-spin rounded-full border-4 border-primary border-l-transparent">
+                                </div>
+                            </td>
+                        </tr>
+                        <tr *ngIf="!isLoading && intercoms.length === 0">
+                            <td colspan="7" class="text-center">No intercoms found</td>
+                        </tr>
+                        <tr *ngFor="let intercom of intercoms">
+                            <td>{{ intercom.call_server?.name || '-' }}</td>
+                            <td>{{ intercom.branch?.name || '-' }}</td>
+                            <td>
+                                <div class="font-semibold">{{ intercom.name }}</div>
+                            </td>
+                            <td>{{ intercom.extension }}</td>
+                            <td class="text-center">
+                                <span class="badge"
+                                    [ngClass]="intercom.is_active ? 'badge-outline-success' : 'badge-outline-danger'">
+                                    {{ intercom.is_active ? 'Active' : 'Inactive' }}
+                                </span>
+                            </td>
+                            <td>
+                                <div class="line-clamp-2 max-w-xs">{{ intercom.description || '-' }}</div>
+                            </td>
+                            <td class="text-center">
+                                <div class="flex items-center justify-center gap-1">
+                                    <button type="button" class="btn btn-sm btn-outline-primary border-0 p-1"
+                                        (click)="copyRecord(intercom)" title="Copy"><icon-copy /></button>
+                                    <button type="button" class="btn btn-sm btn-outline-warning border-0 p-1"
+                                        (click)="openEditModal(intercom)" title="Edit"><icon-pencil /></button>
+                                    <button type="button" class="btn btn-sm btn-outline-danger border-0 p-1"
+                                        (click)="deleteIntercom(intercom.id!)"
+                                        title="Delete"><icon-trash-lines /></button>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="text-sm text-gray-500">Showing 1 to {{ intercoms.length }} of {{ intercoms.length }} results</div>
+    </div>
+
+    <!-- Modal -->
+    <div *ngIf="showModal" class="fixed inset-0 z-[999] overflow-y-auto bg-[black]/60" (click)="closeModal()">
+        <div class="flex min-h-screen items-start justify-center px-4 py-8">
+            <div class="panel my-8 w-full max-w-2xl overflow-hidden rounded-lg border-0 p-0"
+                (click)="$event.stopPropagation()" [@toggleAnimation]>
+                <div class="flex items-center justify-between bg-[#fbfbfb] px-5 py-3 dark:bg-[#121c2c]">
+                    <h5 class="text-lg font-bold">
+                        {{ modalMode === 'create' ? 'Create Intercom' : modalMode === 'edit' ? 'Edit Intercom' : 'View
+                        Intercom' }}
+                    </h5>
+                    <button type="button" class="text-white-dark hover:text-dark" (click)="closeModal()">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round" />
+                            <path d="M6 6L18 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round" />
+                        </svg>
+                    </button>
+                </div>
+
+                <div class="p-5">
+                    <form (ngSubmit)="handleSubmit()">
+                        <div class="mb-5 grid grid-cols-1 gap-5 md:grid-cols-2">
+                            <div class="md:col-span-2">
+                                <label for="call_server_id">Call Server <span class="text-danger">*</span></label>
+                                <select id="call_server_id" [(ngModel)]="formData.call_server_id" name="call_server_id"
+                                    class="form-select" [disabled]="modalMode === 'view'" required>
+                                    <option [ngValue]="0" disabled>Select Call Server</option>
+                                    <option *ngFor="let cs of callServers" [ngValue]="cs.id">
+                                        {{ cs.name }}
+                                    </option>
+                                </select>
+                            </div>
+
+                            <div class="md:col-span-2">
+                                <label for="branch_id">Branch (Optional)</label>
+                                <select id="branch_id" [(ngModel)]="formData.branch_id" name="branch_id"
+                                    class="form-select" [disabled]="modalMode === 'view'">
+                                    <option [ngValue]="null">Select Branch</option>
+                                    <option *ngFor="let branch of branches" [ngValue]="branch.id">
+                                        {{ branch.name }}
+                                    </option>
+                                </select>
+                            </div>
+
+                            <div>
+                                <label for="name">Name <span class="text-danger">*</span></label>
+                                <input id="name" type="text" [(ngModel)]="formData.name" name="name"
+                                    placeholder="Enter intercom name" class="form-input"
+                                    [disabled]="modalMode === 'view'" required />
+                            </div>
+
+                            <div>
+                                <label for="extension">Extension <span class="text-danger">*</span></label>
+                                <input id="extension" type="text" [(ngModel)]="formData.extension" name="extension"
+                                    placeholder="e.g., 6001" class="form-input" [disabled]="modalMode === 'view'"
+                                    required />
+                            </div>
+
+                            <div class="md:col-span-2">
+                                <label class="inline-flex cursor-pointer">
+                                    <input type="checkbox" [(ngModel)]="formData.is_active" name="is_active"
+                                        class="form-checkbox" [disabled]="modalMode === 'view'" />
+                                    <span class="ml-2">Active</span>
+                                </label>
+                            </div>
+
+                            <div class="md:col-span-2">
+                                <label for="description">Description</label>
+                                <textarea id="description" [(ngModel)]="formData.description" name="description"
+                                    rows="4" class="form-textarea" placeholder="Enter description (optional)"
+                                    [disabled]="modalMode === 'view'"></textarea>
+                            </div>
+                        </div>
+
+                        <div class="mt-8 flex items-center justify-end gap-3">
+                            <button type="button" class="btn btn-outline-danger" (click)="closeModal()">
+                                {{ modalMode === 'view' ? 'Close' : 'Cancel' }}
+                            </button>
+                            <button *ngIf="modalMode !== 'view'" type="submit" class="btn btn-primary">
+                                {{ modalMode === 'create' ? 'Create' : 'Update' }}
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

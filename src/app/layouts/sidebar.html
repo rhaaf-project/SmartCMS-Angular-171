@@ -14,7 +14,7 @@
                 </a>
             </div>
             <ng-scrollbar class="relative !h-[calc(100vh-80px)]" appearance="compact">
-                <ul class="relative space-y-0.5 p-4 py-0 font-semibold">
+                <ul class="relative space-y-0.5 p-4 py-0 pb-20 font-semibold">
 
                     <!-- 1. Dashboard -->
                     <li class="menu nav-item">
@@ -155,6 +155,8 @@
                                         (click)="toggleMobileMenu()">Private Wire</a></li>
                                 <li><a routerLink="/admin/connectivity/trunk" routerLinkActive="active"
                                         (click)="toggleMobileMenu()">Trunk</a></li>
+                                <li><a routerLink="/admin/connectivity/intercoms" routerLinkActive="active"
+                                        (click)="toggleMobileMenu()">Intercom</a></li>
                                 <li><a routerLink="/admin/connectivity/call-routing" routerLinkActive="active"
                                         (click)="toggleMobileMenu()">Call Routing</a></li>
                             </ul>
@@ -399,14 +401,13 @@
                         </button>
                         <div [@slideDownUp]="!activeDropdown.includes('alarm-log')" class="accordion-content">
                             <ul class="sub-menu text-gray-500">
-                                <li><a routerLink="/alarm-log/system-log" routerLinkActive="active"
+                                <li><a routerLink="/admin/logs/system-logs" routerLinkActive="active"
                                         (click)="toggleMobileMenu()">System Log</a></li>
-                                <li><a routerLink="/alarm-log/activity-log" routerLinkActive="active"
+                                <li><a routerLink="/admin/logs/activity-logs" routerLinkActive="active"
                                         (click)="toggleMobileMenu()">Activity Log</a></li>
-                                <li><a routerLink="/alarm-log/call-log" routerLinkActive="active"
-                                        (click)="toggleMobileMenu()">Call
-                                        Log</a></li>
-                                <li><a routerLink="/alarm-log/alarm-notification" routerLinkActive="active"
+                                <li><a routerLink="/admin/logs/call-logs" routerLinkActive="active"
+                                        (click)="toggleMobileMenu()">Call Log</a></li>
+                                <li><a routerLink="/admin/logs/alarm-notification" routerLinkActive="active"
                                         (click)="toggleMobileMenu()">Alarm & Notification</a></li>
                             </ul>
                         </div>
