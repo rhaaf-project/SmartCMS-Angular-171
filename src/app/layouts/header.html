@@ -204,21 +204,6 @@
                                 Profile
                             </a>
                         </li>
-                        <li>
-                            <a routerLink="/apps/mailbox" *hlMenuItem="let menuItem" class="dark:hover:text-white">
-                                <icon-mail class="h-4.5 w-4.5 shrink-0 ltr:mr-2 rtl:ml-2" />
-
-                                Inbox
-                            </a>
-                        </li>
-                        <li>
-                            <a routerLink="/auth/boxed-lockscreen" *hlMenuItem="let menuItem"
-                                class="dark:hover:text-white">
-                                <icon-lock-dots class="h-4.5 w-4.5 shrink-0 ltr:mr-2 rtl:ml-2" />
-
-                                Lock Screen
-                            </a>
-                        </li>
                         <li class="border-t border-white-light dark:border-white-light/10">
                             <a (click)="logout()" *hlMenuItem="let menuItem" class="!py-3 text-danger cursor-pointer">
                                 <icon-logout class="h-4.5 w-4.5 shrink-0 rotate-90 ltr:mr-2 rtl:ml-2" />

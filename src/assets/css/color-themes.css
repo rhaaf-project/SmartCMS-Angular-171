@@ -1,0 +1,182 @@
+/* Color Theme Overrides */
+/* These classes override the primary color throughout the application */
+
+/* Orange Theme */
+body.theme-orange .btn-primary {
+    background-color: #f97316 !important;
+    border-color: #f97316 !important;
+}
+body.theme-orange .btn-primary:hover {
+    background-color: #ea580c !important;
+    border-color: #ea580c !important;
+}
+body.theme-orange .btn-outline-primary {
+    color: #f97316 !important;
+    border-color: #f97316 !important;
+}
+body.theme-orange .btn-outline-primary:hover {
+    background-color: #f97316 !important;
+    color: white !important;
+}
+body.theme-orange .text-primary {
+    color: #f97316 !important;
+}
+body.theme-orange .bg-primary {
+    background-color: #f97316 !important;
+}
+body.theme-orange .border-primary {
+    border-color: #f97316 !important;
+}
+body.theme-orange .badge-outline-primary {
+    color: #f97316 !important;
+    border-color: #f97316 !important;
+}
+body.theme-orange .form-checkbox:checked,
+body.theme-orange .form-radio:checked {
+    background-color: #f97316 !important;
+    border-color: #f97316 !important;
+}
+
+/* Red Theme */
+body.theme-red .btn-primary {
+    background-color: #ef4444 !important;
+    border-color: #ef4444 !important;
+}
+body.theme-red .btn-primary:hover {
+    background-color: #dc2626 !important;
+    border-color: #dc2626 !important;
+}
+body.theme-red .btn-outline-primary {
+    color: #ef4444 !important;
+    border-color: #ef4444 !important;
+}
+body.theme-red .btn-outline-primary:hover {
+    background-color: #ef4444 !important;
+    color: white !important;
+}
+body.theme-red .text-primary {
+    color: #ef4444 !important;
+}
+body.theme-red .bg-primary {
+    background-color: #ef4444 !important;
+}
+body.theme-red .border-primary {
+    border-color: #ef4444 !important;
+}
+body.theme-red .badge-outline-primary {
+    color: #ef4444 !important;
+    border-color: #ef4444 !important;
+}
+body.theme-red .form-checkbox:checked,
+body.theme-red .form-radio:checked {
+    background-color: #ef4444 !important;
+    border-color: #ef4444 !important;
+}
+
+/* Green Theme */
+body.theme-green .btn-primary {
+    background-color: #22c55e !important;
+    border-color: #22c55e !important;
+}
+body.theme-green .btn-primary:hover {
+    background-color: #16a34a !important;
+    border-color: #16a34a !important;
+}
+body.theme-green .btn-outline-primary {
+    color: #22c55e !important;
+    border-color: #22c55e !important;
+}
+body.theme-green .btn-outline-primary:hover {
+    background-color: #22c55e !important;
+    color: white !important;
+}
+body.theme-green .text-primary {
+    color: #22c55e !important;
+}
+body.theme-green .bg-primary {
+    background-color: #22c55e !important;
+}
+body.theme-green .border-primary {
+    border-color: #22c55e !important;
+}
+body.theme-green .badge-outline-primary {
+    color: #22c55e !important;
+    border-color: #22c55e !important;
+}
+body.theme-green .form-checkbox:checked,
+body.theme-green .form-radio:checked {
+    background-color: #22c55e !important;
+    border-color: #22c55e !important;
+}
+
+/* Purple Theme */
+body.theme-purple .btn-primary {
+    background-color: #8b5cf6 !important;
+    border-color: #8b5cf6 !important;
+}
+body.theme-purple .btn-primary:hover {
+    background-color: #7c3aed !important;
+    border-color: #7c3aed !important;
+}
+body.theme-purple .btn-outline-primary {
+    color: #8b5cf6 !important;
+    border-color: #8b5cf6 !important;
+}
+body.theme-purple .btn-outline-primary:hover {
+    background-color: #8b5cf6 !important;
+    color: white !important;
+}
+body.theme-purple .text-primary {
+    color: #8b5cf6 !important;
+}
+body.theme-purple .bg-primary {
+    background-color: #8b5cf6 !important;
+}
+body.theme-purple .border-primary {
+    border-color: #8b5cf6 !important;
+}
+body.theme-purple .badge-outline-primary {
+    color: #8b5cf6 !important;
+    border-color: #8b5cf6 !important;
+}
+body.theme-purple .form-checkbox:checked,
+body.theme-purple .form-radio:checked {
+    background-color: #8b5cf6 !important;
+    border-color: #8b5cf6 !important;
+}
+
+/* Cyan Theme */
+body.theme-cyan .btn-primary {
+    background-color: #06b6d4 !important;
+    border-color: #06b6d4 !important;
+}
+body.theme-cyan .btn-primary:hover {
+    background-color: #0891b2 !important;
+    border-color: #0891b2 !important;
+}
+body.theme-cyan .btn-outline-primary {
+    color: #06b6d4 !important;
+    border-color: #06b6d4 !important;
+}
+body.theme-cyan .btn-outline-primary:hover {
+    background-color: #06b6d4 !important;
+    color: white !important;
+}
+body.theme-cyan .text-primary {
+    color: #06b6d4 !important;
+}
+body.theme-cyan .bg-primary {
+    background-color: #06b6d4 !important;
+}
+body.theme-cyan .border-primary {
+    border-color: #06b6d4 !important;
+}
+body.theme-cyan .badge-outline-primary {
+    color: #06b6d4 !important;
+    border-color: #06b6d4 !important;
+}
+body.theme-cyan .form-checkbox:checked,
+body.theme-cyan .form-radio:checked {
+    background-color: #06b6d4 !important;
+    border-color: #06b6d4 !important;
+}

@@ -14,6 +14,8 @@ import { IconInstagramComponent } from '../shared/icon/icon-instagram';
 import { IconFacebookCircleComponent } from '../shared/icon/icon-facebook-circle';
 import { IconTwitterComponent } from '../shared/icon/icon-twitter';
 import { IconGoogleComponent } from '../shared/icon/icon-google';
+import { HttpClient } from '@angular/common/http';
+import { environment } from '../../environments/environment';
 
 @Component({
     templateUrl: './boxed-signin.html',
@@ -42,18 +44,12 @@ export class BoxedSigninComponent {
     errorMessage: string = '';
     showPassword: boolean = false;
 
-    // Valid credentials
-    private validCredentials = [
-        { email: 'root@smartcms.local', password: 'Maja1234' },
-        { email: 'admin@smartx.local', password: 'admin123' },
-        { email: 'cmsadmin@smartx.local', password: 'Admin@123' },
-    ];
-
     constructor(
         public translate: TranslateService,
         public storeData: Store<any>,
         public router: Router,
         private appSetting: AppService,
+        private http: HttpClient,
     ) {
         this.initStore();
     }
@@ -78,23 +74,28 @@ export class BoxedSigninComponent {
             return;
         }
 
-        // Check credentials
-        const isValid = this.validCredentials.some(
-            (cred) => cred.email === this.email && cred.password === this.password
-        );
+        // Call login API
+        this.http.post<any>(`${environment.apiUrl}/v1/login`, {
+            email: this.email,
+            password: this.password
+        }).subscribe({
+            next: (res) => {
+                // Store user info for header profile and activity logs
+                localStorage.setItem('auth_token', res.token);
+                localStorage.setItem('userEmail', res.user.email);
+                localStorage.setItem('userName', res.user.name);
+                localStorage.setItem('userRole', res.user.role);
+                localStorage.setItem('userId', res.user.id);
+                localStorage.setItem('isLoggedIn', 'true');
 
-        if (isValid) {
-            localStorage.setItem('auth_token', 'demo_token_' + Date.now());
-            localStorage.setItem('userEmail', this.email);
-            localStorage.setItem('isLoggedIn', 'true');
-            setTimeout(() => {
                 this.loading = false;
                 this.router.navigate(['/admin']);
-            }, 500);
-        } else {
-            this.errorMessage = 'Invalid email or password';
-            this.loading = false;
-        }
+            },
+            error: (err) => {
+                this.errorMessage = err.error?.error || 'Invalid email or password';
+                this.loading = false;
+            }
+        });
     }
 
     changeLanguage(item: any) {

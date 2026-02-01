@@ -70,6 +70,7 @@ $tableMap = [
     'activity-logs' => 'activity_logs',
     'call-logs' => 'call_logs',
     'alarm-notifications' => 'alarm_notifications',
+    'users' => 'users',
 ];
 
 $table = $tableMap[$resource] ?? null;
@@ -115,31 +116,45 @@ if ($resource === 'login' && $method === 'POST') {
         exit;
     }
 
-    // Valid credentials (hardcoded for now)
-    $validCredentials = [
-        ['email' => 'root@smartcms.local', 'password' => 'Maja1234', 'name' => 'Root Admin'],
-        ['email' => 'admin@smartx.local', 'password' => 'admin123', 'name' => 'Admin'],
-        ['email' => 'cmsadmin@smartx.local', 'password' => 'Admin@123', 'name' => 'CMS Admin'],
-    ];
+    // Query user from database
+    $stmt = $pdo->prepare("SELECT * FROM users WHERE email = ? AND is_active = 1");
+    $stmt->execute([$email]);
+    $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
-    $user = null;
-    foreach ($validCredentials as $cred) {
-        if ($cred['email'] === $email && $cred['password'] === $password) {
-            $user = $cred;
-            break;
+    // Verify password (check both hashed and plain text for backward compatibility)
+    $passwordMatch = false;
+    if ($user) {
+        // Check if password is hashed (bcrypt starts with $2y$)
+        if (strpos($user['password'], '$2y$') === 0) {
+            $passwordMatch = password_verify($password, $user['password']);
+        } else {
+            // Plain text comparison (legacy)
+            $passwordMatch = ($user['password'] === $password);
         }
     }
 
-    if ($user) {
-        // Log successful login
-        $logStmt = $pdo->prepare("INSERT INTO `activity_logs` (user_id, action, entity_type, entity_id, ip_address, user_agent, new_values) VALUES (?, ?, ?, ?, ?, ?, ?)");
-        $logStmt->execute([null, 'login', 'auth', null, $ip_address, $user_agent, json_encode(['email' => $email, 'name' => $user['name']])]);
+    if ($user && $passwordMatch) {
+        // Update last_login
+        $updateStmt = $pdo->prepare("UPDATE users SET last_login = NOW() WHERE id = ?");
+        $updateStmt->execute([$user['id']]);
 
-        echo json_encode(['success' => true, 'user' => ['email' => $user['email'], 'name' => $user['name']], 'token' => bin2hex(random_bytes(32))]);
+        // Log successful login (wrapped in try-catch to not break login if logging fails)
+        try {
+            $logStmt = $pdo->prepare("INSERT INTO `activity_logs` (user_id, action, entity_type, entity_id, ip_address, user_agent, new_values) VALUES (?, ?, ?, ?, ?, ?, ?)");
+            $logStmt->execute([null, 'login', 'auth', $user['id'], $ip_address, substr($user_agent, 0, 255), json_encode(['email' => $email, 'name' => $user['name']])]);
+        } catch (Exception $e) {
+            // Ignore logging errors
+        }
+
+        echo json_encode(['success' => true, 'user' => ['id' => $user['id'], 'email' => $user['email'], 'name' => $user['name'], 'role' => $user['role']], 'token' => bin2hex(random_bytes(32))]);
     } else {
         // Log failed login attempt
-        $logStmt = $pdo->prepare("INSERT INTO `activity_logs` (user_id, action, entity_type, entity_id, ip_address, user_agent, new_values) VALUES (?, ?, ?, ?, ?, ?, ?)");
-        $logStmt->execute([null, 'login_failed', 'auth', null, $ip_address, $user_agent, json_encode(['email' => $email])]);
+        try {
+            $logStmt = $pdo->prepare("INSERT INTO `activity_logs` (user_id, action, entity_type, entity_id, ip_address, user_agent, new_values) VALUES (?, ?, ?, ?, ?, ?, ?)");
+            $logStmt->execute([null, 'login_failed', 'auth', null, $ip_address, substr($user_agent, 0, 255), json_encode(['email' => $email])]);
+        } catch (Exception $e) {
+            // Ignore logging errors
+        }
 
         http_response_code(401);
         echo json_encode(['error' => 'Invalid email or password']);
@@ -600,6 +615,11 @@ try {
             break;
 
         case 'POST':
+            // Hash password for users table
+            if ($table === 'users' && isset($input['password']) && !empty($input['password'])) {
+                $input['password'] = password_hash($input['password'], PASSWORD_BCRYPT);
+            }
+
             $columns = array_keys($input);
             $placeholders = array_fill(0, count($columns), '?');
             $sql = "INSERT INTO `$table` (" . implode(',', $columns) . ") VALUES (" . implode(',', $placeholders) . ")";
@@ -620,6 +640,11 @@ try {
                 http_response_code(400);
                 echo json_encode(['error' => 'ID required']);
                 exit;
+            }
+
+            // Hash password for users table
+            if ($table === 'users' && isset($input['password']) && !empty($input['password'])) {
+                $input['password'] = password_hash($input['password'], PASSWORD_BCRYPT);
             }
 
             $sets = [];

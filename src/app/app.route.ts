@@ -80,6 +80,11 @@ export const routes: Routes = [
                 loadComponent: () => import('./cms-admin/layout-customizer').then((d) => d.LayoutCustomizerComponent),
                 data: { title: 'Layout Customizer | SmartUCX' }
             },
+            {
+                path: 'cms-admin/user-management',
+                loadComponent: () => import('./cms-admin/cms-users').then((d) => d.CmsUsersComponent),
+                data: { title: 'CMS User Management | SmartUCX' }
+            },
         ],
     },
 
