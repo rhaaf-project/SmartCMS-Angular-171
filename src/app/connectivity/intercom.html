@@ -4,7 +4,7 @@
             <h5 class="text-medium font-medium dark:text-white-light">Intercom</h5>
             <div class="flex ltr:ml-auto rtl:mr-auto">
                 <div class="relative mr-4">
-                    <input type="text" placeholder="Search..." class="form-input-sm form-input w-auto pr-8"
+                    <input type="text" class="form-input-sm form-input w-auto pr-8"
                         [(ngModel)]="search" />
                     <div class="absolute top-1/2 right-2 -translate-y-1/2"><svg width="16" height="16"
                             viewBox="0 0 24 24" fill="none" class="text-white-dark">
@@ -110,28 +110,28 @@
                             <div>
                                 <label for="name">Name <span class="text-danger">*</span></label>
                                 <input id="name" type="text" [(ngModel)]="formData.name" name="name"
-                                    placeholder="Enter intercom name" class="form-input" required />
+                                    class="form-input" required />
                             </div>
                             <div>
                                 <label for="extension">Extension <span class="text-danger">*</span></label>
                                 <input id="extension" type="text" [(ngModel)]="formData.extension" name="extension"
-                                    placeholder="Enter extension" class="form-input" required />
+                                    class="form-input" required />
                             </div>
                             <div>
                                 <label for="description">Description</label>
                                 <input id="description" type="text" [(ngModel)]="formData.description"
-                                    name="description" placeholder="Enter description" class="form-input" />
+                                    name="description" class="form-input" />
                             </div>
                             <div>
                                 <label for="device_list">Device List</label>
                                 <textarea id="device_list" [(ngModel)]="formData.device_list" name="device_list"
-                                    placeholder="Enter device list (comma separated)" class="form-textarea"
+                                    class="form-textarea"
                                     rows="3"></textarea>
                             </div>
                             <div>
                                 <label for="alert_info">Alert Info</label>
                                 <input id="alert_info" type="text" [(ngModel)]="formData.alert_info" name="alert_info"
-                                    placeholder="Intercom" class="form-input" />
+                                    class="form-input" />
                             </div>
                         </div>
 

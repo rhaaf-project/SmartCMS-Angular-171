@@ -4,7 +4,7 @@
             <h5 class="text-medium font-medium dark:text-white-light">VPW</h5>
             <div class="flex ltr:ml-auto rtl:mr-auto">
                 <div class="relative mr-4">
-                    <input type="text" placeholder="Search..." class="form-input-sm form-input w-auto pr-8"
+                    <input type="text" class="form-input-sm form-input w-auto pr-8"
                         [(ngModel)]="search" />
                     <div class="absolute top-1/2 right-2 -translate-y-1/2"><svg width="16" height="16"
                             viewBox="0 0 24 24" fill="none" class="text-white-dark">
@@ -103,7 +103,7 @@
                             <div>
                                 <label for="vpw_number">VPW <span class="text-danger">*</span></label>
                                 <input id="vpw_number" type="text" [(ngModel)]="formData.vpw_number" name="vpw_number"
-                                    placeholder="Enter VPW number" class="form-input" required />
+                                    class="form-input" required />
                             </div>
                             <div>
                                 <label class="inline-flex cursor-pointer mt-7"><input type="checkbox"
@@ -113,7 +113,7 @@
                             <div>
                                 <label for="destination">Channel Destination</label>
                                 <input id="destination" type="text" [(ngModel)]="formData.destination"
-                                    name="destination" placeholder="Enter channel destination" class="form-input" />
+                                    name="destination" class="form-input" />
                             </div>
                         </div>
                         <div class="mt-8 flex items-center justify-start gap-3">

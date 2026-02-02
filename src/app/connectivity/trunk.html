@@ -4,7 +4,7 @@
             <h5 class="text-medium font-medium dark:text-white-light">Trunk</h5>
             <div class="flex ltr:ml-auto rtl:mr-auto">
                 <div class="relative mr-4">
-                    <input type="text" placeholder="Search..." class="form-input-sm form-input w-auto pr-8"
+                    <input type="text" class="form-input-sm form-input w-auto pr-8"
                         [(ngModel)]="search" />
                     <div class="absolute top-1/2 right-2 -translate-y-1/2"><svg width="16" height="16"
                             viewBox="0 0 24 24" fill="none" class="text-white-dark">
@@ -108,12 +108,12 @@
                             <div>
                                 <label for="name">Name <span class="text-danger">*</span></label>
                                 <input id="name" type="text" [(ngModel)]="formData.name" name="name"
-                                    placeholder="Enter trunk name" class="form-input" required />
+                                    class="form-input" required />
                             </div>
                             <div>
                                 <label for="outcid">Outbound Caller ID</label>
                                 <input id="outcid" type="text" [(ngModel)]="formData.outcid" name="outcid"
-                                    placeholder="Enter outbound CID" class="form-input" />
+                                    class="form-input" />
                             </div>
                             <div>
                                 <label for="maxchans">Max Channels</label>
@@ -128,7 +128,7 @@
                             <div>
                                 <label for="sip_server">SIP Server <span class="text-danger">*</span></label>
                                 <input id="sip_server" type="text" [(ngModel)]="formData.sip_server" name="sip_server"
-                                    placeholder="Enter SIP server address" class="form-input" required />
+                                    class="form-input" required />
                             </div>
                             <div>
                                 <label for="sip_server_port">SIP Port</label>
@@ -145,7 +145,7 @@
                             <div>
                                 <label for="context">Context</label>
                                 <input id="context" type="text" [(ngModel)]="formData.context" name="context"
-                                    placeholder="from-pstn" class="form-input" />
+                                    class="form-input" />
                             </div>
                         </div>
 

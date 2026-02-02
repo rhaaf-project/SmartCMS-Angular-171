@@ -4,7 +4,7 @@
             <h5 class="text-medium font-medium dark:text-white-light">Extensions</h5>
             <div class="flex ltr:ml-auto rtl:mr-auto">
                 <div class="relative mr-4">
-                    <input type="text" placeholder="Search..." class="form-input-sm form-input w-auto pr-8"
+                    <input type="text" class="form-input-sm form-input w-auto pr-8"
                         [(ngModel)]="search" />
                     <div class="absolute top-1/2 right-2 -translate-y-1/2">
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" class="text-white-dark">
@@ -111,25 +111,22 @@
                             <div>
                                 <label for="extension">Extension <span class="text-danger">*</span></label>
                                 <input id="extension" type="text" [(ngModel)]="formData.extension" name="extension"
-                                    placeholder="Enter extension (e.g., 1001)" class="form-input"
-                                    [disabled]="modalMode === 'view'" required />
+                                    class="form-input" [disabled]="modalMode === 'view'" required />
                             </div>
                             <div>
                                 <label for="name">Name <span class="text-danger">*</span></label>
-                                <input id="name" type="text" [(ngModel)]="formData.name" name="name"
-                                    placeholder="Enter name" class="form-input" [disabled]="modalMode === 'view'"
-                                    required />
+                                <input id="name" type="text" [(ngModel)]="formData.name" name="name" class="form-input"
+                                    [disabled]="modalMode === 'view'" required />
                             </div>
                             <div>
                                 <label for="secret">Secret</label>
                                 <input id="secret" type="password" [(ngModel)]="formData.secret" name="secret"
-                                    placeholder="Enter secret" class="form-input" [disabled]="modalMode === 'view'" />
+                                    class="form-input" [disabled]="modalMode === 'view'" />
                             </div>
                             <div class="md:col-span-2">
                                 <label for="description">Description</label>
                                 <textarea id="description" [(ngModel)]="formData.description" name="description"
-                                    rows="3" class="form-textarea" placeholder="Enter description (optional)"
-                                    [disabled]="modalMode === 'view'"></textarea>
+                                    rows="3" class="form-textarea" [disabled]="modalMode === 'view'"></textarea>
                             </div>
                             <div class="md:col-span-2">
                                 <label class="inline-flex cursor-pointer"><input type="checkbox"

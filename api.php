@@ -40,7 +40,7 @@ try {
 
 // Parse request
 $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
-$uri = str_replace('/api/v1/', '', $uri);
+$uri = str_replace(['/api/v1/', '/api/'], '', $uri);
 $method = $_SERVER['REQUEST_METHOD'];
 $input = json_decode(file_get_contents('php://input'), true) ?? [];
 
@@ -78,6 +78,13 @@ $tableMap = [
     'call-logs' => 'call_logs',
     'alarm-notifications' => 'alarm_notifications',
     'users' => 'users',
+    'announcements' => 'announcements',
+    'recordings' => 'recordings',
+    'ivr-entries' => 'ivr_entries',
+    'black-lists' => 'black_lists',
+    'conferences' => 'conferences',
+    'custom-destinations' => 'custom_destinations',
+    'misc-destinations' => 'misc_destinations',
 ];
 
 $table = $tableMap[$resource] ?? null;
@@ -301,6 +308,23 @@ try {
                     $stmt3 = $pdo->prepare("SELECT COUNT(*) as count FROM branches WHERE customer_id = ?");
                     $stmt3->execute([$id]);
                     $data['branches_count'] = $stmt3->fetch()['count'];
+                    $stmt3 = $pdo->prepare("SELECT COUNT(*) as count FROM branches WHERE customer_id = ?");
+                    $stmt3->execute([$id]);
+                    $data['branches_count'] = $stmt3->fetch()['count'];
+                }
+
+                // Load IVR entries
+                if ($table === 'ivr') {
+                    $stmtEntries = $pdo->prepare("SELECT * FROM ivr_entries WHERE ivr_id = ? ORDER BY id ASC");
+                    $stmtEntries->execute([$id]);
+                    $data['entries'] = $stmtEntries->fetchAll(PDO::FETCH_ASSOC);
+
+                    // Load relations
+                    if ($data['announcement']) {
+                        $stmtAnn = $pdo->prepare("SELECT id, name FROM announcements WHERE id = ?");
+                        $stmtAnn->execute([$data['announcement']]);
+                        $data['announcement_data'] = $stmtAnn->fetch(PDO::FETCH_ASSOC);
+                    }
                 }
 
                 echo json_encode(['data' => $data]);
@@ -562,6 +586,10 @@ try {
 
                 $filteredInput = array_intersect_key($input, array_flip($allowedColumns));
 
+                // Prevent arrays like 'entries' from being saved to main table (they are handled separately)
+                if (isset($filteredInput['entries']))
+                    unset($filteredInput['entries']);
+
                 if ($method === 'POST') {
                     $columns = array_keys($filteredInput);
                     $placeholders = array_fill(0, count($columns), '?');
@@ -590,6 +618,23 @@ try {
                             $logStmt->execute([$id, 'update', 'users', $id, $ip_address, substr($user_agent, 0, 255), json_encode($input)]);
                         } catch (Exception $e) {
                         }
+                    }
+                }
+
+                // Handle IVR Entries Saving
+                if ($table === 'ivr' && isset($input['entries']) && is_array($input['entries'])) {
+                    // Delete existing entries
+                    $pdo->prepare("DELETE FROM ivr_entries WHERE ivr_id = ?")->execute([$dataId]);
+
+                    // Insert new entries
+                    $stmtEntry = $pdo->prepare("INSERT INTO ivr_entries (ivr_id, digits, destination, return_to_ivr) VALUES (?, ?, ?, ?)");
+                    foreach ($input['entries'] as $entry) {
+                        $stmtEntry->execute([
+                            $dataId,
+                            $entry['digits'] ?? '',
+                            $entry['destination'] ?? null,
+                            isset($entry['return_to_ivr']) && $entry['return_to_ivr'] ? 1 : 0
+                        ]);
                     }
                 }
 
@@ -625,4 +670,19 @@ try {
 } catch (PDOException $e) {
     http_response_code(500);
     echo json_encode(['error' => 'Database error: ' . $e->getMessage()]);
+}
+
+// Helper function to get simple dropdown lists
+if ($resource === 'dropdowns' && $method === 'GET') {
+    $type = $_GET['type'] ?? '';
+    if ($type === 'announcements') {
+        $stmt = $pdo->query("SELECT id, name FROM announcements ORDER BY name");
+        echo json_encode(['data' => $stmt->fetchAll(PDO::FETCH_ASSOC)]);
+        exit;
+    }
+    if ($type === 'recordings') {
+        $stmt = $pdo->query("SELECT id, name FROM recordings ORDER BY name");
+        echo json_encode(['data' => $stmt->fetchAll(PDO::FETCH_ASSOC)]);
+        exit;
+    }
 }

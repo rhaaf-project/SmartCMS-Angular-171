@@ -109,16 +109,14 @@
 
                             <div>
                                 <label for="name">Name <span class="text-danger">*</span></label>
-                                <input id="name" type="text" [(ngModel)]="formData.name" name="name"
-                                    placeholder="Enter intercom name" class="form-input"
+                                <input id="name" type="text" [(ngModel)]="formData.name" name="name" class="form-input"
                                     [disabled]="modalMode === 'view'" required />
                             </div>
 
                             <div>
                                 <label for="extension">Extension <span class="text-danger">*</span></label>
                                 <input id="extension" type="text" [(ngModel)]="formData.extension" name="extension"
-                                    placeholder="e.g., 6001" class="form-input" [disabled]="modalMode === 'view'"
-                                    required />
+                                    class="form-input" [disabled]="modalMode === 'view'" required />
                             </div>
 
                             <div class="md:col-span-2">
@@ -132,8 +130,7 @@
                             <div class="md:col-span-2">
                                 <label for="description">Description</label>
                                 <textarea id="description" [(ngModel)]="formData.description" name="description"
-                                    rows="4" class="form-textarea" placeholder="Enter description (optional)"
-                                    [disabled]="modalMode === 'view'"></textarea>
+                                    rows="4" class="form-textarea" [disabled]="modalMode === 'view'"></textarea>
                             </div>
                         </div>
 

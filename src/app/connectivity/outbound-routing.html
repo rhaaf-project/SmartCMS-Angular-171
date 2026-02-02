@@ -4,7 +4,7 @@
             <h5 class="text-medium font-medium dark:text-white-light">Outbound Routing</h5>
             <div class="flex ltr:ml-auto rtl:mr-auto">
                 <div class="relative mr-4">
-                    <input type="text" placeholder="Search..." class="form-input-sm form-input w-auto pr-8"
+                    <input type="text" class="form-input-sm form-input w-auto pr-8"
                         [(ngModel)]="search" />
                     <div class="absolute top-1/2 right-2 -translate-y-1/2"><svg width="16" height="16"
                             viewBox="0 0 24 24" fill="none" class="text-white-dark">
@@ -103,12 +103,12 @@
                             <div>
                                 <label for="name">Name <span class="text-danger">*</span></label>
                                 <input id="name" type="text" [(ngModel)]="formData.name" name="name"
-                                    placeholder="Enter route name" class="form-input" required />
+                                    class="form-input" required />
                             </div>
                             <div>
                                 <label for="dial_pattern">Dial Pattern</label>
                                 <input id="dial_pattern" type="text" [(ngModel)]="formData.dial_pattern"
-                                    name="dial_pattern" placeholder="e.g. NXXNXXXXXX" class="form-input" />
+                                    name="dial_pattern" class="form-input" />
                             </div>
                             <div>
                                 <label for="trunk_id">Trunk</label>

@@ -67,6 +67,31 @@ export const CONNECTIVITY_ROUTES: Routes = [
         title: 'SBC | SmartUCX',
     },
     {
+        path: 'feature/ivr',
+        loadComponent: () => import('./ivr-list').then((d) => d.IvrListComponent),
+        title: 'IVR | SmartUCX',
+    },
+    {
+        path: 'feature/black-list',
+        loadComponent: () => import('./black-list').then((d) => d.BlackListComponent),
+        title: 'Black List | SmartUCX',
+    },
+    {
+        path: 'feature/conference',
+        loadComponent: () => import('./conference').then((d) => d.ConferenceComponent),
+        title: 'Conference | SmartUCX',
+    },
+    {
+        path: 'feature/customs-destination',
+        loadComponent: () => import('./custom-destination').then((d) => d.CustomDestinationComponent),
+        title: 'Custom Destination | SmartUCX',
+    },
+    {
+        path: 'feature/misc-destination',
+        loadComponent: () => import('./misc-destination').then((d) => d.MiscDestinationComponent),
+        title: 'Misc Destination | SmartUCX',
+    },
+    {
         path: 'sbc-connections',
         loadComponent: () => import('./sbc-connections').then((d) => d.SBCConnectionsComponent),
         title: 'SBC Connections | SmartUCX',
