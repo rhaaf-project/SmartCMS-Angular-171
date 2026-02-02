@@ -57,6 +57,10 @@ export class AppService {
         val = localStorage.getItem('semidark');
         val = val === 'true' ? true : $themeConfig.semidark;
         this.store.dispatch({ type: 'toggleSemidark', payload: val });
+
+        val = localStorage.getItem('primaryColor'); // blue, orange, red, green, purple, cyan
+        val = val || $themeConfig.primaryColor;
+        this.store.dispatch({ type: 'togglePrimaryColor', payload: val });
     }
 
     toggleLanguage(item: any) {

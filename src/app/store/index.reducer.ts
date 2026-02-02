@@ -29,6 +29,7 @@ export const initialState = {
     ],
     isShowMainLoader: true,
     semidark: false,
+    primaryColor: 'blue',
 };
 
 export function indexReducer(state = initialState, action: any) {
@@ -105,6 +106,15 @@ export function indexReducer(state = initialState, action: any) {
         return { ...state, ...{ locale: payload } };
     } else if (type === 'toggleSidebar') {
         return { ...state, ...{ sidebar: !state.sidebar } };
+    } else if (type === 'togglePrimaryColor') {
+        payload = payload || state.primaryColor; // blue, orange, red, green, purple, cyan
+        localStorage.setItem('primaryColor', payload);
+        const body: any = document.querySelector('body');
+        body.classList.remove('theme-orange', 'theme-red', 'theme-green', 'theme-purple', 'theme-cyan');
+        if (payload && payload !== 'blue') {
+            body.classList.add('theme-' + payload);
+        }
+        return { ...state, ...{ primaryColor: payload } };
     }
 
     return state;
