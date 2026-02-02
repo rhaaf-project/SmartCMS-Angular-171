@@ -1,4 +1,4 @@
-<div class="animate__animated p-6">
+<div>
     <div class="panel" style="padding: 15px;">
         <div class="mb-5 flex flex-col gap-5 md:flex-row md:items-center">
             <h5 class="text-medium font-medium dark:text-white-light">Layout Customizer</h5>
@@ -36,7 +36,7 @@
                 <h5 class="mb-1 text-base leading-none dark:text-white">Primary Color</h5>
                 <p class="text-xs text-white-dark mb-3">Dominant theme color.</p>
                 <div class="flex flex-wrap gap-2">
-                    <button type="button" class="h-6 w-6 rounded-full bg-[#4361ee] border-2"
+                    <button type="button" class="h-6 w-6 rounded-full bg-[#0264c2] border-2"
                         [ngClass]="{'border-white dark:border-white-light': store.primaryColor === 'blue', 'border-transparent': store.primaryColor !== 'blue'}"
                         (click)="storeData.dispatch({ type: 'togglePrimaryColor', payload: 'blue'})"
                         title="Blue"></button>

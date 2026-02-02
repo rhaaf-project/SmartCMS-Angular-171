@@ -1,4 +1,4 @@
-﻿import { NgClass } from '@angular/common';
+import { NgClass } from '@angular/common';
 import { Component, Input, ViewChild, ViewContainerRef } from '@angular/core';
 @Component({
     selector: 'icon-menu-apps',

@@ -299,7 +299,7 @@ INSERT INTO call_servers (head_office_id, name, host, port, is_active) VALUES
 (1, 'SmartUCX-1-HO', '103.154.80.172', 5060, 1);
 
 -- Insert sample CMS admin user
-INSERT INTO cms_users (name, email, password, role, is_active) VALUES
+INSERT IGNORE INTO cms_users (name, email, password, role, is_active) VALUES
 ('Administrator', 'admin@smartcms.local', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'admin', 1);
 
 -- =====================================================

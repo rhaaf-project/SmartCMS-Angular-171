@@ -11,7 +11,7 @@
 }
 
 .swiper-button-next {
-    color: #4361ee;
+    color: #0264c2;
 }
 
 #slider3 .swiper-wrapper,
@@ -50,7 +50,7 @@
 }
 
 #slider3 .swiper-pagination .swiper-pagination-bullet.swiper-pagination-bullet-active {
-    background: #4361ee;
+    background: #0264c2;
 }
 
 #slider4 .swiper-pagination {
@@ -61,3 +61,4 @@
     position: relative;
     margin-top: 20px;
 }
+

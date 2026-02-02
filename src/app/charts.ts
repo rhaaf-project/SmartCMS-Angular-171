@@ -78,7 +78,7 @@ export class ChartsComponent {
                 type: 'line',
                 toolbar: false,
             },
-            colors: ['#4361ee'],
+            colors: ['#0264c2'],
             tooltip: {
                 marker: false,
                 y: {
@@ -311,7 +311,7 @@ export class ChartsComponent {
                 show: true,
                 width: 1,
             },
-            colors: ['#4361ee'],
+            colors: ['#0264c2'],
             xaxis: {
                 categories: ['Sun', 'Mon', 'Tue', 'Wed', 'Thur', 'Fri', 'Sat'],
                 axisBorder: {
@@ -362,7 +362,7 @@ export class ChartsComponent {
                     show: false,
                 },
             },
-            colors: ['#2196f3', '#00ab55', '#4361ee'],
+            colors: ['#2196f3', '#00ab55', '#0264c2'],
             stroke: {
                 width: [0, 2, 2],
                 curve: 'smooth',
@@ -449,7 +449,7 @@ export class ChartsComponent {
                     show: false,
                 },
             },
-            colors: ['#4361ee'],
+            colors: ['#0264c2'],
             xaxis: {
                 categories: ['January', 'February', 'March', 'April', 'May', 'June'],
             },
@@ -479,7 +479,7 @@ export class ChartsComponent {
                 },
             },
             labels: ['Team A', 'Team B', 'Team C', 'Team D', 'Team E'],
-            colors: ['#4361ee', '#805dca', '#00ab55', '#e7515a', '#e2a03f'],
+            colors: ['#0264c2', '#805dca', '#00ab55', '#e7515a', '#e2a03f'],
             responsive: [
                 {
                     breakpoint: 480,
@@ -514,7 +514,7 @@ export class ChartsComponent {
                 show: false,
             },
             labels: ['Team A', 'Team B', 'Team C'],
-            colors: ['#4361ee', '#805dca', '#e2a03f'],
+            colors: ['#0264c2', '#805dca', '#e2a03f'],
             responsive: [
                 {
                     breakpoint: 480,
@@ -542,7 +542,7 @@ export class ChartsComponent {
                     show: false,
                 },
             },
-            colors: ['#4361ee', '#805dca', '#00ab55', '#e7515a', '#e2a03f', '#2196f3', '#3b3f5c'],
+            colors: ['#0264c2', '#805dca', '#00ab55', '#e7515a', '#e2a03f', '#2196f3', '#3b3f5c'],
             stroke: {
                 show: false,
             },
@@ -586,7 +586,7 @@ export class ChartsComponent {
                     show: false,
                 },
             },
-            colors: ['#4361ee', '#805dca', '#e2a03f'],
+            colors: ['#0264c2', '#805dca', '#e2a03f'],
             grid: {
                 borderColor: isDark ? '#191e3a' : '#e0e6ed',
             },
@@ -643,7 +643,7 @@ export class ChartsComponent {
                     show: false,
                 },
             },
-            colors: ['#4361ee', '#00ab55'],
+            colors: ['#0264c2', '#00ab55'],
             dataLabels: {
                 enabled: false,
             },
@@ -691,3 +691,4 @@ export class ChartsComponent {
         return series;
     }
 }
+

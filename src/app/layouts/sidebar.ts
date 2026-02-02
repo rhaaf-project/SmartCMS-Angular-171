@@ -1,4 +1,4 @@
-﻿import { Component } from '@angular/core';
+import { Component } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
@@ -30,6 +30,16 @@ import { IconMenuUsersComponent } from '../shared/icon/menu/icon-menu-users';
 import { IconMenuPagesComponent } from '../shared/icon/menu/icon-menu-pages';
 import { IconMenuAuthenticationComponent } from '../shared/icon/menu/icon-menu-authentication';
 import { IconMenuDocumentationComponent } from '../shared/icon/menu/icon-menu-documentation';
+import { IconMenuBuildingComponent } from '../shared/icon/menu/icon-menu-building';
+import { IconMenuSignalComponent } from '../shared/icon/menu/icon-menu-signal';
+import { IconMenuShieldComponent } from '../shared/icon/menu/icon-menu-shield';
+import { IconMenuServerComponent } from '../shared/icon/menu/icon-menu-server';
+import { IconMenuMicrophoneComponent } from '../shared/icon/menu/icon-menu-microphone';
+import { IconMenuPhoneComponent } from '../shared/icon/menu/icon-menu-phone';
+import { IconMenuGlobeComponent } from '../shared/icon/menu/icon-menu-globe';
+import { IconMenuDownloadComponent } from '../shared/icon/menu/icon-menu-download';
+import { IconMenuDocumentComponent } from '../shared/icon/menu/icon-menu-document';
+import { IconMenuUserGroupComponent } from '../shared/icon/menu/icon-menu-user-group';
 
 @Component({
     selector: 'sidebar',
@@ -64,6 +74,16 @@ import { IconMenuDocumentationComponent } from '../shared/icon/menu/icon-menu-do
         IconMenuPagesComponent,
         IconMenuAuthenticationComponent,
         IconMenuDocumentationComponent,
+        IconMenuBuildingComponent,
+        IconMenuSignalComponent,
+        IconMenuShieldComponent,
+        IconMenuServerComponent,
+        IconMenuMicrophoneComponent,
+        IconMenuPhoneComponent,
+        IconMenuGlobeComponent,
+        IconMenuDownloadComponent,
+        IconMenuDocumentComponent,
+        IconMenuUserGroupComponent,
     ],
     animations: [slideDownUp],
 })

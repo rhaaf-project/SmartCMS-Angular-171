@@ -1,4 +1,4 @@
-﻿<div [ngClass]="{ 'dark text-white-dark': store.semidark }">
+<div [ngClass]="{ 'dark text-white-dark': store.semidark }">
     <nav
         class="sidebar fixed bottom-0 top-0 z-50 h-full min-h-screen w-[260px] shadow-[5px_0_25px_0_rgba(94,92,154,0.1)] transition-all duration-300">
         <div class="h-full bg-white dark:bg-[#0e1726]">
@@ -6,11 +6,6 @@
                 <a routerLink="/" class="main-logo flex shrink-0 items-center">
                     <img src="/assets/images/SMART_UCX_logo.jpg" alt="SMART UCX" class="flex-none"
                         style="max-width: 80%;" />
-                </a>
-                <a href="javascript:;"
-                    class="collapse-icon flex h-8 w-8 items-center rounded-full transition duration-300 hover:bg-gray-500/10 hover:text-primary dark:text-white-light dark:hover:bg-dark-light/10 rtl:rotate-180"
-                    (click)="storeData.dispatch({ type: 'toggleSidebar'})">
-                    <icon-carets-down class="m-auto rotate-90" />
                 </a>
             </div>
             <ng-scrollbar class="relative !h-[calc(100vh-80px)]" appearance="compact">
@@ -34,7 +29,7 @@
                             [ngClass]="{ active: activeDropdown.includes('organization') }"
                             (click)="toggleAccordion('organization')">
                             <div class="flex items-center">
-                                <icon-menu-contacts class="shrink-0 group-hover:!text-primary" />
+                                <icon-menu-building class="shrink-0 group-hover:!text-primary" />
                                 <span
                                     class="text-black dark:text-[#506690] dark:group-hover:text-white-dark ltr:pl-3 rtl:pr-3">Organization</span>
                             </div>
@@ -64,7 +59,7 @@
                             [ngClass]="{ active: activeDropdown.includes('connectivity') }"
                             (click)="toggleAccordion('connectivity')">
                             <div class="flex items-center">
-                                <icon-menu-components class="shrink-0 group-hover:!text-primary" />
+                                <icon-menu-signal class="shrink-0 group-hover:!text-primary" />
                                 <span
                                     class="text-black dark:text-[#506690] dark:group-hover:text-white-dark ltr:pl-3 rtl:pr-3">Connectivity</span>
                             </div>
@@ -89,36 +84,36 @@
                                     </button>
                                     <div [@slideDownUp]="!activeDropdown.includes('feature')" class="accordion-content">
                                         <ul class="sub-menu text-gray-500 !pl-4">
-                                            <li><a routerLink="/connectivity/feature/black-list"
+                                            <li><a routerLink="/admin/connectivity/feature/black-list"
                                                     routerLinkActive="active" (click)="toggleMobileMenu()">Black
                                                     List</a></li>
-                                            <li><a routerLink="/connectivity/feature/broadcast"
+                                            <li><a routerLink="/admin/connectivity/feature/broadcast"
                                                     routerLinkActive="active" (click)="toggleMobileMenu()">Broadcast</a>
                                             </li>
-                                            <li><a routerLink="/connectivity/feature/conference"
+                                            <li><a routerLink="/admin/connectivity/feature/conference"
                                                     routerLinkActive="active"
                                                     (click)="toggleMobileMenu()">Conference</a></li>
-                                            <li><a routerLink="/connectivity/feature/customs-destination"
+                                            <li><a routerLink="/admin/connectivity/feature/customs-destination"
                                                     routerLinkActive="active" (click)="toggleMobileMenu()">Customs
                                                     Destination</a></li>
-                                            <li><a routerLink="/connectivity/feature/ivr" routerLinkActive="active"
-                                                    (click)="toggleMobileMenu()">IVR</a></li>
-                                            <li><a routerLink="/connectivity/feature/misc-destination"
+                                            <li><a routerLink="/admin/connectivity/feature/ivr"
+                                                    routerLinkActive="active" (click)="toggleMobileMenu()">IVR</a></li>
+                                            <li><a routerLink="/admin/connectivity/feature/misc-destination"
                                                     routerLinkActive="active" (click)="toggleMobileMenu()">Misc
                                                     Destination</a></li>
-                                            <li><a routerLink="/connectivity/feature/music-on-hold"
+                                            <li><a routerLink="/admin/connectivity/feature/music-on-hold"
                                                     routerLinkActive="active" (click)="toggleMobileMenu()">Music on
                                                     Hold</a></li>
-                                            <li><a routerLink="/connectivity/feature/paging-intercom"
+                                            <li><a routerLink="/admin/connectivity/feature/paging-intercom"
                                                     routerLinkActive="active" (click)="toggleMobileMenu()">Paging &
                                                     Intercom</a></li>
-                                            <li><a routerLink="/connectivity/feature/recording"
+                                            <li><a routerLink="/admin/connectivity/feature/recording"
                                                     routerLinkActive="active" (click)="toggleMobileMenu()">Recording</a>
                                             </li>
-                                            <li><a routerLink="/connectivity/feature/ring-group"
+                                            <li><a routerLink="/admin/connectivity/feature/ring-group"
                                                     routerLinkActive="active" (click)="toggleMobileMenu()">Ring
                                                     Group</a></li>
-                                            <li><a routerLink="/connectivity/feature/time-conditions"
+                                            <li><a routerLink="/admin/connectivity/feature/time-conditions"
                                                     routerLinkActive="active" (click)="toggleMobileMenu()">Time
                                                     Conditions</a></li>
                                         </ul>
@@ -169,7 +164,7 @@
                         <button type="button" class="nav-link group w-full"
                             [ngClass]="{ active: activeDropdown.includes('sbc') }" (click)="toggleAccordion('sbc')">
                             <div class="flex items-center">
-                                <icon-menu-elements class="shrink-0 group-hover:!text-primary" />
+                                <icon-menu-shield class="shrink-0 group-hover:!text-primary" />
                                 <span
                                     class="text-black dark:text-[#506690] dark:group-hover:text-white-dark ltr:pl-3 rtl:pr-3">SBC</span>
                             </div>
@@ -195,7 +190,7 @@
                             [ngClass]="{ active: activeDropdown.includes('voice-gateway') }"
                             (click)="toggleAccordion('voice-gateway')">
                             <div class="flex items-center">
-                                <icon-menu-chat class="shrink-0 group-hover:!text-primary" />
+                                <icon-menu-server class="shrink-0 group-hover:!text-primary" />
                                 <span
                                     class="text-black dark:text-[#506690] dark:group-hover:text-white-dark ltr:pl-3 rtl:pr-3">Voice
                                     Gateway</span>
@@ -206,13 +201,13 @@
                         </button>
                         <div [@slideDownUp]="!activeDropdown.includes('voice-gateway')" class="accordion-content">
                             <ul class="sub-menu text-gray-500">
-                                <li><a routerLink="/voice-gateway/analog-fxo" routerLinkActive="active"
+                                <li><a routerLink="/admin/voice-gateway/analog-fxo" routerLinkActive="active"
                                         (click)="toggleMobileMenu()">Analog FXO</a></li>
-                                <li><a routerLink="/voice-gateway/analog-fxs" routerLinkActive="active"
+                                <li><a routerLink="/admin/voice-gateway/analog-fxs" routerLinkActive="active"
                                         (click)="toggleMobileMenu()">Analog FXS</a></li>
-                                <li><a routerLink="/voice-gateway/e1" routerLinkActive="active"
+                                <li><a routerLink="/admin/voice-gateway/e1" routerLinkActive="active"
                                         (click)="toggleMobileMenu()">E1</a></li>
-                                <li><a routerLink="/voice-gateway/e1-cas" routerLinkActive="active"
+                                <li><a routerLink="/admin/voice-gateway/e1-cas" routerLinkActive="active"
                                         (click)="toggleMobileMenu()">E1 CAS</a></li>
                             </ul>
                         </div>
@@ -224,7 +219,7 @@
                             [ngClass]="{ active: activeDropdown.includes('recording') }"
                             (click)="toggleAccordion('recording')">
                             <div class="flex items-center">
-                                <icon-menu-notes class="shrink-0 group-hover:!text-primary" />
+                                <icon-menu-microphone class="shrink-0 group-hover:!text-primary" />
                                 <span
                                     class="text-black dark:text-[#506690] dark:group-hover:text-white-dark ltr:pl-3 rtl:pr-3">Recording</span>
                             </div>
@@ -234,13 +229,13 @@
                         </button>
                         <div [@slideDownUp]="!activeDropdown.includes('recording')" class="accordion-content">
                             <ul class="sub-menu text-gray-500">
-                                <li><a routerLink="/recording/server" routerLinkActive="active"
+                                <li><a routerLink="/admin/recording/server" routerLinkActive="active"
                                         (click)="toggleMobileMenu()">Recording Server</a></li>
-                                <li><a routerLink="/recording/channel" routerLinkActive="active"
+                                <li><a routerLink="/admin/recording/channel" routerLinkActive="active"
                                         (click)="toggleMobileMenu()">Channel</a></li>
-                                <li><a routerLink="/recording/monitor" routerLinkActive="active"
+                                <li><a routerLink="/admin/recording/monitor" routerLinkActive="active"
                                         (click)="toggleMobileMenu()">Monitor</a></li>
-                                <li><a routerLink="/recording/search" routerLinkActive="active"
+                                <li><a routerLink="/admin/recording/search" routerLinkActive="active"
                                         (click)="toggleMobileMenu()">Search</a></li>
                             </ul>
                         </div>
@@ -252,7 +247,7 @@
                             [ngClass]="{ active: activeDropdown.includes('device') }"
                             (click)="toggleAccordion('device')">
                             <div class="flex items-center">
-                                <icon-menu-widgets class="shrink-0 group-hover:!text-primary" />
+                                <icon-menu-phone class="shrink-0 group-hover:!text-primary" />
                                 <span
                                     class="text-black dark:text-[#506690] dark:group-hover:text-white-dark ltr:pl-3 rtl:pr-3">Device</span>
                             </div>
@@ -262,11 +257,11 @@
                         </button>
                         <div [@slideDownUp]="!activeDropdown.includes('device')" class="accordion-content">
                             <ul class="sub-menu text-gray-500">
-                                <li><a routerLink="/device/turret-device" routerLinkActive="active"
+                                <li><a routerLink="/admin/device/turret-device" routerLinkActive="active"
                                         (click)="toggleMobileMenu()">Turret Device</a></li>
-                                <li><a routerLink="/device/3rd-party-device" routerLinkActive="active"
+                                <li><a routerLink="/admin/device/3rd-party-device" routerLinkActive="active"
                                         (click)="toggleMobileMenu()">3rd Party Device</a></li>
-                                <li><a routerLink="/device/web-device" routerLinkActive="active"
+                                <li><a routerLink="/admin/device/web-device" routerLinkActive="active"
                                         (click)="toggleMobileMenu()">Web Device</a></li>
                             </ul>
                         </div>
@@ -278,7 +273,7 @@
                             [ngClass]="{ active: activeDropdown.includes('turret-management') }"
                             (click)="toggleAccordion('turret-management')">
                             <div class="flex items-center">
-                                <icon-menu-tables class="shrink-0 group-hover:!text-primary" />
+                                <icon-menu-user-group class="shrink-0 group-hover:!text-primary" />
                                 <span
                                     class="text-black dark:text-[#506690] dark:group-hover:text-white-dark ltr:pl-3 rtl:pr-3">Turret
                                     Management</span>
@@ -290,15 +285,15 @@
                         </button>
                         <div [@slideDownUp]="!activeDropdown.includes('turret-management')" class="accordion-content">
                             <ul class="sub-menu text-gray-500">
-                                <li><a routerLink="/turret-management/users" routerLinkActive="active"
+                                <li><a routerLink="/admin/turret-management/users" routerLinkActive="active"
                                         (click)="toggleMobileMenu()">Turret Users</a></li>
-                                <li><a routerLink="/turret-management/template" routerLinkActive="active"
+                                <li><a routerLink="/admin/turret-management/template" routerLinkActive="active"
                                         (click)="toggleMobileMenu()">Turret Template</a></li>
-                                <li><a routerLink="/turret-management/group" routerLinkActive="active"
+                                <li><a routerLink="/admin/turret-management/group" routerLinkActive="active"
                                         (click)="toggleMobileMenu()">Turret Group</a></li>
-                                <li><a routerLink="/turret-management/policy" routerLinkActive="active"
+                                <li><a routerLink="/admin/turret-management/policy" routerLinkActive="active"
                                         (click)="toggleMobileMenu()">Policy/Privilege</a></li>
-                                <li><a routerLink="/turret-management/phone-directory" routerLinkActive="active"
+                                <li><a routerLink="/admin/turret-management/phone-directory" routerLinkActive="active"
                                         (click)="toggleMobileMenu()">Phone Directory</a></li>
                             </ul>
                         </div>
@@ -310,7 +305,7 @@
                             [ngClass]="{ active: activeDropdown.includes('network') }"
                             (click)="toggleAccordion('network')">
                             <div class="flex items-center">
-                                <icon-menu-drag-and-drop class="shrink-0 group-hover:!text-primary" />
+                                <icon-menu-globe class="shrink-0 group-hover:!text-primary" />
                                 <span
                                     class="text-black dark:text-[#506690] dark:group-hover:text-white-dark ltr:pl-3 rtl:pr-3">Network</span>
                             </div>
@@ -320,9 +315,9 @@
                         </button>
                         <div [@slideDownUp]="!activeDropdown.includes('network')" class="accordion-content">
                             <ul class="sub-menu text-gray-500">
-                                <li><a routerLink="/network/static-route" routerLinkActive="active"
+                                <li><a routerLink="/admin/network/static-route" routerLinkActive="active"
                                         (click)="toggleMobileMenu()">Static Route</a></li>
-                                <li><a routerLink="/network/firewall" routerLinkActive="active"
+                                <li><a routerLink="/admin/network/firewall" routerLinkActive="active"
                                         (click)="toggleMobileMenu()">Firewall</a></li>
                             </ul>
                         </div>
@@ -334,7 +329,7 @@
                             [ngClass]="{ active: activeDropdown.includes('backup') }"
                             (click)="toggleAccordion('backup')">
                             <div class="flex items-center">
-                                <icon-menu-calendar class="shrink-0 group-hover:!text-primary" />
+                                <icon-menu-download class="shrink-0 group-hover:!text-primary" />
                                 <span
                                     class="text-black dark:text-[#506690] dark:group-hover:text-white-dark ltr:pl-3 rtl:pr-3">Backup</span>
                             </div>
@@ -344,13 +339,13 @@
                         </button>
                         <div [@slideDownUp]="!activeDropdown.includes('backup')" class="accordion-content">
                             <ul class="sub-menu text-gray-500">
-                                <li><a routerLink="/backup/network-backup" routerLinkActive="active"
+                                <li><a routerLink="/admin/backup/network-backup" routerLinkActive="active"
                                         (click)="toggleMobileMenu()">Network Backup</a></li>
-                                <li><a routerLink="/backup/local-backup" routerLinkActive="active"
+                                <li><a routerLink="/admin/backup/local-backup" routerLinkActive="active"
                                         (click)="toggleMobileMenu()">Local Backup</a></li>
-                                <li><a routerLink="/backup/backup" routerLinkActive="active"
+                                <li><a routerLink="/admin/backup/backup" routerLinkActive="active"
                                         (click)="toggleMobileMenu()">Backup</a></li>
-                                <li><a routerLink="/backup/restore" routerLinkActive="active"
+                                <li><a routerLink="/admin/backup/restore" routerLinkActive="active"
                                         (click)="toggleMobileMenu()">Restore</a></li>
                             </ul>
                         </div>
@@ -391,7 +386,7 @@
                             [ngClass]="{ active: activeDropdown.includes('alarm-log') }"
                             (click)="toggleAccordion('alarm-log')">
                             <div class="flex items-center">
-                                <icon-menu-charts class="shrink-0 group-hover:!text-primary" />
+                                <icon-menu-document class="shrink-0 group-hover:!text-primary" />
                                 <span
                                     class="text-black dark:text-[#506690] dark:group-hover:text-white-dark ltr:pl-3 rtl:pr-3">Alarm
                                     & Log</span>

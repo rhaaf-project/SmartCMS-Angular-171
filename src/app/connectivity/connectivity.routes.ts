@@ -76,5 +76,13 @@ export const CONNECTIVITY_ROUTES: Routes = [
         loadComponent: () => import('./sbc-routing').then((d) => d.SBCRoutingComponent),
         title: 'SBC Routing | SmartUCX',
     },
+    {
+        path: 'feature',
+        loadComponent: () => import('../shared/na/na').then((d) => d.NAComponent),
+    },
+    {
+        path: 'feature/:any',
+        loadComponent: () => import('../shared/na/na').then((d) => d.NAComponent),
+    },
 ];
 

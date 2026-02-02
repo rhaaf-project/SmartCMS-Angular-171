@@ -1,4 +1,4 @@
-﻿import { Component, HostListener } from '@angular/core';
+import { Component, HostListener } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { Router, NavigationEnd, RouterModule } from '@angular/router';
 import { AppService } from '../service/app.service';

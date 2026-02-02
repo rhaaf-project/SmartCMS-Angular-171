@@ -349,7 +349,7 @@ constructor(public storeData: Store&lt;any&gt;, public fb: FormBuilder) {
                         [ngModel]="nouiSlider1"
                         [tooltips]="[true,true]"
                         (change)="slider1Update($event)"
-                        [config]="{barColor : store.theme === 'dark' ? '#1b2e4b' : '#ffffff', activeBarColor: '#4361ee', direction: store.rtlClass, connect: true}"
+                        [config]="{barColor : store.theme === 'dark' ? '#1b2e4b' : '#ffffff', activeBarColor: '#0264c2', direction: store.rtlClass, connect: true}"
                     ></nouislider>
                     <div class="my-4 grid grid-cols-1 gap-8 lg:grid-cols-2">
                         <div class="mb-3">
@@ -382,7 +382,7 @@ constructor(public storeData: Store&lt;any&gt;, public fb: FormBuilder) {
         [ngModel]=&quot;nouiSlider1&quot;
         [tooltips]=&quot;[true,true]&quot;
         (change)=&quot;slider1Update($event)&quot;
-        [config]=&quot;{barColor : store.theme === 'dark' ? '#1b2e4b' : '#ffffff', activeBarColor: '#4361ee', direction: store.rtlClass, connect: true}&quot;
+        [config]=&quot;{barColor : store.theme === 'dark' ? '#1b2e4b' : '#ffffff', activeBarColor: '#0264c2', direction: store.rtlClass, connect: true}&quot;
     &gt;&lt;/nouislider&gt;
     &lt;div class=&quot;my-4 grid grid-cols-1 gap-8 lg:grid-cols-2&quot;&gt;
         &lt;div class=&quot;mb-3&quot;&gt;
@@ -441,7 +441,7 @@ selectUpdateValue() {
                         [ngModel]="nouiSlider2"
                         [tooltips]="[true,true]"
                         (change)="slider2Update($event)"
-                        [config]="{barColor : store.theme === 'dark' ? '#1b2e4b' : '#ffffff', activeBarColor: '#4361ee', direction: store.rtlClass, connect: true}"
+                        [config]="{barColor : store.theme === 'dark' ? '#1b2e4b' : '#ffffff', activeBarColor: '#0264c2', direction: store.rtlClass, connect: true}"
                     ></nouislider>
 
                     <div class="my-5 grid grid-cols-1 gap-8 font-bold lg:grid-cols-2">
@@ -468,7 +468,7 @@ selectUpdateValue() {
         [ngModel]=&quot;nouiSlider2&quot;
         [tooltips]=&quot;[true,true]&quot;
         (change)=&quot;slider2Update($event)&quot;
-        [config]=&quot;{barColor : store.theme === 'dark' ? '#1b2e4b' : '#ffffff', activeBarColor: '#4361ee', direction: store.rtlClass, connect: true}&quot;
+        [config]=&quot;{barColor : store.theme === 'dark' ? '#1b2e4b' : '#ffffff', activeBarColor: '#0264c2', direction: store.rtlClass, connect: true}&quot;
     &gt;&lt;/nouislider&gt;
 
     &lt;div class=&quot;my-5 grid grid-cols-1 gap-8 font-bold lg:grid-cols-2&quot;&gt;
@@ -519,7 +519,7 @@ slider2Update(range: any) {
                         [ngModel]="nouiSlider3"
                         (change)="setLockSlider1($event)"
                         [tooltips]="[true]"
-                        [config]="{barColor : store.theme === 'dark' ? '#1b2e4b' : '#ffffff', activeBarColor: '#4361ee', direction: store.rtlClass, connect: true}"
+                        [config]="{barColor : store.theme === 'dark' ? '#1b2e4b' : '#ffffff', activeBarColor: '#0264c2', direction: store.rtlClass, connect: true}"
                     ></nouislider>
                     <div class="mb-10 font-bold text-primary">{{nouiSlider3.toFixed(2)}}</div>
                     <nouislider
@@ -529,7 +529,7 @@ slider2Update(range: any) {
                         (change)="setLockSlider2($event)"
                         [tooltips]="[true]"
                         [disabled]="lockedState"
-                        [config]="{barColor : store.theme === 'dark' ? '#1b2e4b' : '#ffffff', activeBarColor: '#4361ee', direction: store.rtlClass, connect: true}"
+                        [config]="{barColor : store.theme === 'dark' ? '#1b2e4b' : '#ffffff', activeBarColor: '#0264c2', direction: store.rtlClass, connect: true}"
                     ></nouislider>
                     <div class="mb-10 font-bold text-primary">{{nouiSlider4.toFixed(2)}}</div>
                     <div class="ltr:text-right rtl:text-left">
@@ -545,7 +545,7 @@ slider2Update(range: any) {
         [ngModel]=&quot;nouiSlider3&quot;
         (change)=&quot;setLockSlider1($event)&quot;
         [tooltips]=&quot;[true]&quot;
-        [config]=&quot;{barColor : store.theme === 'dark' ? '#1b2e4b' : '#ffffff', activeBarColor: '#4361ee', direction: store.rtlClass, connect: true}&quot;
+        [config]=&quot;{barColor : store.theme === 'dark' ? '#1b2e4b' : '#ffffff', activeBarColor: '#0264c2', direction: store.rtlClass, connect: true}&quot;
     &gt;&lt;/nouislider&gt;
     &lt;div class=&quot;mb-10 font-bold text-primary&quot;&gt;{{nouiSlider3.toFixed(2)}}&lt;/div&gt;
     &lt;nouislider
@@ -555,7 +555,7 @@ slider2Update(range: any) {
         (change)=&quot;setLockSlider2($event)&quot;
         [tooltips]=&quot;[true]&quot;
         [disabled]=&quot;lockedState&quot;
-        [config]=&quot;{barColor : store.theme === 'dark' ? '#1b2e4b' : '#ffffff', activeBarColor: '#4361ee', direction: store.rtlClass, connect: true}&quot;
+        [config]=&quot;{barColor : store.theme === 'dark' ? '#1b2e4b' : '#ffffff', activeBarColor: '#0264c2', direction: store.rtlClass, connect: true}&quot;
     &gt;&lt;/nouislider&gt;
     &lt;div class=&quot;mb-10 font-bold text-primary&quot;&gt;{{nouiSlider4.toFixed(2)}}&lt;/div&gt;
     &lt;div class=&quot;ltr:text-right rtl:text-left&quot;&gt;
@@ -599,3 +599,4 @@ setLockSlider2(value: Number) {
         </div>
     </div>
 </div>
+

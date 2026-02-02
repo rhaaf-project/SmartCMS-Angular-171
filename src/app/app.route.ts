@@ -5,6 +5,7 @@ import { AppLayout } from './layouts/app-layout';
 import { AuthLayout } from './layouts/auth-layout';
 
 import { NotFoundComponent } from './not-found';
+import { NAComponent } from './shared/na/na';
 import { AuthGuard } from '../auth.guard';
 
 export const routes: Routes = [
@@ -14,6 +15,7 @@ export const routes: Routes = [
         redirectTo: '/admin',
         pathMatch: 'full',
     },
+    { path: 'ping-na', component: NAComponent },
 
     // Admin protected route
     {
@@ -85,7 +87,55 @@ export const routes: Routes = [
                 loadComponent: () => import('./cms-admin/cms-users').then((d) => d.CmsUsersComponent),
                 data: { title: 'CMS User Management | SmartUCX' }
             },
+
+            // Unimplemented Modules (NA)
+            { path: 'voice-gateway', component: NAComponent },
+            { path: 'voice-gateway/:any', component: NAComponent },
+            { path: 'voice-gateway/:any/:any2', component: NAComponent },
+            { path: 'recording', component: NAComponent },
+            { path: 'recording/:any', component: NAComponent },
+            { path: 'recording/:any/:any2', component: NAComponent },
+            { path: 'device', component: NAComponent },
+            { path: 'device/:any', component: NAComponent },
+            { path: 'device/:any/:any2', component: NAComponent },
+            { path: 'turret-management', component: NAComponent },
+            { path: 'turret-management/:any', component: NAComponent },
+            { path: 'turret-management/:any/:any2', component: NAComponent },
+            { path: 'network', component: NAComponent },
+            { path: 'network/:any', component: NAComponent },
+            { path: 'network/:any/:any2', component: NAComponent },
+            { path: 'backup', component: NAComponent },
+            { path: 'backup/:any', component: NAComponent },
+            { path: 'backup/:any/:any2', component: NAComponent },
+            { path: 'connectivity/feature', component: NAComponent },
+            { path: 'connectivity/feature/:any', component: NAComponent },
+            { path: 'connectivity/feature/:any/:any2', component: NAComponent },
+            { path: 'cms-admin/group', component: NAComponent },
+            { path: 'cms-admin/policy', component: NAComponent },
         ],
+    },
+
+    // Root-level NA redirects (if /admin is missed) using AppLayout
+    {
+        path: '',
+        component: AppLayout,
+        // canActivate: [AuthGuard],
+        children: [
+            { path: 'voice-gateway', component: NAComponent },
+            { path: 'voice-gateway/:any', component: NAComponent },
+            { path: 'recording', component: NAComponent },
+            { path: 'recording/:any', component: NAComponent },
+            { path: 'device', component: NAComponent },
+            { path: 'device/:any', component: NAComponent },
+            { path: 'turret-management', component: NAComponent },
+            { path: 'turret-management/:any', component: NAComponent },
+            { path: 'network', component: NAComponent },
+            { path: 'network/:any', component: NAComponent },
+            { path: 'backup', component: NAComponent },
+            { path: 'backup/:any', component: NAComponent },
+            { path: 'connectivity/feature', component: NAComponent },
+            { path: 'connectivity/feature/:any', component: NAComponent },
+        ]
     },
 
     {

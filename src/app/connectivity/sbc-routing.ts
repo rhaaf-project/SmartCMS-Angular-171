@@ -53,6 +53,7 @@ export class SBCRoutingComponent implements OnInit {
     trunks: Trunk[] = [];
     isLoading = false;
     search = '';
+    masterName = '';
     showModal = false;
     modalMode: 'create' | 'edit' | 'view' = 'create';
 
@@ -120,17 +121,14 @@ export class SBCRoutingComponent implements OnInit {
         });
     }
 
-    onNameSync(value: string, type: 'src' | 'dest') {
-        if (!value) return;
-
-        // Remove existing prefixes if any to get base name
-        let baseName = value;
-        if (value.startsWith('S-')) baseName = value.substring(2);
-        else if (value.startsWith('D-')) baseName = value.substring(2);
-
-        // Sync both names with prefixes
-        this.formData.src_description = 'S-' + baseName;
-        this.formData.dest_description = 'D-' + baseName;
+    onNameSync(value: string) {
+        if (!value) {
+            this.formData.src_description = '';
+            this.formData.dest_description = '';
+            return;
+        }
+        this.formData.src_description = 'S-' + value;
+        this.formData.dest_description = 'D-' + value;
     }
 
     openCreateModal() { this.modalMode = 'create'; this.resetForm(); this.showModal = true; }
@@ -138,6 +136,7 @@ export class SBCRoutingComponent implements OnInit {
     copyRecord(route: SBCRoute) { this.modalMode = 'create'; this.formData = { ...route, id: undefined, src_pattern: route.src_pattern + '-new' }; this.showModal = true; }
     closeModal() { this.showModal = false; this.resetForm(); }
     resetForm() {
+        this.masterName = '';
         this.formData = {
             src_call_server_id: null, src_description: '', src_pattern: '', src_cid_filter: null, src_priority: 0, src_is_active: true, src_from_sbc_id: null, src_destination_id: null,
             dest_call_server_id: null, dest_description: '', dest_pattern: '', dest_cid_filter: null, dest_priority: 0, dest_is_active: true, dest_from_sbc_id: null, dest_destination_id: null,

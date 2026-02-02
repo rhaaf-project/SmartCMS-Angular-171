@@ -297,7 +297,7 @@ export class AnalyticsComponent {
                 curve: 'smooth',
                 width: 2,
             },
-            colors: ['#4361ee'],
+            colors: ['#0264c2'],
             grid: {
                 padding: {
                     top: 5,
@@ -450,3 +450,4 @@ export class AnalyticsComponent {
         };
     }
 }
+

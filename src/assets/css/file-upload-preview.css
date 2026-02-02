@@ -7,7 +7,7 @@
     box-sizing: border-box;
 }
 .custom-file-container label {
-    color: #4361ee;
+    color: #0264c2;
     font-size: 16px;
 }
 .custom-file-container .label-container {
@@ -85,7 +85,7 @@
     padding: 10px 16px;
     line-height: 1.25;
     background-color: rgba(27, 85, 226, 0.239216);
-    color: #4361ee;
+    color: #0264c2;
     border-left: 1px solid #e0e6ed;
     box-sizing: border-box;
 }
@@ -153,7 +153,7 @@
 }
 
 .dark .custom-file-container .input-visible .browse-button {
-    background-color: #4361ee;
+    background-color: #0264c2;
     border-color: #253b5c;
     color: #fff;
 }
@@ -184,3 +184,4 @@
     left: auto;
     right: -6px;
 }
+

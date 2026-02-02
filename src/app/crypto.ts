@@ -759,7 +759,7 @@ export class CryptoComponent {
             markers: {
                 size: 0,
             },
-            colors: ['#4361ee'],
+            colors: ['#0264c2'],
             grid: {
                 padding: {
                     top: 0,
@@ -823,3 +823,4 @@ export class CryptoComponent {
         this.isShowCryptoMenu = false;
     }
 }
+

@@ -2,6 +2,8 @@
     <div class="panel" style="padding: 15px;">
         <div class="mb-5 flex flex-col gap-5 md:flex-row md:items-center">
             <h5 class="text-medium font-medium dark:text-white-light">SBC Routing</h5>
+
+
             <div class="flex ltr:ml-auto rtl:mr-auto">
                 <div class="relative mr-4">
                     <input type="text" class="form-input-sm form-input w-auto pr-8" [(ngModel)]="search" />
@@ -95,141 +97,89 @@
                 </div>
                 <div class="p-5">
                     <form (ngSubmit)="handleSubmit()">
-                        <!-- 2 Column Grid: Source | Destination -->
-                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        <!-- TOP Section: Master Config -->
+                        <div class="panel mb-6 bg-[#f4f4f4] dark:bg-[#1b2e4b] border-0">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="text-white-dark">SBC Server (Node)</label>
+                                    <select [(ngModel)]="formData.src_call_server_id" name="src_call_server_id"
+                                        class="form-select text-white-dark"
+                                        (change)="formData.dest_call_server_id = formData.src_call_server_id">
+                                        <option [ngValue]="null">Select an option</option>
+                                        <option *ngFor="let sbc of sbcs" [ngValue]="sbc.id">{{ sbc.name }}</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="text-white-dark">Name</label>
+                                    <input type="text" [(ngModel)]="masterName" name="masterName" class="form-input"
+                                        (ngModelChange)="onNameSync($event)" />
+                                </div>
+                            </div>
+                        </div>
 
+                        <!-- BODY Section: Source vs Destination -->
+                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
                             <!-- SOURCE Column -->
                             <div>
-                                <h3 class="text-xl font-bold text-white mb-4">Source</h3>
-
-                                <!-- Route Details Box -->
-                                <div class="panel p-4 mb-4">
-                                    <h6 class="font-semibold mb-4">Route Details</h6>
-                                    <div class="grid grid-cols-2 gap-4">
-                                        <div>
-                                            <label>SBC Server</label>
-                                            <select [(ngModel)]="formData.src_call_server_id" name="src_call_server_id"
-                                                class="form-select">
-                                                <option [ngValue]="null">Select an option</option>
-                                                <option *ngFor="let sbc of sbcs" [ngValue]="sbc.id">{{ sbc.name }}
-                                                </option>
-                                            </select>
-                                        </div>
-                                        <div>
-                                            <label>Name</label>
-                                            <input type="text" [(ngModel)]="formData.src_description"
-                                                name="src_description" class="form-input"
-                                                (ngModelChange)="onNameSync($event, 'src')" />
-                                        </div>
-                                        <div>
-                                            <label>DID / Number <span class="text-danger">*</span></label>
-                                            <input type="text" [(ngModel)]="formData.src_pattern" name="src_pattern"
-                                                class="form-input" required />
-                                        </div>
-                                        <div>
-                                            <label>Caller ID Filter</label>
-                                            <input type="text" [(ngModel)]="formData.src_cid_filter"
-                                                name="src_cid_filter" class="form-input" />
-                                        </div>
-                                        <div>
-                                            <label>Priority</label>
-                                            <input type="number" [(ngModel)]="formData.src_priority" name="src_priority"
-                                                class="form-input" />
-                                        </div>
-                                        <div class="flex items-center pt-6">
-                                            <label>Active</label>
-                                            <label class="w-12 h-6 relative ml-4">
-                                                <input type="checkbox" [(ngModel)]="formData.src_is_active"
-                                                    name="src_is_active"
-                                                    class="custom_switch absolute w-full h-full opacity-0 z-10 cursor-pointer peer" />
-                                                <span
-                                                    class="bg-[#ebedf2] dark:bg-dark block h-full rounded-full before:absolute before:left-1 before:bg-white dark:before:bg-white-dark dark:peer-checked:before:bg-white before:bottom-1 before:w-4 before:h-4 before:rounded-full peer-checked:before:left-7 peer-checked:bg-warning before:transition-all before:duration-300"></span>
-                                            </label>
-                                        </div>
+                                <h3 class="text-lg font-bold text-white mb-4">Source</h3>
+                                <div class="space-y-4">
+                                    <div>
+                                        <label class="text-xs text-white-dark uppercase">Name</label>
+                                        <input type="text" [(ngModel)]="formData.src_description" name="src_description"
+                                            class="form-input bg-dark/20 cursor-not-allowed" readonly />
                                     </div>
-                                </div>
-
-                                <!-- Connection Box -->
-                                <div class="panel p-4">
-                                    <div class="grid grid-cols-1 gap-4">
-                                        <div>
-                                            <label>Connection</label>
-                                            <select [(ngModel)]="formData.src_from_sbc_id" name="src_from_sbc_id"
-                                                class="form-select">
-                                                <option [ngValue]="null">Select an option</option>
-                                                <option *ngFor="let trunk of trunks" [ngValue]="trunk.id">{{ trunk.name
-                                                    }}
-                                                </option>
-                                            </select>
-                                        </div>
+                                    <div>
+                                        <label class="text-xs text-white-dark uppercase">Connection (Inbound
+                                            Leg)</label>
+                                        <select [(ngModel)]="formData.src_from_sbc_id" name="src_from_sbc_id"
+                                            class="form-select">
+                                            <option [ngValue]="null">Select an option</option>
+                                            <option *ngFor="let trunk of trunks" [ngValue]="trunk.id">{{ trunk.name }}
+                                            </option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label class="text-xs text-white-dark uppercase">DID / Number</label>
+                                        <input type="text" [(ngModel)]="formData.src_pattern" name="src_pattern"
+                                            class="form-input" />
+                                    </div>
+                                    <div>
+                                        <label class="text-xs text-white-dark uppercase">Caller ID</label>
+                                        <input type="text" [(ngModel)]="formData.src_cid_filter" name="src_cid_filter"
+                                            class="form-input" />
                                     </div>
                                 </div>
                             </div>
 
                             <!-- DESTINATION Column -->
                             <div>
-                                <h3 class="text-xl font-bold text-white mb-4">Destination</h3>
-
-                                <!-- Route Details Box -->
-                                <div class="panel p-4 mb-4">
-                                    <h6 class="font-semibold mb-4">Route Details</h6>
-                                    <div class="grid grid-cols-2 gap-4">
-                                        <div>
-                                            <label>SBC Server</label>
-                                            <select [(ngModel)]="formData.dest_call_server_id"
-                                                name="dest_call_server_id" class="form-select">
-                                                <option [ngValue]="null">Select an option</option>
-                                                <option *ngFor="let sbc of sbcs" [ngValue]="sbc.id">{{ sbc.name }}
-                                                </option>
-                                            </select>
-                                        </div>
-                                        <div>
-                                            <label>Name</label>
-                                            <input type="text" [(ngModel)]="formData.dest_description"
-                                                name="dest_description" class="form-input"
-                                                (ngModelChange)="onNameSync($event, 'dest')" />
-                                        </div>
-                                        <div>
-                                            <label>DID / Number <span class="text-danger">*</span></label>
-                                            <input type="text" [(ngModel)]="formData.dest_pattern" name="dest_pattern"
-                                                class="form-input" required />
-                                        </div>
-                                        <div>
-                                            <label>Caller ID Filter</label>
-                                            <input type="text" [(ngModel)]="formData.dest_cid_filter"
-                                                name="dest_cid_filter" class="form-input" />
-                                        </div>
-                                        <div>
-                                            <label>Priority</label>
-                                            <input type="number" [(ngModel)]="formData.dest_priority"
-                                                name="dest_priority" class="form-input" />
-                                        </div>
-                                        <div class="flex items-center pt-6">
-                                            <label>Active</label>
-                                            <label class="w-12 h-6 relative ml-4">
-                                                <input type="checkbox" [(ngModel)]="formData.dest_is_active"
-                                                    name="dest_is_active"
-                                                    class="custom_switch absolute w-full h-full opacity-0 z-10 cursor-pointer peer" />
-                                                <span
-                                                    class="bg-[#ebedf2] dark:bg-dark block h-full rounded-full before:absolute before:left-1 before:bg-white dark:before:bg-white-dark dark:peer-checked:before:bg-white before:bottom-1 before:w-4 before:h-4 before:rounded-full peer-checked:before:left-7 peer-checked:bg-warning before:transition-all before:duration-300"></span>
-                                            </label>
-                                        </div>
+                                <h3 class="text-lg font-bold text-white mb-4">Destination</h3>
+                                <div class="space-y-4">
+                                    <div>
+                                        <label class="text-xs text-white-dark uppercase">Name</label>
+                                        <input type="text" [(ngModel)]="formData.dest_description"
+                                            name="dest_description" class="form-input bg-dark/20 cursor-not-allowed"
+                                            readonly />
                                     </div>
-                                </div>
-
-                                <!-- Connection Box -->
-                                <div class="panel p-4">
-                                    <div class="grid grid-cols-1 gap-4">
-                                        <div>
-                                            <label>Connection</label>
-                                            <select [(ngModel)]="formData.dest_from_sbc_id" name="dest_from_sbc_id"
-                                                class="form-select">
-                                                <option [ngValue]="null">Select an option</option>
-                                                <option *ngFor="let trunk of trunks" [ngValue]="trunk.id">{{ trunk.name
-                                                    }}
-                                                </option>
-                                            </select>
-                                        </div>
+                                    <div>
+                                        <label class="text-xs text-white-dark uppercase">Connection (Outbound
+                                            Leg)</label>
+                                        <select [(ngModel)]="formData.dest_from_sbc_id" name="dest_from_sbc_id"
+                                            class="form-select">
+                                            <option [ngValue]="null">Select an option</option>
+                                            <option *ngFor="let trunk of trunks" [ngValue]="trunk.id">{{ trunk.name }}
+                                            </option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label class="text-xs text-white-dark uppercase">DID / Number</label>
+                                        <input type="text" [(ngModel)]="formData.dest_pattern" name="dest_pattern"
+                                            class="form-input" />
+                                    </div>
+                                    <div>
+                                        <label class="text-xs text-white-dark uppercase">Caller ID</label>
+                                        <input type="text" [(ngModel)]="formData.dest_cid_filter" name="dest_cid_filter"
+                                            class="form-input" />
                                     </div>
                                 </div>
                             </div>
