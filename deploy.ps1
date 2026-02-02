@@ -10,8 +10,8 @@ if ($LASTEXITCODE -ne 0) { Write-Error "Build failed!"; exit 1 }
 
 # 2. Create Optimized Archive (Excluding heavy assets)
 Write-Host "`n🗜️ Creating Optimized Archive (deploy.tar.gz)..." -ForegroundColor Yellow
-# Exclude dist/assets/flags and dist/assets/images/user-profiles
-tar -czvf deploy.tar.gz -C dist . --exclude "assets/flags" --exclude "assets/images/user-profiles"
+# Exclude assets/images folder entirely (flags, user-profiles, etc. rarely change)
+tar -czvf deploy.tar.gz -C dist . --exclude "assets/images"
 
 # 3. Upload Archive and Scripts
 Write-Host "`n📤 Uploading to Server (103.154.80.171)..." -ForegroundColor Yellow
