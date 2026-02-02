@@ -35,13 +35,6 @@ export class Sip3rdPartyComponent implements OnInit {
     showModal = false;
     modalMode: 'create' | 'edit' | 'view' = 'create';
 
-    deviceTypes = [
-        { value: 'ip_phone', label: 'IP Phone' },
-        { value: 'softphone', label: 'Softphone' },
-        { value: 'gateway', label: 'Gateway' },
-        { value: 'other', label: 'Other' },
-    ];
-
     formData: Device3rdParty = { name: '', device_type: 'ip_phone', manufacturer: null, ip_address: null, is_active: true };
 
     private http = inject(HttpClient);
@@ -98,11 +91,6 @@ export class Sip3rdPartyComponent implements OnInit {
                 });
             }
         });
-    }
-
-    getDeviceTypeLabel(type: string): string {
-        const found = this.deviceTypes.find(t => t.value === type);
-        return found ? found.label : type;
     }
 
     showSuccessMessage(msg: string) { Swal.fire({ icon: 'success', title: 'Success', text: msg, timer: 2000, showConfirmButton: false }); }

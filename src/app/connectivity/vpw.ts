@@ -81,7 +81,24 @@ export class VPWComponent implements OnInit {
     createVPW() {
         const createData = { call_server_id: this.formData.call_server_id, vpw_number: this.formData.vpw_number, destination_local: this.formData.destination_local, destination: this.formData.destination, is_active: this.formData.is_active };
         this.http.post<any>(`${environment.apiUrl}/v1/vpws`, createData).subscribe({
-            next: () => { this.showSuccessMessage('VPW created successfully'); this.closeModal(); this.loadVPWs(); },
+            next: () => {
+                // Auto-create Private Wire
+                const pwData = {
+                    call_server_id: this.formData.call_server_id,
+                    name: `VPW - ${this.formData.vpw_number}`,
+                    number: this.formData.vpw_number,
+                    destination: this.formData.destination,
+                    description: 'Auto-created from VPW',
+                    is_active: this.formData.is_active
+                };
+                this.http.post(`${environment.apiUrl}/v1/private-wires`, pwData).subscribe({
+                    error: (err) => console.error('Failed to auto-create Private Wire:', err)
+                });
+
+                this.showSuccessMessage('VPW created successfully');
+                this.closeModal();
+                this.loadVPWs();
+            },
             error: (error) => { console.error('Failed to create VPW:', error); this.showErrorMessage(error.error?.error || 'Failed to create VPW'); },
         });
     }

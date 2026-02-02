@@ -100,8 +100,25 @@ export class ExtensionsComponent implements OnInit {
     copyRecord(ext: Extension) { this.modalMode = 'create'; this.formData = { ...ext, id: undefined, name: ext.name + ' - New', extension: ext.extension + '-new' }; this.showModal = true; }
     closeModal() { this.showModal = false; this.resetForm(); }
 
+    generateRandomSecret(length = 10): string {
+        const charset = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*';
+        let retVal = '';
+        for (let i = 0, n = charset.length; i < length; ++i) {
+            retVal += charset.charAt(Math.floor(Math.random() * n));
+        }
+        return retVal;
+    }
+
     resetForm() {
-        this.formData = { call_server_id: null, extension: '', name: '', secret: null, context: 'from-internal', description: null, is_active: true };
+        this.formData = {
+            call_server_id: null,
+            extension: '',
+            name: '',
+            secret: this.generateRandomSecret(),
+            context: 'from-internal',
+            description: null,
+            is_active: true
+        };
     }
 
     handleSubmit() {

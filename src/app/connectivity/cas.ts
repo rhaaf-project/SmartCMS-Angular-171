@@ -81,7 +81,24 @@ export class CASComponent implements OnInit {
     createCAS() {
         const createData = { call_server_id: this.formData.call_server_id, cas_number: this.formData.cas_number, destination_local: this.formData.destination_local, destination: this.formData.destination, is_active: this.formData.is_active };
         this.http.post<any>(`${environment.apiUrl}/v1/cas`, createData).subscribe({
-            next: () => { this.showSuccessMessage('CAS created successfully'); this.closeModal(); this.loadCAS(); },
+            next: () => {
+                // Auto-create Private Wire
+                const pwData = {
+                    call_server_id: this.formData.call_server_id,
+                    name: `CAS - ${this.formData.cas_number}`,
+                    number: this.formData.cas_number,
+                    destination: this.formData.destination,
+                    description: 'Auto-created from CAS',
+                    is_active: this.formData.is_active
+                };
+                this.http.post(`${environment.apiUrl}/v1/private-wires`, pwData).subscribe({
+                    error: (err) => console.error('Failed to auto-create Private Wire:', err)
+                });
+
+                this.showSuccessMessage('CAS created successfully');
+                this.closeModal();
+                this.loadCAS();
+            },
             error: (error) => { console.error('Failed to create CAS:', error); this.showErrorMessage(error.error?.error || 'Failed to create CAS'); },
         });
     }

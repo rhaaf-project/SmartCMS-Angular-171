@@ -30,8 +30,8 @@
                     <thead>
                         <tr>
                             <th>Device Name</th>
-                            <th>Type</th>
                             <th>Manufacturer</th>
+                            <th>IP Address</th>
                             <th>IP Address</th>
                             <th class="text-center">Active</th>
                             <th class="text-center">Actions</th>
@@ -52,8 +52,6 @@
                             <td>
                                 <div class="font-semibold">{{ device.name }}</div>
                             </td>
-                            <td><span class="badge badge-outline-primary">{{ getDeviceTypeLabel(device.device_type)
-                                    }}</span></td>
                             <td>{{ device.manufacturer || '-' }}</td>
                             <td>{{ device.ip_address || '-' }}</td>
                             <td class="text-center"><icon-circle-check *ngIf="device.is_active" class="text-success" />
@@ -97,14 +95,6 @@
                                 <label for="name">Device Name <span class="text-danger">*</span></label>
                                 <input id="name" type="text" [(ngModel)]="formData.name" name="name"
                                     placeholder="Enter device name" class="form-input" required />
-                            </div>
-                            <div>
-                                <label for="device_type">Device Type</label>
-                                <select id="device_type" [(ngModel)]="formData.device_type" name="device_type"
-                                    class="form-select">
-                                    <option *ngFor="let type of deviceTypes" [value]="type.value">{{ type.label }}
-                                    </option>
-                                </select>
                             </div>
                             <div>
                                 <label for="manufacturer">Manufacturer</label>

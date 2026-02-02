@@ -19,7 +19,6 @@
                     <thead>
                         <tr>
                             <th>Call Server</th>
-                            <th>Branch</th>
                             <th>Name</th>
                             <th>Extension</th>
                             <th class="text-center">Status</th>
@@ -29,18 +28,17 @@
                     </thead>
                     <tbody>
                         <tr *ngIf="isLoading">
-                            <td colspan="7" class="text-center">
+                            <td colspan="6" class="text-center">
                                 <div
                                     class="inline-block h-8 w-8 animate-spin rounded-full border-4 border-primary border-l-transparent">
                                 </div>
                             </td>
                         </tr>
                         <tr *ngIf="!isLoading && intercoms.length === 0">
-                            <td colspan="7" class="text-center">No intercoms found</td>
+                            <td colspan="6" class="text-center">No intercoms found</td>
                         </tr>
                         <tr *ngFor="let intercom of intercoms">
                             <td>{{ intercom.call_server?.name || '-' }}</td>
-                            <td>{{ intercom.branch?.name || '-' }}</td>
                             <td>
                                 <div class="font-semibold">{{ intercom.name }}</div>
                             </td>
@@ -107,16 +105,7 @@
                                 </select>
                             </div>
 
-                            <div class="md:col-span-2">
-                                <label for="branch_id">Branch (Optional)</label>
-                                <select id="branch_id" [(ngModel)]="formData.branch_id" name="branch_id"
-                                    class="form-select" [disabled]="modalMode === 'view'">
-                                    <option [ngValue]="null">Select Branch</option>
-                                    <option *ngFor="let branch of branches" [ngValue]="branch.id">
-                                        {{ branch.name }}
-                                    </option>
-                                </select>
-                            </div>
+
 
                             <div>
                                 <label for="name">Name <span class="text-danger">*</span></label>

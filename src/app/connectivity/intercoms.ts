@@ -38,10 +38,7 @@ interface CallServer {
     host: string;
 }
 
-interface Branch {
-    id: number;
-    name: string;
-}
+
 
 @Component({
     selector: 'app-intercoms',
@@ -62,7 +59,6 @@ export class IntercomsComponent implements OnInit {
     store: any;
     intercoms: Intercom[] = [];
     callServers: CallServer[] = [];
-    branches: Branch[] = [];
     isLoading = false;
     showModal = false;
     modalMode: 'create' | 'edit' | 'view' = 'create';
@@ -96,7 +92,6 @@ export class IntercomsComponent implements OnInit {
     ngOnInit() {
         this.loadIntercoms();
         this.loadCallServers();
-        this.loadBranches();
     }
 
     loadIntercoms() {
@@ -125,19 +120,6 @@ export class IntercomsComponent implements OnInit {
             },
             error: (error) => {
                 console.error('Failed to load call servers:', error);
-            },
-        });
-    }
-
-    loadBranches() {
-        const apiUrl = `${environment.apiUrl}/v1/branches`;
-
-        this.http.get<any>(apiUrl).subscribe({
-            next: (response) => {
-                this.branches = response.data || [];
-            },
-            error: (error) => {
-                console.error('Failed to load branches:', error);
             },
         });
     }
