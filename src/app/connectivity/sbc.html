@@ -1,11 +1,10 @@
 <div>
     <div class="panel" style="padding: 15px;">
         <div class="mb-5 flex flex-col gap-5 md:flex-row md:items-center">
-            <h5 class="text-medium font-medium dark:text-white-light">SBC Connections</h5>
+            <h5 class="text-medium font-medium dark:text-white-light">SBC Nodes (Servers)</h5>
             <div class="flex ltr:ml-auto rtl:mr-auto">
                 <div class="relative mr-4">
-                    <input type="text" placeholder="Search..." class="form-input-sm form-input w-auto pr-8"
-                        [(ngModel)]="search" />
+                    <input type="text" class="form-input-sm form-input w-auto pr-8" [(ngModel)]="search" />
                     <div class="absolute top-1/2 right-2 -translate-y-1/2"><svg width="16" height="16"
                             viewBox="0 0 24 24" fill="none" class="text-white-dark">
                             <circle cx="11.5" cy="11.5" r="9.5" stroke="currentColor" stroke-width="1.5" opacity="0.5">
@@ -20,7 +19,7 @@
                         <line x1="12" y1="5" x2="12" y2="19"></line>
                         <line x1="5" y1="12" x2="19" y2="12"></line>
                     </svg>
-                    New SBC
+                    New SBC Node
                 </button>
             </div>
         </div>
@@ -29,37 +28,35 @@
                 <table class="table-hover">
                     <thead>
                         <tr>
-                            <th>Call Server</th>
                             <th>Name</th>
-                            <th>SIP Server</th>
-                            <th>Outbound CID</th>
-                            <th>Max Ch.</th>
+                            <th>IP Address / Host</th>
+                            <th>SIP Port</th>
+                            <th>Description</th>
                             <th class="text-center">Status</th>
                             <th class="text-center">Actions</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr *ngIf="isLoading">
-                            <td colspan="7" class="text-center">
+                            <td colspan="6" class="text-center">
                                 <div
                                     class="inline-block h-8 w-8 animate-spin rounded-full border-4 border-primary border-l-transparent">
                                 </div>
                             </td>
                         </tr>
-                        <tr *ngIf="!isLoading && sbcs.length === 0">
-                            <td colspan="7" class="text-center">No SBCs found</td>
+                        <tr *ngIf="!isLoading && filteredSBCs.length === 0">
+                            <td colspan="6" class="text-center">No SBC nodes found</td>
                         </tr>
-                        <tr *ngFor="let sbc of sbcs">
-                            <td>{{ sbc.call_server?.name || '-' }}</td>
+                        <tr *ngFor="let sbc of filteredSBCs" class="group">
                             <td>
                                 <div class="font-semibold">{{ sbc.name }}</div>
                             </td>
-                            <td>{{ sbc.sip_server }}</td>
-                            <td>{{ sbc.outcid || '-' }}</td>
-                            <td>{{ sbc.maxchans }}</td>
+                            <td>{{ sbc.host }}</td>
+                            <td>{{ sbc.port }}</td>
+                            <td>{{ sbc.description || '-' }}</td>
                             <td class="text-center">
-                                <icon-circle-check *ngIf="!sbc.disabled" class="text-success" />
-                                <icon-x-circle *ngIf="sbc.disabled" class="text-danger" />
+                                <icon-circle-check *ngIf="sbc.is_active" class="text-success" />
+                                <icon-x-circle *ngIf="!sbc.is_active" class="text-danger" />
                             </td>
                             <td class="text-center">
                                 <div class="flex items-center justify-center gap-1">
@@ -76,16 +73,16 @@
                 </table>
             </div>
         </div>
-        <div class="text-sm text-gray-500">Showing 1 to {{ sbcs.length }} of {{ sbcs.length }} results</div>
     </div>
 
     <!-- Modal -->
     <div *ngIf="showModal" class="fixed inset-0 z-[999] overflow-y-auto bg-[black]/60" (click)="closeModal()">
         <div class="flex min-h-screen items-start justify-center px-4 py-8">
-            <div class="panel my-8 w-full max-w-3xl overflow-hidden rounded-lg border-0 p-0"
+            <div class="panel my-8 w-full max-w-lg overflow-hidden rounded-lg border-0 p-0"
                 (click)="$event.stopPropagation()" [@toggleAnimation]>
                 <div class="flex items-center justify-between bg-[#fbfbfb] px-5 py-3 dark:bg-[#121c2c]">
-                    <h5 class="text-lg font-bold">{{ modalMode === 'create' ? 'Create SBC' : 'Edit SBC' }}</h5>
+                    <h5 class="text-lg font-bold">{{ modalMode === 'create' ? 'Create SBC Node' : 'Edit SBC Node' }}
+                    </h5>
                     <button type="button" class="text-white-dark hover:text-dark" (click)="closeModal()"><svg width="20"
                             height="20" viewBox="0 0 24 24" fill="none">
                             <path d="M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
@@ -94,70 +91,42 @@
                 </div>
                 <div class="p-5">
                     <form (ngSubmit)="handleSubmit()">
-                        <!-- SBC Details -->
-                        <h6 class="text-base font-semibold mb-4">SBC Details</h6>
-                        <div class="mb-5 grid grid-cols-1 gap-5 md:grid-cols-2">
+                        <div class="mb-4">
+                            <label for="name">SBC Name <span class="text-danger">*</span></label>
+                            <input id="name" type="text" [(ngModel)]="formData.name" name="name" class="form-input"
+                                required />
+                        </div>
+                        <div class="grid grid-cols-2 gap-4 mb-4">
                             <div>
-                                <label for="call_server_id">Call Server <span class="text-danger">*</span></label>
-                                <select id="call_server_id" [(ngModel)]="formData.call_server_id" name="call_server_id"
-                                    class="form-select" required>
-                                    <option [ngValue]="null">Select Call Server</option>
-                                    <option *ngFor="let cs of callServers" [ngValue]="cs.id">{{ cs.name }}</option>
-                                </select>
+                                <label for="host">IP Address / Host <span class="text-danger">*</span></label>
+                                <input id="host" type="text" [(ngModel)]="formData.host" name="host" class="form-input"
+                                    required />
                             </div>
                             <div>
-                                <label for="name">Name <span class="text-danger">*</span></label>
-                                <input id="name" type="text" [(ngModel)]="formData.name" name="name"
-                                    placeholder="Enter SBC name" class="form-input" required />
-                            </div>
-                            <div>
-                                <label for="outcid">Outbound Caller ID</label>
-                                <input id="outcid" type="text" [(ngModel)]="formData.outcid" name="outcid"
-                                    placeholder="Enter outbound CID" class="form-input" />
-                            </div>
-                            <div>
-                                <label for="maxchans">Max Channels</label>
-                                <input id="maxchans" type="number" [(ngModel)]="formData.maxchans" name="maxchans"
-                                    class="form-input" min="1" max="100" />
+                                <label for="port">SIP Port</label>
+                                <input id="port" type="number" [(ngModel)]="formData.port" name="port"
+                                    class="form-input" />
                             </div>
                         </div>
-
-                        <!-- SIP Server Settings -->
-                        <h6 class="text-base font-semibold mb-4 mt-6">SIP Server Settings</h6>
-                        <div class="mb-5 grid grid-cols-1 gap-5 md:grid-cols-2">
-                            <div>
-                                <label for="sip_server">SIP Server <span class="text-danger">*</span></label>
-                                <input id="sip_server" type="text" [(ngModel)]="formData.sip_server" name="sip_server"
-                                    placeholder="Enter SIP server address" class="form-input" required />
-                            </div>
-                            <div>
-                                <label for="sip_server_port">SIP Port</label>
-                                <input id="sip_server_port" type="number" [(ngModel)]="formData.sip_server_port"
-                                    name="sip_server_port" class="form-input" />
-                            </div>
-                            <div>
-                                <label for="transport">Transport</label>
-                                <select id="transport" [(ngModel)]="formData.transport" name="transport"
-                                    class="form-select">
-                                    <option *ngFor="let t of transportOptions" [value]="t.value">{{ t.label }}</option>
-                                </select>
-                            </div>
-                            <div>
-                                <label for="context">Context</label>
-                                <input id="context" type="text" [(ngModel)]="formData.context" name="context"
-                                    placeholder="from-pstn" class="form-input" />
-                            </div>
+                        <div class="mb-4">
+                            <label for="description">Description</label>
+                            <textarea id="description" [(ngModel)]="formData.description" name="description"
+                                class="form-textarea" rows="3"></textarea>
+                        </div>
+                        <div class="flex items-center mb-4">
+                            <label class="w-12 h-6 relative mb-0">
+                                <input type="checkbox" [(ngModel)]="formData.is_active" name="is_active"
+                                    class="custom_switch absolute w-full h-full opacity-0 z-10 cursor-pointer peer" />
+                                <span
+                                    class="bg-[#ebedf2] dark:bg-dark block h-full rounded-full before:absolute before:left-1 before:bg-white dark:before:bg-white-dark dark:peer-checked:before:bg-white before:bottom-1 before:w-4 before:h-4 before:rounded-full peer-checked:before:left-7 peer-checked:bg-warning before:transition-all before:duration-300"></span>
+                            </label>
+                            <span class="ml-3">Active Status</span>
                         </div>
 
-                        <div class="mb-5">
-                            <label class="inline-flex cursor-pointer"><input type="checkbox"
-                                    [(ngModel)]="formData.disabled" name="disabled" class="form-checkbox" /><span
-                                    class="ml-2">Disabled</span></label>
-                        </div>
-
-                        <div class="mt-8 flex items-center justify-start gap-3">
-                            <button type="submit" class="btn btn-warning">Save changes</button>
-                            <button type="button" class="btn btn-dark" (click)="closeModal()">Cancel</button>
+                        <div class="mt-8 flex items-center justify-end gap-3">
+                            <button type="button" class="btn btn-outline-dark" (click)="closeModal()">Cancel</button>
+                            <button type="submit" class="btn btn-warning">{{ modalMode === 'create' ? 'Create' : 'Save
+                                Changes' }}</button>
                         </div>
                     </form>
                 </div>

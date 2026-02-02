@@ -4,8 +4,7 @@
             <h5 class="text-medium font-medium dark:text-white-light">SBC Routing</h5>
             <div class="flex ltr:ml-auto rtl:mr-auto">
                 <div class="relative mr-4">
-                    <input type="text" placeholder="Search..." class="form-input-sm form-input w-auto pr-8"
-                        [(ngModel)]="search" />
+                    <input type="text" class="form-input-sm form-input w-auto pr-8" [(ngModel)]="search" />
                     <div class="absolute top-1/2 right-2 -translate-y-1/2"><svg width="16" height="16"
                             viewBox="0 0 24 24" fill="none" class="text-white-dark">
                             <circle cx="11.5" cy="11.5" r="9.5" stroke="currentColor" stroke-width="1.5" opacity="0.5">
@@ -29,10 +28,10 @@
                 <table class="table-hover">
                     <thead>
                         <tr>
-                            <th>Source SBC</th>
-                            <th>Source Pattern</th>
-                            <th>Dest SBC</th>
-                            <th>Dest Pattern</th>
+                            <th>Source</th>
+                            <th>Pattern (S)</th>
+                            <th>Destination</th>
+                            <th>Pattern (D)</th>
                             <th>Priority</th>
                             <th class="text-center">Actions</th>
                         </tr>
@@ -45,15 +44,21 @@
                                 </div>
                             </td>
                         </tr>
-                        <tr *ngIf="!isLoading && routes.length === 0">
+                        <tr *ngIf="!isLoading && filteredRoutes.length === 0">
                             <td colspan="6" class="text-center">No routes found</td>
                         </tr>
-                        <tr *ngFor="let route of routes">
-                            <td>{{ getSbcName(route.src_from_sbc_id) }}</td>
+                        <tr *ngFor="let route of filteredRoutes" class="group">
                             <td>
-                                <div class="font-semibold">{{ route.src_pattern }}</div>
+                                <div class="font-semibold text-primary">{{ route.src_description }}</div>
+                                <div class="text-xs text-white-dark">{{ getSbcName(route.src_call_server_id) }} / {{
+                                    getTrunkName(route.src_from_sbc_id) }}</div>
                             </td>
-                            <td>{{ getSbcName(route.dest_from_sbc_id) }}</td>
+                            <td>{{ route.src_pattern }}</td>
+                            <td>
+                                <div class="font-semibold text-success">{{ route.dest_description }}</div>
+                                <div class="text-xs text-white-dark">{{ getSbcName(route.dest_call_server_id) }} / {{
+                                    getTrunkName(route.dest_from_sbc_id) }}</div>
+                            </td>
                             <td>{{ route.dest_pattern }}</td>
                             <td>{{ route.src_priority }}</td>
                             <td class="text-center">
@@ -71,7 +76,7 @@
                 </table>
             </div>
         </div>
-        <div class="text-sm text-gray-500">Showing 1 to {{ routes.length }} of {{ routes.length }} results</div>
+        <div class="text-sm text-gray-500">Showing 1 to {{ filteredRoutes.length }} of {{ routes.length }} results</div>
     </div>
 
     <!-- Modal - 2 Column Layout matching Filament -->
@@ -102,18 +107,19 @@
                                     <h6 class="font-semibold mb-4">Route Details</h6>
                                     <div class="grid grid-cols-2 gap-4">
                                         <div>
-                                            <label>Call Server</label>
+                                            <label>SBC Server</label>
                                             <select [(ngModel)]="formData.src_call_server_id" name="src_call_server_id"
                                                 class="form-select">
                                                 <option [ngValue]="null">Select an option</option>
-                                                <option *ngFor="let cs of callServers" [ngValue]="cs.id">{{ cs.name }}
+                                                <option *ngFor="let sbc of sbcs" [ngValue]="sbc.id">{{ sbc.name }}
                                                 </option>
                                             </select>
                                         </div>
                                         <div>
-                                            <label>Description</label>
+                                            <label>Name</label>
                                             <input type="text" [(ngModel)]="formData.src_description"
-                                                name="src_description" class="form-input" />
+                                                name="src_description" class="form-input"
+                                                (ngModelChange)="onNameSync($event, 'src')" />
                                         </div>
                                         <div>
                                             <label>DID / Number <span class="text-danger">*</span></label>
@@ -143,25 +149,17 @@
                                     </div>
                                 </div>
 
-                                <!-- From SBC / Destination Box -->
+                                <!-- Connection Box -->
                                 <div class="panel p-4">
-                                    <div class="grid grid-cols-2 gap-4">
+                                    <div class="grid grid-cols-1 gap-4">
                                         <div>
-                                            <label>From SBC</label>
+                                            <label>Connection</label>
                                             <select [(ngModel)]="formData.src_from_sbc_id" name="src_from_sbc_id"
                                                 class="form-select">
                                                 <option [ngValue]="null">Select an option</option>
-                                                <option *ngFor="let sbc of sbcs" [ngValue]="sbc.id">{{ sbc.name }}
-                                                </option>
-                                            </select>
-                                        </div>
-                                        <div>
-                                            <label>Destination</label>
-                                            <select [(ngModel)]="formData.src_destination_id" name="src_destination_id"
-                                                class="form-select">
-                                                <option [ngValue]="null">Select an option</option>
                                                 <option *ngFor="let trunk of trunks" [ngValue]="trunk.id">{{ trunk.name
-                                                    }}</option>
+                                                    }}
+                                                </option>
                                             </select>
                                         </div>
                                     </div>
@@ -177,18 +175,19 @@
                                     <h6 class="font-semibold mb-4">Route Details</h6>
                                     <div class="grid grid-cols-2 gap-4">
                                         <div>
-                                            <label>Call Server</label>
+                                            <label>SBC Server</label>
                                             <select [(ngModel)]="formData.dest_call_server_id"
                                                 name="dest_call_server_id" class="form-select">
                                                 <option [ngValue]="null">Select an option</option>
-                                                <option *ngFor="let cs of callServers" [ngValue]="cs.id">{{ cs.name }}
+                                                <option *ngFor="let sbc of sbcs" [ngValue]="sbc.id">{{ sbc.name }}
                                                 </option>
                                             </select>
                                         </div>
                                         <div>
-                                            <label>Description</label>
+                                            <label>Name</label>
                                             <input type="text" [(ngModel)]="formData.dest_description"
-                                                name="dest_description" class="form-input" />
+                                                name="dest_description" class="form-input"
+                                                (ngModelChange)="onNameSync($event, 'dest')" />
                                         </div>
                                         <div>
                                             <label>DID / Number <span class="text-danger">*</span></label>
@@ -218,25 +217,17 @@
                                     </div>
                                 </div>
 
-                                <!-- From SBC / Destination Box -->
+                                <!-- Connection Box -->
                                 <div class="panel p-4">
-                                    <div class="grid grid-cols-2 gap-4">
+                                    <div class="grid grid-cols-1 gap-4">
                                         <div>
-                                            <label>From SBC</label>
+                                            <label>Connection</label>
                                             <select [(ngModel)]="formData.dest_from_sbc_id" name="dest_from_sbc_id"
                                                 class="form-select">
                                                 <option [ngValue]="null">Select an option</option>
-                                                <option *ngFor="let sbc of sbcs" [ngValue]="sbc.id">{{ sbc.name }}
-                                                </option>
-                                            </select>
-                                        </div>
-                                        <div>
-                                            <label>Destination</label>
-                                            <select [(ngModel)]="formData.dest_destination_id"
-                                                name="dest_destination_id" class="form-select">
-                                                <option [ngValue]="null">Select an option</option>
                                                 <option *ngFor="let trunk of trunks" [ngValue]="trunk.id">{{ trunk.name
-                                                    }}</option>
+                                                    }}
+                                                </option>
                                             </select>
                                         </div>
                                     </div>

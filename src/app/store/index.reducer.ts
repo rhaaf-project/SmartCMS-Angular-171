@@ -110,7 +110,7 @@ export function indexReducer(state = initialState, action: any) {
         payload = payload || state.primaryColor; // blue, orange, red, green, purple, cyan
         localStorage.setItem('primaryColor', payload);
         const body: any = document.querySelector('body');
-        body.classList.remove('theme-orange', 'theme-red', 'theme-green', 'theme-purple', 'theme-cyan');
+        body.classList.remove('theme-orange', 'theme-yellow', 'theme-red', 'theme-green', 'theme-purple', 'theme-cyan');
         if (payload && payload !== 'blue') {
             body.classList.add('theme-' + payload);
         }

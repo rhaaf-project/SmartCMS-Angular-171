@@ -32,6 +32,10 @@ export class ThemeCustomizerComponent {
             });
     }
 
+    setPrimaryColor(color: any) {
+        this.storeData.dispatch({ type: 'togglePrimaryColor', payload: color });
+    }
+
     reloadRoute() {
         window.location.reload();
         this.showCustomizer = true;

@@ -96,6 +96,7 @@ CREATE TABLE IF NOT EXISTS sub_branches (
 CREATE TABLE IF NOT EXISTS call_servers (
     id INT AUTO_INCREMENT PRIMARY KEY,
     head_office_id INT,
+    type VARCHAR(20) DEFAULT 'pbx',
     name VARCHAR(255) NOT NULL,
     host VARCHAR(255) NOT NULL,
     port INT DEFAULT 5060,
@@ -300,3 +301,72 @@ INSERT INTO call_servers (head_office_id, name, host, port, is_active) VALUES
 -- Insert sample CMS admin user
 INSERT INTO cms_users (name, email, password, role, is_active) VALUES
 ('Administrator', 'admin@smartcms.local', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'admin', 1);
+
+-- =====================================================
+-- 7. SBC MODULE (DYNAMIC)
+-- =====================================================
+
+-- SBC Connections
+CREATE TABLE IF NOT EXISTS sbcs (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    call_server_id INT,
+    name VARCHAR(255) NOT NULL,
+    sip_server VARCHAR(255),
+    sip_server_port INT DEFAULT 5060,
+    outcid VARCHAR(255),
+    maxchans INT DEFAULT 2,
+    transport VARCHAR(20) DEFAULT 'udp',
+    context VARCHAR(100) DEFAULT 'from-pstn',
+    codecs VARCHAR(255) DEFAULT 'ulaw,alaw',
+    dtmfmode VARCHAR(20) DEFAULT 'auto',
+    registration VARCHAR(20) DEFAULT 'none',
+    auth_username VARCHAR(255),
+    secret VARCHAR(255),
+    qualify TINYINT(1) DEFAULT 1,
+    qualify_frequency INT DEFAULT 60,
+    disabled TINYINT(1) DEFAULT 0,
+    description TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (call_server_id) REFERENCES call_servers(id) ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- SBC Routes
+CREATE TABLE IF NOT EXISTS sbc_routes (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    src_call_server_id INT,
+    src_description VARCHAR(255),
+    src_pattern VARCHAR(255),
+    src_cid_filter VARCHAR(255),
+    src_priority INT DEFAULT 0,
+    src_is_active TINYINT(1) DEFAULT 1,
+    src_from_sbc_id INT,
+    src_destination_id INT,
+    dest_call_server_id INT,
+    dest_description VARCHAR(255),
+    dest_pattern VARCHAR(255),
+    dest_cid_filter VARCHAR(255),
+    dest_priority INT DEFAULT 0,
+    dest_is_active TINYINT(1) DEFAULT 1,
+    dest_from_sbc_id INT,
+    dest_destination_id INT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (src_call_server_id) REFERENCES call_servers(id) ON DELETE SET NULL,
+    FOREIGN KEY (dest_call_server_id) REFERENCES call_servers(id) ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Intercoms
+CREATE TABLE IF NOT EXISTS intercoms (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    branch_id INT,
+    call_server_id INT,
+    name VARCHAR(100) NOT NULL,
+    extension VARCHAR(50),
+    description VARCHAR(255),
+    is_active TINYINT(1) DEFAULT 1,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (branch_id) REFERENCES branches(id) ON DELETE SET NULL,
+    FOREIGN KEY (call_server_id) REFERENCES call_servers(id) ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

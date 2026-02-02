@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Models\Sbc;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Log;
+use Throwable;
 
 class SbcController extends Controller
 {
@@ -32,24 +34,45 @@ class SbcController extends Controller
      */
     public function store(Request $request): JsonResponse
     {
-        $validated = $request->validate([
-            'name' => 'required|string|max:100',
-            'call_server_id' => 'nullable|exists:call_servers,id',
-            'sip_server' => 'nullable|string',
-            'sip_server_port' => 'integer',
-            'transport' => 'in:udp,tcp,tls',
-            'context' => 'nullable|string',
-            'registration' => 'in:none,outbound,inbound',
-            'auth_username' => 'nullable|string',
-            'secret' => 'nullable|string',
-            'outcid' => 'nullable|string',
-            'maxchans' => 'integer',
-            'disabled' => 'boolean',
-        ]);
+        try {
+            $validated = $request->validate([
+                'name' => 'required|string|max:100',
+                'call_server_id' => 'nullable',
+                'sip_server' => 'required|string',
+                'sip_server_port' => 'nullable|integer',
+                'transport' => 'nullable|string',
+                'context' => 'nullable|string',
+                'codecs' => 'nullable|string',
+                'dtmfmode' => 'nullable|string',
+                'registration' => 'nullable|string',
+                'auth_username' => 'nullable|string',
+                'secret' => 'nullable|string',
+                'outcid' => 'nullable|string',
+                'maxchans' => 'nullable|integer',
+                'qualify' => 'nullable|boolean',
+                'qualify_frequency' => 'nullable|integer',
+                'description' => 'nullable|string',
+                'disabled' => 'nullable|boolean',
+            ]);
 
-        $sbc = Sbc::create($validated);
+            // Ensure defaults if missing
+            $validated['sip_server_port'] = $validated['sip_server_port'] ?? 5060;
+            $validated['maxchans'] = $validated['maxchans'] ?? 2;
+            $validated['transport'] = $validated['transport'] ?? 'udp';
+            $validated['context'] = $validated['context'] ?? 'from-pstn';
+            $validated['codecs'] = $validated['codecs'] ?? 'ulaw,alaw';
+            $validated['dtmfmode'] = $validated['dtmfmode'] ?? 'auto';
+            $validated['registration'] = $validated['registration'] ?? 'none';
 
-        return response()->json(['message' => 'SBC created successfully', 'data' => $sbc], 201);
+            $sbc = Sbc::create($validated);
+
+            return response()->json(['message' => 'SBC created successfully', 'data' => $sbc], 201);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return response()->json(['error' => 'Validation failed', 'errors' => $e->errors()], 422);
+        } catch (Throwable $e) {
+            Log::error('SBC Creation Error: ' . $e->getMessage());
+            return response()->json(['error' => 'Database error: ' . $e->getMessage()], 500);
+        }
     }
 
     /**
@@ -65,24 +88,35 @@ class SbcController extends Controller
      */
     public function update(Request $request, Sbc $sbc): JsonResponse
     {
-        $validated = $request->validate([
-            'name' => 'sometimes|string|max:100',
-            'call_server_id' => 'nullable|exists:call_servers,id',
-            'sip_server' => 'nullable|string',
-            'sip_server_port' => 'integer',
-            'transport' => 'in:udp,tcp,tls',
-            'context' => 'nullable|string',
-            'registration' => 'in:none,outbound,inbound',
-            'auth_username' => 'nullable|string',
-            'secret' => 'nullable|string',
-            'outcid' => 'nullable|string',
-            'maxchans' => 'integer',
-            'disabled' => 'boolean',
-        ]);
+        try {
+            $validated = $request->validate([
+                'name' => 'sometimes|string|max:100',
+                'call_server_id' => 'nullable',
+                'sip_server' => 'sometimes|string',
+                'sip_server_port' => 'nullable|integer',
+                'transport' => 'nullable|string',
+                'context' => 'nullable|string',
+                'codecs' => 'nullable|string',
+                'dtmfmode' => 'nullable|string',
+                'registration' => 'nullable|string',
+                'auth_username' => 'nullable|string',
+                'secret' => 'nullable|string',
+                'outcid' => 'nullable|string',
+                'maxchans' => 'nullable|integer',
+                'qualify' => 'nullable|boolean',
+                'qualify_frequency' => 'nullable|integer',
+                'description' => 'nullable|string',
+                'disabled' => 'nullable|boolean',
+            ]);
 
-        $sbc->update($validated);
+            $sbc->update($validated);
 
-        return response()->json(['message' => 'SBC updated successfully', 'data' => $sbc]);
+            return response()->json(['message' => 'SBC updated successfully', 'data' => $sbc]);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return response()->json(['error' => 'Validation failed', 'errors' => $e->errors()], 422);
+        } catch (Throwable $e) {
+            return response()->json(['error' => 'Database error: ' . $e->getMessage()], 500);
+        }
     }
 
     /**

@@ -28,6 +28,7 @@ class Sbc extends Model
         'maxchans',
         'qualify',
         'qualify_frequency',
+        'description',
         'disabled',
     ];
 

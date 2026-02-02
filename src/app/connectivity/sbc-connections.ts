@@ -40,7 +40,7 @@ interface SBCConnection {
     qualify_frequency: number;
 }
 
-interface CallServer { id: number; name: string; }
+interface SBCNode { id: number; name: string; }
 
 @Component({
     templateUrl: './sbc-connections.html',
@@ -50,7 +50,7 @@ interface CallServer { id: number; name: string; }
 export class SBCConnectionsComponent implements OnInit {
     store: any;
     connections: SBCConnection[] = [];
-    callServers: CallServer[] = [];
+    sbcNodes: SBCNode[] = [];
     isLoading = false;
     search = '';
     showModal = false;
@@ -76,20 +76,37 @@ export class SBCConnectionsComponent implements OnInit {
 
     async initStore() { this.storeData.select((d) => d.index).subscribe((d) => { this.store = d; }); }
 
-    ngOnInit() { this.loadConnections(); this.loadCallServers(); }
+    ngOnInit() { this.loadConnections(); this.loadSbcNodes(); }
 
     loadConnections() {
         this.isLoading = true;
         this.http.get<any>(`${environment.apiUrl}/v1/sbcs`).subscribe({
-            next: (response) => { this.connections = response.data || []; this.isLoading = false; },
-            error: (error) => { console.error('Failed to load connections:', error); this.isLoading = false; this.showErrorMessage('Failed to load connections'); },
+            next: (response) => {
+                this.connections = response.data || [];
+                this.isLoading = false;
+            },
+            error: (error) => {
+                console.error('Failed to load connections:', error);
+                this.isLoading = false;
+                this.showErrorMessage('Failed to load connections');
+            },
         });
     }
 
-    loadCallServers() {
-        this.http.get<any>(`${environment.apiUrl}/v1/call-servers`).subscribe({
-            next: (response) => { this.callServers = response.data || []; },
-            error: (error) => { console.error('Failed to load call servers:', error); },
+    get filteredConnections() {
+        return this.connections.filter((d) => {
+            return (
+                d.name.toLowerCase().includes(this.search.toLowerCase()) ||
+                d.sip_server.toLowerCase().includes(this.search.toLowerCase()) ||
+                (d.call_server?.name || '').toLowerCase().includes(this.search.toLowerCase())
+            );
+        });
+    }
+
+    loadSbcNodes() {
+        this.http.get<any>(`${environment.apiUrl}/v1/call-servers?type=sbc`).subscribe({
+            next: (response) => { this.sbcNodes = response.data || []; },
+            error: (error) => { console.error('Failed to load SBC nodes:', error); },
         });
     }
 

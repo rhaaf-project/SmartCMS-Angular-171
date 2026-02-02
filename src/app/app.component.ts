@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, NavigationEnd, Router, RouterOutlet } from '@angular/router';
+import { Store } from '@ngrx/store';
 import { filter, map, switchMap, tap } from 'rxjs/operators';
 
 @Component({
@@ -13,7 +14,17 @@ export class AppComponent {
         private router: Router,
         private activatedRoute: ActivatedRoute,
         private titleService: Title,
+        public storeData: Store<any>,
     ) {
+        this.storeData
+            .select((d) => d.index)
+            .subscribe((d) => {
+                const body: any = document.querySelector('body');
+                body.classList.remove('theme-orange', 'theme-yellow', 'theme-red', 'theme-green', 'theme-purple', 'theme-cyan');
+                if (d.primaryColor && d.primaryColor !== 'blue') {
+                    body.classList.add('theme-' + d.primaryColor);
+                }
+            });
         this.router.events
             .pipe(
                 filter((event) => event instanceof NavigationEnd),

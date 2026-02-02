@@ -326,6 +326,16 @@ try {
                     $params[] = $_GET['user_id'];
                 }
 
+                // Generic type filtering (e.g., call_servers?type=sbc) - Defensive check for column existence
+                if (isset($_GET['type'])) {
+                    $checkCol = $pdo->query("SHOW COLUMNS FROM `$table` LIKE 'type'")->fetch();
+                    if ($checkCol) {
+                        $op = $where ? " AND " : " WHERE ";
+                        $where .= "$op `type` = ?";
+                        $params[] = $_GET['type'];
+                    }
+                }
+
                 // Count total
                 $countStmt = $pdo->prepare("SELECT COUNT(*) FROM `$table` $where");
                 $countStmt->execute($params);
@@ -398,10 +408,11 @@ try {
                     }
                 }
 
-                // Add call_server relation for extensions
-                if ($table === 'extensions') {
+                // Add call_server relation for extensions, vpws, cas, sbcs, trunks, private_wires, device_3rd_parties, inbound_routings, outbound_routings, intercoms
+                $csAffectedTables = ['extensions', 'vpws', 'cas', 'sbcs', 'trunks', 'private_wires', 'device_3rd_parties', 'inbound_routings', 'outbound_routings', 'intercoms'];
+                if (in_array($table, $csAffectedTables)) {
                     foreach ($rows as &$row) {
-                        if ($row['call_server_id']) {
+                        if (isset($row['call_server_id']) && $row['call_server_id']) {
                             $stmt2 = $pdo->prepare("SELECT id, name FROM call_servers WHERE id = ?");
                             $stmt2->execute([$row['call_server_id']]);
                             $row['call_server'] = $stmt2->fetch(PDO::FETCH_ASSOC);
@@ -409,149 +420,53 @@ try {
                     }
                 }
 
-                // Add call_server relation for vpws
-                if ($table === 'vpws') {
+                // Extra relations for intercoms
+                if ($table === 'intercoms') {
                     foreach ($rows as &$row) {
-                        if ($row['call_server_id']) {
-                            $stmt2 = $pdo->prepare("SELECT id, name FROM call_servers WHERE id = ?");
-                            $stmt2->execute([$row['call_server_id']]);
-                            $row['call_server'] = $stmt2->fetch(PDO::FETCH_ASSOC);
+                        if (isset($row['branch_id']) && $row['branch_id']) {
+                            $stmt2 = $pdo->prepare("SELECT id, name FROM branches WHERE id = ?");
+                            $stmt2->execute([$row['branch_id']]);
+                            $row['branch'] = $stmt2->fetch(PDO::FETCH_ASSOC);
                         }
                     }
                 }
 
-                // Add call_server relation for cas
-                if ($table === 'cas') {
+                // Extra relations for outbound_routings (trunk)
+                if ($table === 'outbound_routings') {
                     foreach ($rows as &$row) {
-                        if ($row['call_server_id']) {
-                            $stmt2 = $pdo->prepare("SELECT id, name FROM call_servers WHERE id = ?");
-                            $stmt2->execute([$row['call_server_id']]);
-                            $row['call_server'] = $stmt2->fetch(PDO::FETCH_ASSOC);
+                        if (isset($row['trunk_id']) && $row['trunk_id']) {
+                            $stmt2 = $pdo->prepare("SELECT id, name FROM trunks WHERE id = ?");
+                            $stmt2->execute([$row['trunk_id']]);
+                            $row['trunk'] = $stmt2->fetch(PDO::FETCH_ASSOC);
                         }
                     }
                 }
 
-                // Add call_server relation for sbcs
-                if ($table === 'sbcs') {
-                    foreach ($rows as &$row) {
-                        if ($row['call_server_id']) {
-                            $stmt2 = $pdo->prepare("SELECT id, name FROM call_servers WHERE id = ?");
-                            $stmt2->execute([$row['call_server_id']]);
-                            $row['call_server'] = $stmt2->fetch(PDO::FETCH_ASSOC);
-                        }
-                    }
-                }
-
-                // Add relations for sbc_routes (SBC, call_server, trunk)
+                // Add relations for sbc_routes (SBC, trunk)
+                // Add relations for sbc_routes (SBC Node, Connection Leg)
                 if ($table === 'sbc_routes') {
                     foreach ($rows as &$row) {
                         // Source relations
-                        if ($row['src_call_server_id']) {
+                        if (isset($row['src_call_server_id']) && $row['src_call_server_id']) {
                             $stmt2 = $pdo->prepare("SELECT id, name FROM call_servers WHERE id = ?");
                             $stmt2->execute([$row['src_call_server_id']]);
                             $row['src_call_server'] = $stmt2->fetch(PDO::FETCH_ASSOC);
                         }
-                        if ($row['src_from_sbc_id']) {
+                        if (isset($row['src_from_sbc_id']) && $row['src_from_sbc_id']) {
                             $stmt2 = $pdo->prepare("SELECT id, name FROM sbcs WHERE id = ?");
                             $stmt2->execute([$row['src_from_sbc_id']]);
                             $row['src_from_sbc'] = $stmt2->fetch(PDO::FETCH_ASSOC);
                         }
-                        if ($row['src_destination_id']) {
-                            $stmt2 = $pdo->prepare("SELECT id, name FROM trunks WHERE id = ?");
-                            $stmt2->execute([$row['src_destination_id']]);
-                            $row['src_destination'] = $stmt2->fetch(PDO::FETCH_ASSOC);
-                        }
                         // Destination relations
-                        if ($row['dest_call_server_id']) {
+                        if (isset($row['dest_call_server_id']) && $row['dest_call_server_id']) {
                             $stmt2 = $pdo->prepare("SELECT id, name FROM call_servers WHERE id = ?");
                             $stmt2->execute([$row['dest_call_server_id']]);
                             $row['dest_call_server'] = $stmt2->fetch(PDO::FETCH_ASSOC);
                         }
-                        if ($row['dest_from_sbc_id']) {
+                        if (isset($row['dest_from_sbc_id']) && $row['dest_from_sbc_id']) {
                             $stmt2 = $pdo->prepare("SELECT id, name FROM sbcs WHERE id = ?");
                             $stmt2->execute([$row['dest_from_sbc_id']]);
                             $row['dest_from_sbc'] = $stmt2->fetch(PDO::FETCH_ASSOC);
-                        }
-                        if ($row['dest_destination_id']) {
-                            $stmt2 = $pdo->prepare("SELECT id, name FROM trunks WHERE id = ?");
-                            $stmt2->execute([$row['dest_destination_id']]);
-                            $row['dest_destination'] = $stmt2->fetch(PDO::FETCH_ASSOC);
-                        }
-                    }
-                }
-
-                // Add call_server relation for trunks
-                if ($table === 'trunks') {
-                    foreach ($rows as &$row) {
-                        if ($row['call_server_id']) {
-                            $stmt2 = $pdo->prepare("SELECT id, name FROM call_servers WHERE id = ?");
-                            $stmt2->execute([$row['call_server_id']]);
-                            $row['call_server'] = $stmt2->fetch(PDO::FETCH_ASSOC);
-                        }
-                    }
-                }
-
-                // Add call_server and branch relations for intercoms
-                if ($table === 'intercoms') {
-                    foreach ($rows as &$row) {
-                        if ($row['call_server_id']) {
-                            $stmt2 = $pdo->prepare("SELECT id, name FROM call_servers WHERE id = ?");
-                            $stmt2->execute([$row['call_server_id']]);
-                            $row['call_server'] = $stmt2->fetch(PDO::FETCH_ASSOC);
-                        }
-                        if ($row['branch_id']) {
-                            $stmt3 = $pdo->prepare("SELECT id, name FROM branches WHERE id = ?");
-                            $stmt3->execute([$row['branch_id']]);
-                            $row['branch'] = $stmt3->fetch(PDO::FETCH_ASSOC);
-                        }
-                    }
-                }
-
-                // Add call_server relation for private_wires
-                if ($table === 'private_wires') {
-                    foreach ($rows as &$row) {
-                        if ($row['call_server_id']) {
-                            $stmt2 = $pdo->prepare("SELECT id, name FROM call_servers WHERE id = ?");
-                            $stmt2->execute([$row['call_server_id']]);
-                            $row['call_server'] = $stmt2->fetch(PDO::FETCH_ASSOC);
-                        }
-                    }
-                }
-
-                // Add call_server relation for device_3rd_parties
-                if ($table === 'device_3rd_parties') {
-                    foreach ($rows as &$row) {
-                        if ($row['call_server_id']) {
-                            $stmt2 = $pdo->prepare("SELECT id, name FROM call_servers WHERE id = ?");
-                            $stmt2->execute([$row['call_server_id']]);
-                            $row['call_server'] = $stmt2->fetch(PDO::FETCH_ASSOC);
-                        }
-                    }
-                }
-
-                // Add call_server relation for inbound_routings
-                if ($table === 'inbound_routings') {
-                    foreach ($rows as &$row) {
-                        if ($row['call_server_id']) {
-                            $stmt2 = $pdo->prepare("SELECT id, name FROM call_servers WHERE id = ?");
-                            $stmt2->execute([$row['call_server_id']]);
-                            $row['call_server'] = $stmt2->fetch(PDO::FETCH_ASSOC);
-                        }
-                    }
-                }
-
-                // Add relations for outbound_routings
-                if ($table === 'outbound_routings') {
-                    foreach ($rows as &$row) {
-                        if ($row['call_server_id']) {
-                            $stmt2 = $pdo->prepare("SELECT id, name FROM call_servers WHERE id = ?");
-                            $stmt2->execute([$row['call_server_id']]);
-                            $row['call_server'] = $stmt2->fetch(PDO::FETCH_ASSOC);
-                        }
-                        if ($row['trunk_id']) {
-                            $stmt2 = $pdo->prepare("SELECT id, name FROM trunks WHERE id = ?");
-                            $stmt2->execute([$row['trunk_id']]);
-                            $row['trunk'] = $stmt2->fetch(PDO::FETCH_ASSOC);
                         }
                     }
                 }
@@ -567,68 +482,8 @@ try {
             break;
 
         case 'POST':
-            // Hash password for users table
-            if ($table === 'users' && isset($input['password']) && !empty($input['password'])) {
-                $input['password'] = password_hash($input['password'], PASSWORD_BCRYPT);
-            }
-
-            // Handle Profile Image Upload
-            if ($table === 'users' && isset($input['profile_image']) && !empty($input['profile_image'])) {
-                if (preg_match('/^data:image\/([a-zA-Z0-9+.-]+);base64,/', $input['profile_image'], $type)) {
-                    $data = substr($input['profile_image'], strpos($input['profile_image'], ',') + 1);
-                    $decoded = base64_decode($data);
-
-                    if ($decoded === false) {
-                        unset($input['profile_image']);
-                    } else {
-                        $extension = strtolower($type[1]);
-                        if ($extension === 'svg+xml')
-                            $extension = 'svg';
-                        if ($extension === 'jpeg')
-                            $extension = 'jpg';
-
-                        if (in_array($extension, ['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg'])) {
-                            $filename = 'user_' . time() . '_' . uniqid() . '.' . $extension;
-                            $uploadDir = is_dir('src/assets') ? 'src/assets/images/user-profiles/' : 'assets/images/user-profiles/';
-
-                            if (!file_exists($uploadDir)) {
-                                mkdir($uploadDir, 0777, true);
-                            }
-
-                            if (file_put_contents($uploadDir . $filename, $decoded)) {
-                                $input['profile_image'] = $filename;
-                            } else {
-                                unset($input['profile_image']);
-                            }
-                        } else {
-                            unset($input['profile_image']);
-                        }
-                    }
-                }
-
-                // Final safety check: if profile_image is still huge (was not processed), unset it to prevent DB error
-                if (isset($input['profile_image']) && strlen($input['profile_image']) > 255) {
-                    unset($input['profile_image']);
-                }
-            }
-
-            $columns = array_keys($input);
-            $placeholders = array_fill(0, count($columns), '?');
-            $sql = "INSERT INTO `$table` (" . implode(',', $columns) . ") VALUES (" . implode(',', $placeholders) . ")";
-            $stmt = $pdo->prepare($sql);
-            $stmt->execute(array_values($input));
-            $newId = $pdo->lastInsertId();
-
-            $stmt2 = $pdo->prepare("SELECT * FROM `$table` WHERE id = ?");
-            $stmt2->execute([$newId]);
-            $data = $stmt2->fetch(PDO::FETCH_ASSOC);
-
-            http_response_code(201);
-            echo json_encode(['message' => 'Created successfully', 'data' => $data]);
-            break;
-
         case 'PUT':
-            if (!$id) {
+            if ($method === 'PUT' && !$id) {
                 http_response_code(400);
                 echo json_encode(['error' => 'ID required']);
                 exit;
@@ -642,12 +497,10 @@ try {
             // Handle Profile Image Upload
             if ($table === 'users' && isset($input['profile_image']) && !empty($input['profile_image'])) {
                 if (preg_match('/^data:image\/([a-zA-Z0-9+.-]+);base64,/', $input['profile_image'], $type)) {
-                    $data = substr($input['profile_image'], strpos($input['profile_image'], ',') + 1);
-                    $decoded = base64_decode($data);
+                    $imageData = substr($input['profile_image'], strpos($input['profile_image'], ',') + 1);
+                    $decoded = base64_decode($imageData);
 
-                    if ($decoded === false) {
-                        unset($input['profile_image']);
-                    } else {
+                    if ($decoded !== false) {
                         $extension = strtolower($type[1]);
                         if ($extension === 'svg+xml')
                             $extension = 'svg';
@@ -657,11 +510,8 @@ try {
                         if (in_array($extension, ['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg'])) {
                             $filename = 'user_' . time() . '_' . uniqid() . '.' . $extension;
                             $uploadDir = is_dir('src/assets') ? 'src/assets/images/user-profiles/' : 'assets/images/user-profiles/';
-
-                            if (!file_exists($uploadDir)) {
+                            if (!file_exists($uploadDir))
                                 mkdir($uploadDir, 0777, true);
-                            }
-
                             if (file_put_contents($uploadDir . $filename, $decoded)) {
                                 $input['profile_image'] = $filename;
                             } else {
@@ -672,41 +522,87 @@ try {
                         }
                     }
                 }
-
-                // Final safety check: if profile_image is still huge > 255 chars, unset it
                 if (isset($input['profile_image']) && strlen($input['profile_image']) > 255) {
                     unset($input['profile_image']);
                 }
             }
 
-            $sets = [];
-            $values = [];
-            foreach ($input as $key => $value) {
-                $sets[] = "$key = ?";
-                $values[] = $value;
+            // Convert booleans for MariaDB
+            foreach ($input as $key => &$val) {
+                if (is_bool($val))
+                    $val = $val ? 1 : 0;
             }
-            $values[] = $id;
 
-            $sql = "UPDATE `$table` SET " . implode(', ', $sets) . " WHERE id = ?";
-            $stmt = $pdo->prepare($sql);
-            $stmt->execute($values);
+            try {
+                // AUTO MIGRATION & Schema Check
+                $schemaStmt = $pdo->query("DESCRIBE `$table`");
+                $allowedColumns = $schemaStmt->fetchAll(PDO::FETCH_COLUMN);
 
-            $stmt2 = $pdo->prepare("SELECT * FROM `$table` WHERE id = ?");
-            $stmt2->execute([$id]);
-            $data = $stmt2->fetch(PDO::FETCH_ASSOC);
+                if (empty($allowedColumns))
+                    throw new Exception("Table `$table` schema empty.");
 
-            // Log user update actions
-            if ($table === 'users') {
-                try {
-                    $logStmt = $pdo->prepare("INSERT INTO `activity_logs` (user_id, action, entity_type, entity_id, ip_address, user_agent, new_values) VALUES (?, ?, ?, ?, ?, ?, ?)");
-                    $ip_address = $_SERVER['REMOTE_ADDR'] ?? 'unknown';
-                    $user_agent = $_SERVER['HTTP_USER_AGENT'] ?? 'unknown';
-                    $logStmt->execute([$id, 'update', 'users', $id, $ip_address, substr($user_agent, 0, 255), json_encode($input)]);
-                } catch (Exception $e) { /* Check api.php logs if needed */
+                $missingColumns = array_diff(array_keys($input), $allowedColumns);
+                if (!empty($missingColumns)) {
+                    foreach ($missingColumns as $col) {
+                        if (in_array(strtolower($col), ['id', 'created_at', 'updated_at', 'deleted_at']))
+                            continue;
+                        $sqlType = "TEXT NULL";
+                        if (strpos($col, 'is_') === 0 || strpos($col, 'has_') === 0 || $col === 'disabled' || $col === 'active')
+                            $sqlType = "TINYINT(1) DEFAULT 0";
+                        if (strpos($col, 'port') !== false || strpos($col, '_id') !== false)
+                            $sqlType = "INT NULL";
+                        if ($col === 'secret' || $col === 'password')
+                            $sqlType = "VARCHAR(255) NULL";
+
+                        $pdo->exec("ALTER TABLE `$table` ADD COLUMN `$col` $sqlType");
+                    }
+                    $schemaStmt = $pdo->query("DESCRIBE `$table`");
+                    $allowedColumns = $schemaStmt->fetchAll(PDO::FETCH_COLUMN);
                 }
-            }
 
-            echo json_encode(['message' => 'Updated successfully', 'data' => $data]);
+                $filteredInput = array_intersect_key($input, array_flip($allowedColumns));
+
+                if ($method === 'POST') {
+                    $columns = array_keys($filteredInput);
+                    $placeholders = array_fill(0, count($columns), '?');
+                    $sql = "INSERT INTO `$table` (`" . implode("`,`", $columns) . "`) VALUES (" . implode(',', $placeholders) . ")";
+                    $stmt = $pdo->prepare($sql);
+                    $stmt->execute(array_values($filteredInput));
+                    $dataId = $pdo->lastInsertId();
+                } else {
+                    $sets = [];
+                    $values = [];
+                    foreach ($filteredInput as $key => $value) {
+                        $sets[] = "`$key` = ?";
+                        $values[] = $value;
+                    }
+                    $values[] = $id;
+                    $sql = "UPDATE `$table` SET " . implode(', ', $sets) . " WHERE id = ?";
+                    $stmt = $pdo->prepare($sql);
+                    $stmt->execute($values);
+                    $dataId = $id;
+
+                    if ($table === 'users') {
+                        try {
+                            $logStmt = $pdo->prepare("INSERT INTO `activity_logs` (user_id, action, entity_type, entity_id, ip_address, user_agent, new_values) VALUES (?, ?, ?, ?, ?, ?, ?)");
+                            $ip_address = $_SERVER['REMOTE_ADDR'] ?? 'unknown';
+                            $user_agent = $_SERVER['HTTP_USER_AGENT'] ?? 'unknown';
+                            $logStmt->execute([$id, 'update', 'users', $id, $ip_address, substr($user_agent, 0, 255), json_encode($input)]);
+                        } catch (Exception $e) {
+                        }
+                    }
+                }
+
+                $stmt2 = $pdo->prepare("SELECT * FROM `$table` WHERE id = ?");
+                $stmt2->execute([$dataId]);
+                $finalData = $stmt2->fetch(PDO::FETCH_ASSOC);
+
+                http_response_code($method === 'POST' ? 201 : 200);
+                echo json_encode(['message' => ($method === 'POST' ? 'Created' : 'Updated') . ' successfully', 'data' => $finalData]);
+            } catch (Exception $e) {
+                http_response_code(500);
+                echo json_encode(['error' => 'Database error: ' . $e->getMessage(), 'sql' => $sql ?? 'N/A']);
+            }
             break;
 
         case 'DELETE':

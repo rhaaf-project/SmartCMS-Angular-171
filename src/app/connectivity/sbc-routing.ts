@@ -74,8 +74,28 @@ export class SBCRoutingComponent implements OnInit {
     loadRoutes() {
         this.isLoading = true;
         this.http.get<any>(`${environment.apiUrl}/v1/sbc-routes`).subscribe({
-            next: (response) => { this.routes = response.data || []; this.isLoading = false; },
-            error: (error) => { console.error('Failed to load routes:', error); this.isLoading = false; this.showErrorMessage('Failed to load routes'); },
+            next: (response) => {
+                this.routes = response.data || [];
+                this.isLoading = false;
+            },
+            error: (error) => {
+                console.error('Failed to load routes:', error);
+                this.isLoading = false;
+                this.showErrorMessage('Failed to load routes');
+            },
+        });
+    }
+
+    get filteredRoutes() {
+        return this.routes.filter((d) => {
+            return (
+                (d.src_description || '').toLowerCase().includes(this.search.toLowerCase()) ||
+                (d.dest_description || '').toLowerCase().includes(this.search.toLowerCase()) ||
+                this.getSbcName(d.src_call_server_id).toLowerCase().includes(this.search.toLowerCase()) ||
+                this.getSbcName(d.dest_call_server_id).toLowerCase().includes(this.search.toLowerCase()) ||
+                (d.src_pattern || '').toLowerCase().includes(this.search.toLowerCase()) ||
+                (d.dest_pattern || '').toLowerCase().includes(this.search.toLowerCase())
+            );
         });
     }
 
@@ -87,17 +107,30 @@ export class SBCRoutingComponent implements OnInit {
     }
 
     loadSBCs() {
-        this.http.get<any>(`${environment.apiUrl}/v1/sbcs`).subscribe({
+        this.http.get<any>(`${environment.apiUrl}/v1/call-servers?type=sbc`).subscribe({
             next: (response) => { this.sbcs = response.data || []; },
-            error: (error) => { console.error('Failed to load SBCs:', error); },
+            error: (error) => { console.error('Failed to load SBC nodes:', error); },
         });
     }
 
     loadTrunks() {
-        this.http.get<any>(`${environment.apiUrl}/v1/trunks`).subscribe({
+        this.http.get<any>(`${environment.apiUrl}/v1/sbcs`).subscribe({
             next: (response) => { this.trunks = response.data || []; },
-            error: (error) => { console.error('Failed to load trunks:', error); },
+            error: (error) => { console.error('Failed to load connections:', error); },
         });
+    }
+
+    onNameSync(value: string, type: 'src' | 'dest') {
+        if (!value) return;
+
+        // Remove existing prefixes if any to get base name
+        let baseName = value;
+        if (value.startsWith('S-')) baseName = value.substring(2);
+        else if (value.startsWith('D-')) baseName = value.substring(2);
+
+        // Sync both names with prefixes
+        this.formData.src_description = 'S-' + baseName;
+        this.formData.dest_description = 'D-' + baseName;
     }
 
     openCreateModal() { this.modalMode = 'create'; this.resetForm(); this.showModal = true; }
@@ -106,8 +139,8 @@ export class SBCRoutingComponent implements OnInit {
     closeModal() { this.showModal = false; this.resetForm(); }
     resetForm() {
         this.formData = {
-            src_call_server_id: null, src_description: null, src_pattern: '', src_cid_filter: null, src_priority: 0, src_is_active: true, src_from_sbc_id: null, src_destination_id: null,
-            dest_call_server_id: null, dest_description: null, dest_pattern: '', dest_cid_filter: null, dest_priority: 0, dest_is_active: true, dest_from_sbc_id: null, dest_destination_id: null,
+            src_call_server_id: null, src_description: '', src_pattern: '', src_cid_filter: null, src_priority: 0, src_is_active: true, src_from_sbc_id: null, src_destination_id: null,
+            dest_call_server_id: null, dest_description: '', dest_pattern: '', dest_cid_filter: null, dest_priority: 0, dest_is_active: true, dest_from_sbc_id: null, dest_destination_id: null,
         };
     }
 
@@ -147,6 +180,12 @@ export class SBCRoutingComponent implements OnInit {
         if (!id) return '-';
         const sbc = this.sbcs.find(s => s.id === id);
         return sbc ? sbc.name : '-';
+    }
+
+    getTrunkName(id: number | null): string {
+        if (!id) return '-';
+        const trunk = this.trunks.find(t => t.id === id);
+        return trunk ? trunk.name : '-';
     }
 
     showSuccessMessage(msg: string) { Swal.fire({ icon: 'success', title: 'Success', text: msg, timer: 2000, showConfirmButton: false }); }

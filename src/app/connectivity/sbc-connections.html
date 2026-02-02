@@ -4,8 +4,7 @@
             <h5 class="text-medium font-medium dark:text-white-light">SBC Connections</h5>
             <div class="flex ltr:ml-auto rtl:mr-auto">
                 <div class="relative mr-4">
-                    <input type="text" placeholder="Search..." class="form-input-sm form-input w-auto pr-8"
-                        [(ngModel)]="search" />
+                    <input type="text" class="form-input-sm form-input w-auto pr-8" [(ngModel)]="search" />
                     <div class="absolute top-1/2 right-2 -translate-y-1/2"><svg width="16" height="16"
                             viewBox="0 0 24 24" fill="none" class="text-white-dark">
                             <circle cx="11.5" cy="11.5" r="9.5" stroke="currentColor" stroke-width="1.5" opacity="0.5">
@@ -29,12 +28,12 @@
                 <table class="table-hover">
                     <thead>
                         <tr>
-                            <th>Call Server</th>
-                            <th>Name</th>
+                            <th>SBC</th>
+                            <th>Connection Name</th>
                             <th>SIP Server</th>
                             <th>Outbound CID</th>
                             <th>Max Ch.</th>
-                            <th class="text-center">Status</th>
+                            <th class="text-center">Active</th>
                             <th class="text-center">Actions</th>
                         </tr>
                     </thead>
@@ -46,10 +45,10 @@
                                 </div>
                             </td>
                         </tr>
-                        <tr *ngIf="!isLoading && connections.length === 0">
+                        <tr *ngIf="!isLoading && filteredConnections.length === 0">
                             <td colspan="7" class="text-center">No connections found</td>
                         </tr>
-                        <tr *ngFor="let conn of connections">
+                        <tr *ngFor="let conn of filteredConnections">
                             <td>{{ conn.call_server?.name || '-' }}</td>
                             <td>
                                 <div class="font-semibold">{{ conn.name }}</div>
@@ -77,7 +76,8 @@
                 </table>
             </div>
         </div>
-        <div class="text-sm text-gray-500">Showing 1 to {{ connections.length }} of {{ connections.length }} results
+        <div class="text-sm text-gray-500">Showing 1 to {{ filteredConnections.length }} of {{ connections.length }}
+            results
         </div>
     </div>
 
@@ -98,30 +98,30 @@
                 <div class="p-5 max-h-[80vh] overflow-y-auto">
                     <form (ngSubmit)="handleSubmit()">
 
-                        <!-- Section 1: SBC Details -->
+                        <!-- Section 1: Connection Details -->
                         <div class="panel p-4 mb-4">
-                            <h6 class="font-semibold mb-4">SBC Details</h6>
+                            <h6 class="font-semibold mb-4">Connection Details</h6>
                             <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
                                 <div>
-                                    <label for="call_server_id">Call Server <span class="text-danger">*</span></label>
+                                    <label for="call_server_id">SBC <span class="text-danger">*</span></label>
                                     <select id="call_server_id" [(ngModel)]="formData.call_server_id"
                                         name="call_server_id" class="form-select" required>
-                                        <option [ngValue]="null">Select Call Server</option>
-                                        <option *ngFor="let cs of callServers" [ngValue]="cs.id">{{ cs.name }}</option>
+                                        <option [ngValue]="null">Select SBC</option>
+                                        <option *ngFor="let sbc of sbcNodes" [ngValue]="sbc.id">{{ sbc.name }}</option>
                                     </select>
                                 </div>
                                 <div>
-                                    <label for="name">Name <span class="text-danger">*</span></label>
+                                    <label for="name">Connection Name <span class="text-danger">*</span></label>
                                     <input id="name" type="text" [(ngModel)]="formData.name" name="name"
-                                        placeholder="Enter SBC name" class="form-input" required />
+                                        class="form-input" required />
                                 </div>
                                 <div>
                                     <label for="outcid">Outbound Caller ID</label>
                                     <input id="outcid" type="text" [(ngModel)]="formData.outcid" name="outcid"
-                                        placeholder="Enter outbound CID" class="form-input" />
+                                        class="form-input" />
                                 </div>
                                 <div>
-                                    <label for="maxchans">Max Channels</label>
+                                    <label for="maxchans">Outbound Max</label>
                                     <input id="maxchans" type="number" [(ngModel)]="formData.maxchans" name="maxchans"
                                         class="form-input" min="1" max="100" />
                                 </div>
@@ -134,14 +134,13 @@
                         </div>
 
                         <!-- Section 2: SIP Server Settings -->
-                        <div class="panel p-4 mb-4">
+                        <div class="panel p-4 mb-4 border-[#1b2e4b] bg-black/20">
                             <h6 class="font-semibold mb-4">SIP Server Settings</h6>
                             <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
                                 <div>
                                     <label for="sip_server">SIP Server <span class="text-danger">*</span></label>
                                     <input id="sip_server" type="text" [(ngModel)]="formData.sip_server"
-                                        name="sip_server" placeholder="Enter SIP server address" class="form-input"
-                                        required />
+                                        name="sip_server" class="form-input" required />
                                 </div>
                                 <div>
                                     <label for="sip_server_port">SIP Port</label>
@@ -159,7 +158,7 @@
                                 <div>
                                     <label for="context">Context <span class="text-danger">*</span></label>
                                     <input id="context" type="text" [(ngModel)]="formData.context" name="context"
-                                        placeholder="from-pstn" class="form-input" required />
+                                        class="form-input" required />
                                 </div>
                             </div>
                         </div>
@@ -171,7 +170,7 @@
                                 <div>
                                     <label for="codecs">Codecs</label>
                                     <input id="codecs" type="text" [(ngModel)]="formData.codecs" name="codecs"
-                                        placeholder="ulaw,alaw" class="form-input" />
+                                        class="form-input" />
                                 </div>
                                 <div>
                                     <label for="dtmfmode">DTMF Mode</label>
@@ -199,12 +198,12 @@
                                 <div>
                                     <label for="auth_username">Auth Username</label>
                                     <input id="auth_username" type="text" [(ngModel)]="formData.auth_username"
-                                        name="auth_username" placeholder="Enter username" class="form-input" />
+                                        name="auth_username" class="form-input" />
                                 </div>
                                 <div>
                                     <label for="secret">Password</label>
                                     <input id="secret" type="password" [(ngModel)]="formData.secret" name="secret"
-                                        placeholder="Enter password" class="form-input" />
+                                        class="form-input" />
                                 </div>
                             </div>
                         </div>

@@ -14,39 +14,47 @@ import { IconXCircleComponent } from '../shared/icon/icon-x-circle';
 import { IconCopyComponent } from '../shared/icon/icon-copy';
 import Swal from 'sweetalert2';
 
-interface SBC {
+interface SBCNode {
     id?: number;
-    call_server_id: number | null;
-    call_server?: { id: number; name: string };
     name: string;
-    sip_server: string;
-    sip_server_port: number;
-    outcid: string | null;
-    maxchans: number;
-    transport: string;
-    context: string;
-    disabled: boolean;
+    host: string;
+    port: number;
+    description: string | null;
+    is_active: boolean;
+    type: string;
 }
-
-interface CallServer { id: number; name: string; }
 
 @Component({
     templateUrl: './sbc.html',
     animations: [toggleAnimation],
-    imports: [CommonModule, FormsModule, RouterModule, IconPlusComponent, IconPencilComponent, IconTrashLinesComponent, IconCircleCheckComponent, IconXCircleComponent, IconCopyComponent],
+    imports: [
+        CommonModule,
+        FormsModule,
+        RouterModule,
+        IconPlusComponent,
+        IconPencilComponent,
+        IconTrashLinesComponent,
+        IconCircleCheckComponent,
+        IconXCircleComponent,
+        IconCopyComponent,
+    ],
 })
 export class SBCComponent implements OnInit {
     store: any;
-    sbcs: SBC[] = [];
-    callServers: CallServer[] = [];
+    sbcs: SBCNode[] = [];
     isLoading = false;
     search = '';
     showModal = false;
     modalMode: 'create' | 'edit' | 'view' = 'create';
 
-    transportOptions = [{ value: 'udp', label: 'UDP' }, { value: 'tcp', label: 'TCP' }, { value: 'tls', label: 'TLS' }];
-
-    formData: SBC = { call_server_id: null, name: '', sip_server: '', sip_server_port: 5060, outcid: null, maxchans: 2, transport: 'udp', context: 'from-pstn', disabled: false };
+    formData: SBCNode = {
+        name: '',
+        host: '',
+        port: 5060,
+        description: null,
+        is_active: true,
+        type: 'sbc'
+    };
 
     private http = inject(HttpClient);
 
@@ -56,28 +64,39 @@ export class SBCComponent implements OnInit {
 
     async initStore() { this.storeData.select((d) => d.index).subscribe((d) => { this.store = d; }); }
 
-    ngOnInit() { this.loadSBCs(); this.loadCallServers(); }
+    ngOnInit() { this.loadSBCs(); }
 
     loadSBCs() {
         this.isLoading = true;
-        this.http.get<any>(`${environment.apiUrl}/v1/sbcs`).subscribe({
+        this.http.get<any>(`${environment.apiUrl}/v1/call-servers?type=sbc`).subscribe({
             next: (response) => { this.sbcs = response.data || []; this.isLoading = false; },
             error: (error) => { console.error('Failed to load SBCs:', error); this.isLoading = false; this.showErrorMessage('Failed to load SBCs'); },
         });
     }
 
-    loadCallServers() {
-        this.http.get<any>(`${environment.apiUrl}/v1/call-servers`).subscribe({
-            next: (response) => { this.callServers = response.data || []; },
-            error: (error) => { console.error('Failed to load call servers:', error); },
+    get filteredSBCs() {
+        return this.sbcs.filter((d) => {
+            return (
+                d.name.toLowerCase().includes(this.search.toLowerCase()) ||
+                d.host.toLowerCase().includes(this.search.toLowerCase())
+            );
         });
     }
 
     openCreateModal() { this.modalMode = 'create'; this.resetForm(); this.showModal = true; }
-    openEditModal(sbc: SBC) { this.modalMode = 'edit'; this.formData = { ...sbc }; this.showModal = true; }
-    copyRecord(sbc: SBC) { this.modalMode = 'create'; this.formData = { ...sbc, id: undefined, name: sbc.name + ' - New' }; this.showModal = true; }
+    openEditModal(sbc: SBCNode) { this.modalMode = 'edit'; this.formData = { ...sbc }; this.showModal = true; }
+    copyRecord(sbc: SBCNode) { this.modalMode = 'create'; this.formData = { ...sbc, id: undefined, name: sbc.name + ' - Copy' }; this.showModal = true; }
     closeModal() { this.showModal = false; this.resetForm(); }
-    resetForm() { this.formData = { call_server_id: null, name: '', sip_server: '', sip_server_port: 5060, outcid: null, maxchans: 2, transport: 'udp', context: 'from-pstn', disabled: false }; }
+    resetForm() {
+        this.formData = {
+            name: '',
+            host: '',
+            port: 5060,
+            description: null,
+            is_active: true,
+            type: 'sbc'
+        };
+    }
 
     handleSubmit() {
         if (this.modalMode === 'create') { this.createSBC(); }
@@ -85,27 +104,27 @@ export class SBCComponent implements OnInit {
     }
 
     createSBC() {
-        const createData = { call_server_id: this.formData.call_server_id, name: this.formData.name, sip_server: this.formData.sip_server, sip_server_port: this.formData.sip_server_port, outcid: this.formData.outcid, maxchans: this.formData.maxchans, transport: this.formData.transport, context: this.formData.context, disabled: this.formData.disabled };
-        this.http.post<any>(`${environment.apiUrl}/v1/sbcs`, createData).subscribe({
-            next: () => { this.showSuccessMessage('SBC created successfully'); this.closeModal(); this.loadSBCs(); },
-            error: (error) => { this.showErrorMessage(error.error?.error || 'Failed to create SBC'); },
+        const createData = { ...this.formData };
+        this.http.post<any>(`${environment.apiUrl}/v1/call-servers`, createData).subscribe({
+            next: () => { this.showSuccessMessage('SBC Node created successfully'); this.closeModal(); this.loadSBCs(); },
+            error: (error) => { this.showErrorMessage(error.error?.error || 'Failed to create SBC Node'); },
         });
     }
 
     updateSBC() {
-        const updateData = { call_server_id: this.formData.call_server_id, name: this.formData.name, sip_server: this.formData.sip_server, sip_server_port: this.formData.sip_server_port, outcid: this.formData.outcid, maxchans: this.formData.maxchans, transport: this.formData.transport, context: this.formData.context, disabled: this.formData.disabled };
-        this.http.put<any>(`${environment.apiUrl}/v1/sbcs/${this.formData.id}`, updateData).subscribe({
-            next: () => { this.showSuccessMessage('SBC updated successfully'); this.closeModal(); this.loadSBCs(); },
-            error: (error) => { this.showErrorMessage(error.error?.error || 'Failed to update SBC'); },
+        const updateData = { ...this.formData };
+        this.http.put<any>(`${environment.apiUrl}/v1/call-servers/${this.formData.id}`, updateData).subscribe({
+            next: () => { this.showSuccessMessage('SBC Node updated successfully'); this.closeModal(); this.loadSBCs(); },
+            error: (error) => { this.showErrorMessage(error.error?.error || 'Failed to update SBC Node'); },
         });
     }
 
     deleteSBC(id: number) {
-        Swal.fire({ title: 'Are you sure?', text: 'You will not be able to recover this SBC!', icon: 'warning', showCancelButton: true, confirmButtonColor: '#3085d6', cancelButtonColor: '#d33', confirmButtonText: 'Yes, delete it!' }).then((result) => {
+        Swal.fire({ title: 'Are you sure?', text: 'You will not be able to recover this SBC Node!', icon: 'warning', showCancelButton: true, confirmButtonColor: '#3085d6', cancelButtonColor: '#d33', confirmButtonText: 'Yes, delete it!' }).then((result) => {
             if (result.isConfirmed) {
-                this.http.delete<any>(`${environment.apiUrl}/v1/sbcs/${id}`).subscribe({
-                    next: () => { this.showSuccessMessage('SBC deleted successfully'); this.loadSBCs(); },
-                    error: (error) => { this.showErrorMessage(error.error?.error || 'Failed to delete SBC'); },
+                this.http.delete<any>(`${environment.apiUrl}/v1/call-servers/${id}`).subscribe({
+                    next: () => { this.showSuccessMessage('SBC Node deleted successfully'); this.loadSBCs(); },
+                    error: (error) => { this.showErrorMessage(error.error?.error || 'Failed to delete SBC Node'); },
                 });
             }
         });
