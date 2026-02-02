@@ -86,6 +86,7 @@ export class BoxedSigninComponent {
                 localStorage.setItem('userName', res.user.name);
                 localStorage.setItem('userRole', res.user.role);
                 localStorage.setItem('userId', res.user.id);
+                localStorage.setItem('userProfileImage', res.user.profile_image || '');
                 localStorage.setItem('isLoggedIn', 'true');
 
                 this.loading = false;

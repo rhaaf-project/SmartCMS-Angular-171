@@ -42,3 +42,6 @@ testem.log
 Thumbs.db
 
 /test.json
+/src/assets/images/user-profiles
+*.bak
+*.tmp

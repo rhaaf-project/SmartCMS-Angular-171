@@ -1,5 +1,12 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
+import { environment } from '../../environments/environment';
 import { toggleAnimation } from '../shared/animations';
+import { MenuModule } from 'headlessui-angular';
+
+// Icons
 import { IconPencilPaperComponent } from '../shared/icon/icon-pencil-paper';
 import { IconCoffeeComponent } from '../shared/icon/icon-coffee';
 import { IconCalendarComponent } from '../shared/icon/icon-calendar';
@@ -14,15 +21,15 @@ import { IconTagComponent } from '../shared/icon/icon-tag';
 import { IconCreditCardComponent } from '../shared/icon/icon-credit-card';
 import { IconClockComponent } from '../shared/icon/icon-clock';
 import { IconHorizontalDotsComponent } from '../shared/icon/icon-horizontal-dots';
-import { MenuModule } from 'headlessui-angular';
-import { RouterModule } from '@angular/router';
 
 @Component({
     templateUrl: './profile.html',
     animations: [toggleAnimation],
     imports: [
-        IconPencilPaperComponent,
+        CommonModule,
         RouterModule,
+        MenuModule,
+        IconPencilPaperComponent,
         IconCoffeeComponent,
         IconCalendarComponent,
         IconMapPinComponent,
@@ -36,9 +43,40 @@ import { RouterModule } from '@angular/router';
         IconCreditCardComponent,
         IconClockComponent,
         IconHorizontalDotsComponent,
-        MenuModule,
     ],
 })
-export class ProfileComponent {
-    constructor() {}
+export class ProfileComponent implements OnInit {
+    user: any = {};
+    logs: any[] = [];
+    isLoadingLogs = false;
+    imageBaseUrl = environment.imageBaseUrl;
+    private http = inject(HttpClient);
+
+    constructor() { }
+
+    ngOnInit() {
+        this.user = {
+            name: localStorage.getItem('userName') || 'User',
+            email: localStorage.getItem('userEmail') || '',
+            role: localStorage.getItem('userRole') || 'Viewer',
+            profile_image: localStorage.getItem('userProfileImage') || ''
+        };
+        this.loadLogs();
+    }
+
+    loadLogs() {
+        const userId = localStorage.getItem('userId');
+        if (!userId) return;
+
+        this.isLoadingLogs = true;
+        this.http.get<any>(`${environment.apiUrl}/v1/activity_logs?user_id=${userId}&per_page=10`).subscribe({
+            next: (res) => {
+                this.logs = res.data || [];
+                this.isLoadingLogs = false;
+            },
+            error: () => {
+                this.isLoadingLogs = false;
+            }
+        });
+    }
 }

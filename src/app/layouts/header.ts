@@ -1,4 +1,4 @@
-﻿import { Component } from '@angular/core';
+﻿import { Component, HostListener } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { Router, NavigationEnd, RouterModule } from '@angular/router';
 import { AppService } from '../service/app.service';
@@ -33,6 +33,8 @@ import { IconMenuDatatablesComponent } from '../shared/icon/menu/icon-menu-datat
 import { IconMenuFormsComponent } from '../shared/icon/menu/icon-menu-forms';
 import { IconMenuPagesComponent } from '../shared/icon/menu/icon-menu-pages';
 import { IconMenuMoreComponent } from '../shared/icon/menu/icon-menu-more';
+
+import { environment } from '../../environments/environment';
 
 @Component({
     selector: 'header',
@@ -78,6 +80,8 @@ export class HeaderComponent {
     search = false;
     userName: string = '';
     userEmail: string = '';
+    userProfileImage: string = '';
+    imageBaseUrl = environment.imageBaseUrl;
     notifications = [
         {
             id: 1,
@@ -167,6 +171,14 @@ export class HeaderComponent {
         // Load user info from localStorage
         this.userName = localStorage.getItem('userName') || 'Guest';
         this.userEmail = localStorage.getItem('userEmail') || '';
+        this.userProfileImage = localStorage.getItem('userProfileImage') || '';
+    }
+
+    @HostListener('window:storage')
+    onStorageChange() {
+        this.userName = localStorage.getItem('userName') || 'Guest';
+        this.userEmail = localStorage.getItem('userEmail') || '';
+        this.userProfileImage = localStorage.getItem('userProfileImage') || '';
     }
 
     setActiveDropdown() {
@@ -224,6 +236,7 @@ export class HeaderComponent {
             localStorage.removeItem('token');
             localStorage.removeItem('userEmail');
             localStorage.removeItem('userName');
+            localStorage.removeItem('userProfileImage');
             localStorage.removeItem('isLoggedIn');
             // Redirect to login
             this.router.navigate(['/login']);

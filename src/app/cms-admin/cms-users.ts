@@ -2,7 +2,7 @@ import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
-import { Router, RouterModule } from '@angular/router';
+import { Router, RouterModule, ActivatedRoute } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { toggleAnimation } from '../shared/animations';
 import { environment } from '../../environments/environment';
@@ -21,6 +21,7 @@ interface User {
     is_active: boolean;
     last_login?: string;
     created_at?: string;
+    profile_image?: string;
 }
 
 @Component({
@@ -45,11 +46,33 @@ export class CmsUsersComponent implements OnInit {
     modalMode: 'create' | 'edit' = 'create';
     formData: User = { name: '', email: '', password: '', role: 'viewer', is_active: true };
     search = '';
+    imageBaseUrl = environment.imageBaseUrl;
 
     private http = inject(HttpClient);
+    private route = inject(ActivatedRoute);
+    private router = inject(Router);
 
     ngOnInit() {
         this.loadItems();
+
+        // Handle auto-edit modal on initialization
+        this.route.queryParams.subscribe(params => {
+            if (params['edit_self'] && localStorage.getItem('userId')) {
+                const checkInterval = setInterval(() => {
+                    if (this.items.length > 0) {
+                        const myId = Number(localStorage.getItem('userId'));
+                        const me = this.items.find(u => u.id === myId);
+                        if (me) {
+                            this.openEditModal(me);
+                        }
+                        clearInterval(checkInterval);
+                    }
+                }, 100);
+
+                // Safety timeout
+                setTimeout(() => clearInterval(checkInterval), 3000);
+            }
+        });
     }
 
     get filteredItems(): User[] {
@@ -60,6 +83,17 @@ export class CmsUsersComponent implements OnInit {
             item.email.toLowerCase().includes(s) ||
             item.role.toLowerCase().includes(s)
         );
+    }
+
+    onFileSelected(event: any) {
+        const file = event.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = (e: any) => {
+                this.formData.profile_image = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
     }
 
     loadItems() {
@@ -122,10 +156,25 @@ export class CmsUsersComponent implements OnInit {
             const payload = { ...this.formData };
             if (!payload.password) delete payload.password;
             this.http.put<any>(`${environment.apiUrl}/v1/users/${this.formData.id}`, payload).subscribe({
-                next: () => {
+                next: (res) => {
                     Swal.fire('Success', 'User updated successfully', 'success');
+
+                    // Update header if user updated their own profile
+                    if (String(this.formData.id) === localStorage.getItem('userId')) {
+                        localStorage.setItem('userProfileImage', res.data.profile_image || '');
+                        // Dispatch event to notify other components (like Header)
+                        window.dispatchEvent(new Event('storage'));
+                    }
+
                     this.closeModal();
-                    this.loadItems();
+
+                    // Clear query params to prevent auto-reopening, then reload data
+                    this.router.navigate([], {
+                        queryParams: { edit_self: null },
+                        queryParamsHandling: 'merge'
+                    }).then(() => {
+                        this.loadItems();
+                    });
                 },
                 error: (err) => {
                     Swal.fire('Error', err.error?.error || 'Failed to update user', 'error');

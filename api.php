@@ -11,6 +11,13 @@ header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS');
 header('Access-Control-Allow-Headers: Content-Type, Authorization');
 
+// If the requested URI exists as a file, let the PHP built-in server handle it directly
+// This is essential when running with php -S localhost:8000 api.php
+$requestPath = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+if ($requestPath !== '/' && file_exists(__DIR__ . $requestPath) && is_file(__DIR__ . $requestPath)) {
+    return false;
+}
+
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     http_response_code(200);
     exit;
@@ -138,15 +145,15 @@ if ($resource === 'login' && $method === 'POST') {
         $updateStmt = $pdo->prepare("UPDATE users SET last_login = NOW() WHERE id = ?");
         $updateStmt->execute([$user['id']]);
 
-        // Log successful login (wrapped in try-catch to not break login if logging fails)
+        // Log successful login
         try {
             $logStmt = $pdo->prepare("INSERT INTO `activity_logs` (user_id, action, entity_type, entity_id, ip_address, user_agent, new_values) VALUES (?, ?, ?, ?, ?, ?, ?)");
-            $logStmt->execute([null, 'login', 'auth', $user['id'], $ip_address, substr($user_agent, 0, 255), json_encode(['email' => $email, 'name' => $user['name']])]);
+            $logStmt->execute([$user['id'], 'login', 'auth', $user['id'], $ip_address, substr($user_agent, 0, 255), json_encode(['email' => $email, 'name' => $user['name']])]);
         } catch (Exception $e) {
             // Ignore logging errors
         }
 
-        echo json_encode(['success' => true, 'user' => ['id' => $user['id'], 'email' => $user['email'], 'name' => $user['name'], 'role' => $user['role']], 'token' => bin2hex(random_bytes(32))]);
+        echo json_encode(['success' => true, 'user' => ['id' => $user['id'], 'email' => $user['email'], 'name' => $user['name'], 'role' => $user['role'], 'profile_image' => $user['profile_image']], 'token' => bin2hex(random_bytes(32))]);
     } else {
         // Log failed login attempt
         try {
@@ -312,6 +319,13 @@ try {
                     $params[] = "%$search%";
                 }
 
+                // Filter by user_id for activity_logs
+                if ($table === 'activity_logs' && isset($_GET['user_id'])) {
+                    $op = $where ? " AND " : " WHERE ";
+                    $where .= "$op user_id = ?";
+                    $params[] = $_GET['user_id'];
+                }
+
                 // Count total
                 $countStmt = $pdo->prepare("SELECT COUNT(*) FROM `$table` $where");
                 $countStmt->execute($params);
@@ -381,68 +395,6 @@ try {
                         $stmt4 = $pdo->prepare("SELECT COUNT(*) FROM call_servers WHERE head_office_id = ?");
                         $stmt4->execute([$row['id']]);
                         $row['call_servers_count'] = $stmt4->fetchColumn();
-                    }
-                }
-
-                // Add relations for branches
-                if ($table === 'branches') {
-                    // Filter by customer_id if provided
-                    $customerId = $_GET['customer_id'] ?? null;
-                    if ($customerId) {
-                        $rows = array_filter($rows, function ($row) use ($customerId) {
-                            return $row['customer_id'] == $customerId;
-                        });
-                        $rows = array_values($rows);
-                    }
-
-                    foreach ($rows as &$row) {
-                        if ($row['customer_id']) {
-                            $stmt2 = $pdo->prepare("SELECT id, name FROM customers WHERE id = ?");
-                            $stmt2->execute([$row['customer_id']]);
-                            $row['customer'] = $stmt2->fetch(PDO::FETCH_ASSOC);
-                        }
-                        if ($row['head_office_id']) {
-                            $stmt3 = $pdo->prepare("SELECT id, name FROM head_offices WHERE id = ?");
-                            $stmt3->execute([$row['head_office_id']]);
-                            $row['head_office'] = $stmt3->fetch(PDO::FETCH_ASSOC);
-                        }
-                        if ($row['call_server_id']) {
-                            $stmt4 = $pdo->prepare("SELECT id, name FROM call_servers WHERE id = ?");
-                            $stmt4->execute([$row['call_server_id']]);
-                            $row['call_server'] = $stmt4->fetch(PDO::FETCH_ASSOC);
-                        }
-                    }
-                }
-
-                // Add relations for sub_branches
-                if ($table === 'sub_branches') {
-                    foreach ($rows as &$row) {
-                        if ($row['customer_id']) {
-                            $stmt2 = $pdo->prepare("SELECT id, name FROM customers WHERE id = ?");
-                            $stmt2->execute([$row['customer_id']]);
-                            $row['customer'] = $stmt2->fetch(PDO::FETCH_ASSOC);
-                        }
-                        if ($row['branch_id']) {
-                            $stmt3 = $pdo->prepare("SELECT id, name FROM branches WHERE id = ?");
-                            $stmt3->execute([$row['branch_id']]);
-                            $row['branch'] = $stmt3->fetch(PDO::FETCH_ASSOC);
-                        }
-                        if ($row['call_server_id']) {
-                            $stmt4 = $pdo->prepare("SELECT id, name, host FROM call_servers WHERE id = ?");
-                            $stmt4->execute([$row['call_server_id']]);
-                            $row['call_server'] = $stmt4->fetch(PDO::FETCH_ASSOC);
-                        }
-                    }
-                }
-
-                // Add call_server relation for lines
-                if ($table === 'lines') {
-                    foreach ($rows as &$row) {
-                        if ($row['call_server_id']) {
-                            $stmt2 = $pdo->prepare("SELECT id, name FROM call_servers WHERE id = ?");
-                            $stmt2->execute([$row['call_server_id']]);
-                            $row['call_server'] = $stmt2->fetch(PDO::FETCH_ASSOC);
-                        }
                     }
                 }
 
@@ -620,6 +572,46 @@ try {
                 $input['password'] = password_hash($input['password'], PASSWORD_BCRYPT);
             }
 
+            // Handle Profile Image Upload
+            if ($table === 'users' && isset($input['profile_image']) && !empty($input['profile_image'])) {
+                if (preg_match('/^data:image\/([a-zA-Z0-9+.-]+);base64,/', $input['profile_image'], $type)) {
+                    $data = substr($input['profile_image'], strpos($input['profile_image'], ',') + 1);
+                    $decoded = base64_decode($data);
+
+                    if ($decoded === false) {
+                        unset($input['profile_image']);
+                    } else {
+                        $extension = strtolower($type[1]);
+                        if ($extension === 'svg+xml')
+                            $extension = 'svg';
+                        if ($extension === 'jpeg')
+                            $extension = 'jpg';
+
+                        if (in_array($extension, ['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg'])) {
+                            $filename = 'user_' . time() . '_' . uniqid() . '.' . $extension;
+                            $uploadDir = is_dir('src/assets') ? 'src/assets/images/user-profiles/' : 'assets/images/user-profiles/';
+
+                            if (!file_exists($uploadDir)) {
+                                mkdir($uploadDir, 0777, true);
+                            }
+
+                            if (file_put_contents($uploadDir . $filename, $decoded)) {
+                                $input['profile_image'] = $filename;
+                            } else {
+                                unset($input['profile_image']);
+                            }
+                        } else {
+                            unset($input['profile_image']);
+                        }
+                    }
+                }
+
+                // Final safety check: if profile_image is still huge (was not processed), unset it to prevent DB error
+                if (isset($input['profile_image']) && strlen($input['profile_image']) > 255) {
+                    unset($input['profile_image']);
+                }
+            }
+
             $columns = array_keys($input);
             $placeholders = array_fill(0, count($columns), '?');
             $sql = "INSERT INTO `$table` (" . implode(',', $columns) . ") VALUES (" . implode(',', $placeholders) . ")";
@@ -647,6 +639,46 @@ try {
                 $input['password'] = password_hash($input['password'], PASSWORD_BCRYPT);
             }
 
+            // Handle Profile Image Upload
+            if ($table === 'users' && isset($input['profile_image']) && !empty($input['profile_image'])) {
+                if (preg_match('/^data:image\/([a-zA-Z0-9+.-]+);base64,/', $input['profile_image'], $type)) {
+                    $data = substr($input['profile_image'], strpos($input['profile_image'], ',') + 1);
+                    $decoded = base64_decode($data);
+
+                    if ($decoded === false) {
+                        unset($input['profile_image']);
+                    } else {
+                        $extension = strtolower($type[1]);
+                        if ($extension === 'svg+xml')
+                            $extension = 'svg';
+                        if ($extension === 'jpeg')
+                            $extension = 'jpg';
+
+                        if (in_array($extension, ['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg'])) {
+                            $filename = 'user_' . time() . '_' . uniqid() . '.' . $extension;
+                            $uploadDir = is_dir('src/assets') ? 'src/assets/images/user-profiles/' : 'assets/images/user-profiles/';
+
+                            if (!file_exists($uploadDir)) {
+                                mkdir($uploadDir, 0777, true);
+                            }
+
+                            if (file_put_contents($uploadDir . $filename, $decoded)) {
+                                $input['profile_image'] = $filename;
+                            } else {
+                                unset($input['profile_image']);
+                            }
+                        } else {
+                            unset($input['profile_image']);
+                        }
+                    }
+                }
+
+                // Final safety check: if profile_image is still huge > 255 chars, unset it
+                if (isset($input['profile_image']) && strlen($input['profile_image']) > 255) {
+                    unset($input['profile_image']);
+                }
+            }
+
             $sets = [];
             $values = [];
             foreach ($input as $key => $value) {
@@ -662,6 +694,17 @@ try {
             $stmt2 = $pdo->prepare("SELECT * FROM `$table` WHERE id = ?");
             $stmt2->execute([$id]);
             $data = $stmt2->fetch(PDO::FETCH_ASSOC);
+
+            // Log user update actions
+            if ($table === 'users') {
+                try {
+                    $logStmt = $pdo->prepare("INSERT INTO `activity_logs` (user_id, action, entity_type, entity_id, ip_address, user_agent, new_values) VALUES (?, ?, ?, ?, ?, ?, ?)");
+                    $ip_address = $_SERVER['REMOTE_ADDR'] ?? 'unknown';
+                    $user_agent = $_SERVER['HTTP_USER_AGENT'] ?? 'unknown';
+                    $logStmt->execute([$id, 'update', 'users', $id, $ip_address, substr($user_agent, 0, 255), json_encode($input)]);
+                } catch (Exception $e) { /* Check api.php logs if needed */
+                }
+            }
 
             echo json_encode(['message' => 'Updated successfully', 'data' => $data]);
             break;
