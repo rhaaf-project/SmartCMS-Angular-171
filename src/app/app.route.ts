@@ -106,9 +106,6 @@ export const routes: Routes = [
             { path: 'backup', component: NAComponent },
             { path: 'backup/:any', component: NAComponent },
             { path: 'backup/:any/:any2', component: NAComponent },
-            { path: 'connectivity/feature', component: NAComponent },
-            { path: 'connectivity/feature/:any', component: NAComponent },
-            { path: 'connectivity/feature/:any/:any2', component: NAComponent },
             { path: 'cms-admin/group', component: NAComponent },
             { path: 'cms-admin/policy', component: NAComponent },
         ],
@@ -130,8 +127,6 @@ export const routes: Routes = [
             { path: 'turret-management/:any', component: NAComponent },
             { path: 'backup', component: NAComponent },
             { path: 'backup/:any', component: NAComponent },
-            { path: 'connectivity/feature', component: NAComponent },
-            { path: 'connectivity/feature/:any', component: NAComponent },
         ]
     },
 

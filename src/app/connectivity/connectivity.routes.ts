@@ -102,12 +102,34 @@ export const CONNECTIVITY_ROUTES: Routes = [
         title: 'SBC Routing | SmartUCX',
     },
     {
-        path: 'feature',
-        loadComponent: () => import('../shared/na/na').then((d) => d.NAComponent),
+        path: 'feature/broadcast',
+        loadComponent: () => import('./broadcast').then((d) => d.BroadcastComponent),
+        title: 'Broadcast | SmartUCX',
     },
     {
-        path: 'feature/:any',
-        loadComponent: () => import('../shared/na/na').then((d) => d.NAComponent),
+        path: 'feature/music-on-hold',
+        loadComponent: () => import('./music-on-hold').then((d) => d.MusicOnHoldComponent),
+        title: 'Music on Hold | SmartUCX',
+    },
+    {
+        path: 'feature/paging-intercom',
+        loadComponent: () => import('./paging-intercom').then((d) => d.PagingIntercomComponent),
+        title: 'Paging & Intercom | SmartUCX',
+    },
+    {
+        path: 'feature/recording',
+        loadComponent: () => import('./recording').then((d) => d.RecordingComponent),
+        title: 'Recording | SmartUCX',
+    },
+    {
+        path: 'feature/ring-group',
+        loadComponent: () => import('./ring-group').then((d) => d.RingGroupComponent),
+        title: 'Ring Group | SmartUCX',
+    },
+    {
+        path: 'feature/time-conditions',
+        loadComponent: () => import('./time-conditions').then((d) => d.TimeConditionsComponent),
+        title: 'Time Conditions | SmartUCX',
     },
 ];
 
