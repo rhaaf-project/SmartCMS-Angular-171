@@ -103,11 +103,6 @@
                                     <option *ngFor="let m of modes" [value]="m">{{ m }}</option>
                                 </select>
                             </div>
-                            <div class="md:col-span-2">
-                                <label for="directory">Directory</label>
-                                <input id="directory" type="text" [(ngModel)]="formData.directory" name="directory"
-                                    class="form-input" />
-                            </div>
                             <div>
                                 <label for="sort">Sort</label>
                                 <select id="sort" [(ngModel)]="formData.sort" name="sort" class="form-select">
