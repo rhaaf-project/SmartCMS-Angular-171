@@ -1,0 +1,154 @@
+<div>
+    <div class="panel" style="padding: 15px;">
+        <div class="mb-5 flex flex-col gap-5 md:flex-row md:items-center">
+            <h5 class="text-medium font-medium dark:text-white-light">Firewall Rules</h5>
+            <div class="flex ltr:ml-auto rtl:mr-auto">
+                <div class="relative mr-4">
+                    <input type="text" class="form-input-sm form-input w-auto pr-8" [(ngModel)]="search"
+                        placeholder="Search..." />
+                    <div class="absolute top-1/2 right-2 -translate-y-1/2">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" class="text-white-dark">
+                            <circle cx="11.5" cy="11.5" r="9.5" stroke="currentColor" stroke-width="1.5" opacity="0.5">
+                            </circle>
+                            <path d="M18.5 18.5L22 22" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+                            </path>
+                        </svg>
+                    </div>
+                </div>
+                <button type="button" class="btn btn-warning btn-sm" (click)="openCreateModal()">
+                    <icon-plus class="ltr:mr-1 rtl:ml-1" />
+                    Add Rule
+                </button>
+            </div>
+        </div>
+        <div class="mb-5">
+            <div class="table-responsive">
+                <table class="table-hover">
+                    <thead>
+                        <tr>
+                            <th>Priority</th>
+                            <th>Name</th>
+                            <th>Protocol</th>
+                            <th>Port</th>
+                            <th>Source</th>
+                            <th>Action</th>
+                            <th class="text-center">Active</th>
+                            <th class="text-center">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngIf="isLoading">
+                            <td colspan="8" class="text-center">
+                                <div
+                                    class="inline-block h-8 w-8 animate-spin rounded-full border-4 border-primary border-l-transparent">
+                                </div>
+                            </td>
+                        </tr>
+                        <tr *ngIf="!isLoading && filteredRules.length === 0">
+                            <td colspan="8" class="text-center">No firewall rules found</td>
+                        </tr>
+                        <tr *ngFor="let rule of filteredRules" [class.opacity-50]="!rule.is_active">
+                            <td><span class="badge badge-outline-primary">{{ rule.priority }}</span></td>
+                            <td class="font-semibold">{{ rule.name }}</td>
+                            <td><span class="badge badge-outline-info">{{ rule.protocol }}</span></td>
+                            <td class="font-mono">{{ rule.port }}</td>
+                            <td class="font-mono text-xs">{{ rule.source }}</td>
+                            <td><span [class]="getActionClass(rule.action)">{{ rule.action }}</span></td>
+                            <td class="text-center">
+                                <icon-circle-check *ngIf="rule.is_active" class="text-success" />
+                            </td>
+                            <td class="text-center">
+                                <div class="flex items-center justify-center gap-1">
+                                    <button type="button" class="btn btn-sm btn-outline-warning border-0 p-1"
+                                        (click)="openEditModal(rule)" title="Edit">
+                                        <icon-pencil />
+                                    </button>
+                                    <button type="button" class="btn btn-sm btn-outline-danger border-0 p-1"
+                                        (click)="deleteRule(rule.id)" title="Delete">
+                                        <icon-trash-lines />
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="text-sm text-gray-500">
+            Showing {{ filteredRules.length }} of {{ rules.length }} rules
+            <span class="ml-4 text-xs text-white-dark">(Ports: SIP 5060/5061, RTP 10000-20000, IAX2 4569, AMI
+                5038)</span>
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div *ngIf="showModal" class="fixed inset-0 z-[999] overflow-y-auto bg-[black]/60" (click)="closeModal()">
+        <div class="flex min-h-screen items-start justify-center px-4 py-8">
+            <div class="panel my-8 w-full max-w-lg overflow-hidden rounded-lg border-0 p-0"
+                (click)="$event.stopPropagation()" [@toggleAnimation]>
+                <div class="flex items-center justify-between bg-[#fbfbfb] px-5 py-3 dark:bg-[#121c2c]">
+                    <h5 class="text-lg font-bold">{{ modalMode === 'create' ? 'Add Firewall Rule' : 'Edit Firewall Rule'
+                        }}</h5>
+                    <button type="button" class="text-white-dark hover:text-dark" (click)="closeModal()">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                            <path d="M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+                            <path d="M6 6L18 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+                        </svg>
+                    </button>
+                </div>
+                <div class="p-5">
+                    <form (ngSubmit)="handleSubmit()">
+                        <div class="mb-5 grid grid-cols-1 gap-5 md:grid-cols-2">
+                            <div class="md:col-span-2">
+                                <label for="name">Rule Name <span class="text-danger">*</span></label>
+                                <input id="name" type="text" [(ngModel)]="formData.name" name="name" class="form-input"
+                                    placeholder="e.g., SIP Signaling" required />
+                            </div>
+                            <div>
+                                <label for="protocol">Protocol</label>
+                                <select id="protocol" [(ngModel)]="formData.protocol" name="protocol"
+                                    class="form-select">
+                                    <option *ngFor="let proto of protocols" [value]="proto">{{ proto }}</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label for="port">Port / Range <span class="text-danger">*</span></label>
+                                <input id="port" type="text" [(ngModel)]="formData.port" name="port" class="form-input"
+                                    placeholder="5060 or 10000-20000" required />
+                            </div>
+                            <div>
+                                <label for="source">Source</label>
+                                <input id="source" type="text" [(ngModel)]="formData.source" name="source"
+                                    class="form-input" placeholder="Any or 192.168.1.0/24" />
+                            </div>
+                            <div>
+                                <label for="action">Action</label>
+                                <select id="action" [(ngModel)]="formData.action" name="action" class="form-select">
+                                    <option *ngFor="let act of actions" [value]="act">{{ act }}</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label for="priority">Priority</label>
+                                <input id="priority" type="number" [(ngModel)]="formData.priority" name="priority"
+                                    class="form-input" placeholder="1-999" />
+                                <span class="text-xs text-white-dark">Lower number = higher priority</span>
+                            </div>
+                            <div class="flex items-end">
+                                <label class="inline-flex cursor-pointer">
+                                    <input type="checkbox" [(ngModel)]="formData.is_active" name="is_active"
+                                        class="form-checkbox" />
+                                    <span class="ml-2">Active</span>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="mt-8 flex items-center justify-start gap-3">
+                            <button type="submit" class="btn btn-warning">{{ modalMode === 'create' ? 'Add Rule' : 'Save
+                                changes' }}</button>
+                            <button type="button" class="btn btn-dark" (click)="closeModal()">Cancel</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
