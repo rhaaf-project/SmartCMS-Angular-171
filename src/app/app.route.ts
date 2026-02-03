@@ -98,9 +98,17 @@ export const routes: Routes = [
             { path: 'device', component: NAComponent },
             { path: 'device/:any', component: NAComponent },
             { path: 'device/:any/:any2', component: NAComponent },
-            { path: 'turret-management', component: NAComponent },
-            { path: 'turret-management/:any', component: NAComponent },
-            { path: 'turret-management/:any/:any2', component: NAComponent },
+            // Turret Management
+            {
+                path: 'turret-management/users',
+                loadComponent: () => import('./turret-management/turret-users').then((d) => d.TurretUsersComponent),
+                data: { title: 'Turret Users | SmartUCX' }
+            },
+            // NA for other turret-management submenus not yet implemented
+            { path: 'turret-management/template', component: NAComponent },
+            { path: 'turret-management/group', component: NAComponent },
+            { path: 'turret-management/policy', component: NAComponent },
+            { path: 'turret-management/phone-directory', component: NAComponent },
             // network
             { path: 'network', loadChildren: () => import('./network/network.routes').then((d) => d.routes) },
             { path: 'backup', component: NAComponent },

@@ -83,9 +83,9 @@ $tableMap = [
     'recordings' => 'recordings',
     'ivr-entries' => 'ivr_entries',
     'black-lists' => 'black_lists',
-    'conferences' => 'conferences',
     'custom-destinations' => 'custom_destinations',
     'misc-destinations' => 'misc_destinations',
+    'turret-users' => 'turret_users',
 ];
 
 $table = $tableMap[$resource] ?? null;
