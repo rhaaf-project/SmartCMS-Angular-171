@@ -13,6 +13,7 @@ This guide documents the complete process for creating new pages and integrating
 4. [Integrating with Sidebar](#integrating-with-sidebar)
 5. [Common Patterns](#common-patterns)
 6. [Troubleshooting](#troubleshooting)
+7. [Deployment](#deployment)
 
 ---
 
@@ -1253,3 +1254,57 @@ export class [ComponentName]Component implements OnInit {
 - Default theme is DARK mode
 - Check `environment.ts` for API URL config
 - NAComponent is the placeholder for unfinished pages
+
+---
+
+## Deployment
+
+### Quick Deploy (Recommended)
+
+Use the workflow command `/deploy` which auto-runs all deploy steps without approval.
+
+**Workflow file:** `.agent/workflows/deploy.md`
+
+### Using deploy.sh Script
+
+After building and creating tar, run the deploy script:
+
+```bash
+# 1. Build Angular
+npm run build
+
+# 2. Create tar (skip images folder)
+tar -czvf deploy.tar.gz -C dist . --exclude="assets/images"
+
+# 3. Run deploy script (uploads & extracts on server)
+bash .agent/workflows/deploy.sh
+```
+
+**Script file:** `.agent/workflows/deploy.sh`
+
+### Manual Deploy Steps
+
+1. **Build Angular project:**
+   ```bash
+   npm run build
+   ```
+
+2. **Create tar archive (skip images):**
+   ```bash
+   tar -czvf deploy.tar.gz -C dist . --exclude="assets/images"
+   ```
+
+3. **Upload to server:**
+   ```bash
+   scp deploy.tar.gz root@103.154.80.171:/var/www/html/SmartCMS-Visto/
+   ```
+
+4. **Extract on server:**
+   ```bash
+   ssh root@103.154.80.171 "cd /var/www/html/SmartCMS-Visto/ && tar -xzf deploy.tar.gz && rm deploy.tar.gz && chown -R www-data:www-data ."
+   ```
+
+### Server Info
+- **Server:** 103.154.80.171
+- **Path:** /var/www/html/SmartCMS-Visto/
+- **URL:** http://103.154.80.171/SmartCMS/
