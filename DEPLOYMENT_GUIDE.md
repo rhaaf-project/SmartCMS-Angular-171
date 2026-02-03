@@ -1,7 +1,19 @@
 # SmartCMS Deployment Guide
 
 **Project:** SmartCMS Angular  
-**Last Updated:** 2026-01-30
+**Last Updated:** 2026-02-03
+
+---
+
+## 🤖 Agent Workflow Commands (Slash Commands)
+
+| Command | Description | Auto-Run |
+|---------|-------------|----------|
+| `/deploy` | Build Angular + upload ke server 103.154.80.171 | ✅ Yes (`// turbo-all`) |
+| `/migrate` | Run SQL migrations di local db_ucx | ✅ Yes (`// turbo-all`) |
+
+> [!TIP]
+> Ketik `/deploy` atau `/migrate` untuk menjalankan workflow tanpa perlu approve tiap step.
 
 ---
 
