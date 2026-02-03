@@ -55,12 +55,31 @@ export class ProfileComponent implements OnInit {
     constructor() { }
 
     ngOnInit() {
+        // Load from localStorage first as fallback
         this.user = {
             name: localStorage.getItem('userName') || 'User',
             email: localStorage.getItem('userEmail') || '',
             role: localStorage.getItem('userRole') || 'Viewer',
             profile_image: localStorage.getItem('userProfileImage') || ''
         };
+
+        // Then fetch fresh data from API
+        const userId = localStorage.getItem('userId');
+        if (userId) {
+            this.http.get<any>(`${environment.apiUrl}/me?user_id=${userId}`).subscribe({
+                next: (res) => {
+                    if (res.success && res.data) {
+                        this.user = res.data;
+                        // Update localStorage with fresh data
+                        localStorage.setItem('userName', res.data.name || '');
+                        localStorage.setItem('userEmail', res.data.email || '');
+                        localStorage.setItem('userRole', res.data.role || '');
+                        localStorage.setItem('userProfileImage', res.data.profile_image || '');
+                    }
+                },
+                error: () => { /* Keep localStorage data on error */ }
+            });
+        }
         this.loadLogs();
     }
 

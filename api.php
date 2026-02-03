@@ -75,6 +75,7 @@ $tableMap = [
     'conferences' => 'conferences',
     'system-logs' => 'system_logs',
     'activity-logs' => 'activity_logs',
+    'activity_logs' => 'activity_logs',
     'call-logs' => 'call_logs',
     'alarm-notifications' => 'alarm_notifications',
     'users' => 'users',
@@ -113,6 +114,70 @@ if ($resource === 'stats' && $method === 'GET') {
                 'total_trunks' => 0,
             ]
         ]);
+    }
+    exit;
+}
+
+// Dropdowns endpoint for select options
+if ($resource === 'dropdowns' && $method === 'GET') {
+    $type = $_GET['type'] ?? '';
+    $data = [];
+
+    try {
+        switch ($type) {
+            case 'recordings':
+                $stmt = $pdo->query("SELECT id, name, filename FROM recordings ORDER BY name");
+                $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                break;
+            case 'announcements':
+                $stmt = $pdo->query("SELECT id, name, filename FROM announcements ORDER BY name");
+                $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                break;
+            case 'call-servers':
+                $stmt = $pdo->query("SELECT id, name FROM call_servers ORDER BY name");
+                $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                break;
+            case 'extensions':
+                $stmt = $pdo->query("SELECT id, extension_number as name FROM extensions ORDER BY extension_number");
+                $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                break;
+            case 'ivr':
+                $stmt = $pdo->query("SELECT id, name FROM ivr ORDER BY name");
+                $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                break;
+            default:
+                $data = [];
+        }
+        echo json_encode(['success' => true, 'data' => $data]);
+    } catch (Exception $e) {
+        echo json_encode(['success' => true, 'data' => []]);
+    }
+    exit;
+}
+
+// Get current user profile endpoint
+if ($resource === 'me' && $method === 'GET') {
+    $userId = $_GET['user_id'] ?? null;
+    if (!$userId) {
+        http_response_code(400);
+        echo json_encode(['error' => 'User ID is required']);
+        exit;
+    }
+
+    try {
+        $stmt = $pdo->prepare("SELECT id, name, email, role, profile_image, is_active, last_login FROM users WHERE id = ?");
+        $stmt->execute([$userId]);
+        $user = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if ($user) {
+            echo json_encode(['success' => true, 'data' => $user]);
+        } else {
+            http_response_code(404);
+            echo json_encode(['error' => 'User not found']);
+        }
+    } catch (Exception $e) {
+        http_response_code(500);
+        echo json_encode(['error' => 'Failed to fetch user']);
     }
     exit;
 }
