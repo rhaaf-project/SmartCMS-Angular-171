@@ -105,8 +105,16 @@ export const routes: Routes = [
                 data: { title: 'Turret Users | SmartUCX' }
             },
             // NA for other turret-management submenus not yet implemented
-            { path: 'turret-management/template', component: NAComponent },
-            { path: 'turret-management/group', component: NAComponent },
+            {
+                path: 'turret-management/template',
+                loadComponent: () => import('./turret-management/turret-template').then((d) => d.TurretTemplateComponent),
+                data: { title: 'Turret Templates | SmartUCX' }
+            },
+            {
+                path: 'turret-management/group',
+                loadComponent: () => import('./turret-management/turret-group').then((d) => d.TurretGroupComponent),
+                data: { title: 'Turret Groups | SmartUCX' }
+            },
             { path: 'turret-management/policy', component: NAComponent },
             { path: 'turret-management/phone-directory', component: NAComponent },
             // network

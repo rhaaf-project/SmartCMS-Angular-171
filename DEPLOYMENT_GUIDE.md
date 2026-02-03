@@ -9,11 +9,14 @@
 
 | Command | Description | Auto-Run |
 |---------|-------------|----------|
-| `/deploy` | Build Angular + upload ke server 103.154.80.171 | ✅ Yes (`// turbo-all`) |
-| `/migrate` | Run SQL migrations di local db_ucx | ✅ Yes (`// turbo-all`) |
+| `/deploy` | Build Angular + upload ke server 103.154.80.171 | ✅ Yes |
+| `/migrate` | Run SQL migrations di local db_ucx | ✅ Yes |
+| `log session` | Update usage log dengan timestamp & activity | Manual |
 
 > [!TIP]
-> Ketik `/deploy` atau `/migrate` untuk menjalankan workflow tanpa perlu approve tiap step.
+> - Ketik `/deploy` atau `/migrate` untuk workflow tanpa approve
+> - Bilang **"log session"** di awal/akhir coding untuk track usage
+> - Check log: `C:\Users\Fajar\.gemini\antigravity\brain\[session-id]\usage_log.md`
 
 ---
 

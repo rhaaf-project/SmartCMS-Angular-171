@@ -86,9 +86,6 @@ $tableMap = [
     'custom-destinations' => 'custom_destinations',
     'misc-destinations' => 'misc_destinations',
     'turret-users' => 'turret_users',
-    'turret-templates' => 'turret_templates',
-    'turret-groups' => 'turret_groups',
-    'turret-group-members' => 'turret_group_members',
 ];
 
 $table = $tableMap[$resource] ?? null;
@@ -563,16 +560,6 @@ try {
                     }
                 }
 
-                // Add relation for turret_groups (include members)
-                if ($table === 'turret_groups') {
-                    foreach ($rows as &$row) {
-                        $stmt2 = $pdo->prepare("SELECT extension FROM turret_group_members WHERE group_id = ?");
-                        $stmt2->execute([$row['id']]);
-                        $members = $stmt2->fetchAll(PDO::FETCH_COLUMN);
-                        $row['members'] = $members; // Return as simple array of extensions
-                    }
-                }
-
                 echo json_encode([
                     'data' => $rows,
                     'current_page' => $page,
@@ -667,8 +654,6 @@ try {
                 // Prevent arrays like 'entries' from being saved to main table (they are handled separately)
                 if (isset($filteredInput['entries']))
                     unset($filteredInput['entries']);
-                if (isset($filteredInput['members']) && $table === 'turret_groups')
-                    unset($filteredInput['members']);
 
                 if ($method === 'POST') {
                     $columns = array_keys($filteredInput);
@@ -698,15 +683,6 @@ try {
                             $logStmt->execute([$id, 'update', 'users', $id, $ip_address, substr($user_agent, 0, 255), json_encode($input)]);
                         } catch (Exception $e) {
                         }
-                    }
-                }
-
-                // Sync Turret Group Members
-                if ($table === 'turret_groups' && isset($input['members']) && is_array($input['members'])) {
-                    $pdo->prepare("DELETE FROM turret_group_members WHERE group_id = ?")->execute([$dataId]);
-                    $stmtLink = $pdo->prepare("INSERT INTO turret_group_members (group_id, extension) VALUES (?, ?)");
-                    foreach ($input['members'] as $ext) {
-                        $stmtLink->execute([$dataId, $ext]);
                     }
                 }
 
