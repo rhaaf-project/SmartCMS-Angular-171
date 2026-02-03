@@ -4,7 +4,7 @@
             <h5 class="text-medium font-medium dark:text-white-light">Recording</h5>
             <div class="flex ltr:ml-auto rtl:mr-auto">
                 <div class="relative mr-4">
-                    <input type="text" class="form-input-sm form-input w-auto pr-8" [(ngModel)]="search" />
+                    <input type="text" class="form-input-sm form-input w-auto pr-8" placeholder="Search..." [(ngModel)]="search" />
                     <div class="absolute top-1/2 right-2 -translate-y-1/2">
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" class="text-white-dark">
                             <circle cx="11.5" cy="11.5" r="9.5" stroke="currentColor" stroke-width="1.5" opacity="0.5">
@@ -119,11 +119,6 @@
                                 <label for="extensions">Extensions (comma separated)</label>
                                 <input id="extensions" type="text" [(ngModel)]="formData.extensions" name="extensions"
                                     class="form-input" />
-                            </div>
-                            <div class="md:col-span-2">
-                                <label for="storage_path">Storage Path</label>
-                                <input id="storage_path" type="text" [(ngModel)]="formData.storage_path"
-                                    name="storage_path" class="form-input" />
                             </div>
                             <div>
                                 <label class="inline-flex cursor-pointer">

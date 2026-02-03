@@ -115,8 +115,16 @@ export const routes: Routes = [
                 loadComponent: () => import('./turret-management/turret-group').then((d) => d.TurretGroupComponent),
                 data: { title: 'Turret Groups | SmartUCX' }
             },
-            { path: 'turret-management/policy', component: NAComponent },
-            { path: 'turret-management/phone-directory', component: NAComponent },
+            {
+                path: 'turret-management/policy',
+                loadComponent: () => import('./turret-management/turret-policy').then((d) => d.TurretPolicyComponent),
+                data: { title: 'Turret Policies | SmartUCX' }
+            },
+            {
+                path: 'turret-management/phone-directory',
+                loadComponent: () => import('./turret-management/phone-directory').then((d) => d.PhoneDirectoryComponent),
+                data: { title: 'Phone Directory | SmartUCX' }
+            },
             // network
             { path: 'network', loadChildren: () => import('./network/network.routes').then((d) => d.routes) },
             { path: 'backup', component: NAComponent },

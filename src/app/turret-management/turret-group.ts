@@ -7,6 +7,7 @@ import { toggleAnimation } from '../shared/animations';
 import { environment } from '../../environments/environment';
 import { IconPencilComponent } from '../shared/icon/icon-pencil';
 import { IconTrashLinesComponent } from '../shared/icon/icon-trash-lines';
+import { IconCopyComponent } from '../shared/icon/icon-copy';
 import Swal from 'sweetalert2';
 
 interface TurretGroup {
@@ -34,6 +35,7 @@ interface Extension {
         RouterModule,
         IconPencilComponent,
         IconTrashLinesComponent,
+        IconCopyComponent,
     ],
 })
 export class TurretGroupComponent implements OnInit {
@@ -133,6 +135,43 @@ export class TurretGroupComponent implements OnInit {
             },
             error: (err) => {
                 Swal.fire('Error', err.error?.error || 'Failed to save group', 'error');
+            }
+        });
+    }
+
+    copyRecord(item: TurretGroup) {
+        Swal.fire({
+            title: 'Duplicate Group?',
+            text: `Create a copy of "${item.name}"?`,
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonText: 'Yes, duplicate it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Fetch full details first to ensure we get members
+                this.http.get<TurretGroup>(`${environment.apiUrl}/v1/turret-groups/${item.id}`).subscribe({
+                    next: (fullItem) => {
+                        const copy: TurretGroup = {
+                            name: `${item.name} (Copy)`,
+                            description: item.description,
+                            is_active: item.is_active,
+                            members: fullItem.members || [] // Clone members
+                        };
+
+                        this.http.post<any>(`${environment.apiUrl}/v1/turret-groups`, copy).subscribe({
+                            next: () => {
+                                this.loadItems();
+                                Swal.fire('Success', 'Group duplicated successfully', 'success');
+                            },
+                            error: (err) => {
+                                Swal.fire('Error', 'Failed to duplicate group', 'error');
+                            }
+                        });
+                    },
+                    error: () => {
+                        Swal.fire('Error', 'Failed to fetch original group details', 'error');
+                    }
+                });
             }
         });
     }

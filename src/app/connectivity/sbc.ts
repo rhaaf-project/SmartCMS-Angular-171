@@ -12,6 +12,7 @@ import { IconTrashLinesComponent } from '../shared/icon/icon-trash-lines';
 import { IconCircleCheckComponent } from '../shared/icon/icon-circle-check';
 import { IconXCircleComponent } from '../shared/icon/icon-x-circle';
 import { IconCopyComponent } from '../shared/icon/icon-copy';
+import { IconEyeComponent } from '../shared/icon/icon-eye';
 import Swal from 'sweetalert2';
 
 interface SBCNode {
@@ -37,6 +38,7 @@ interface SBCNode {
         IconCircleCheckComponent,
         IconXCircleComponent,
         IconCopyComponent,
+        IconEyeComponent,
     ],
 })
 export class SBCComponent implements OnInit {
@@ -46,6 +48,11 @@ export class SBCComponent implements OnInit {
     search = '';
     showModal = false;
     modalMode: 'create' | 'edit' | 'view' = 'create';
+
+    // Report View
+    showReportModal = false;
+    reportData: SBCNode | null = null;
+    reportGeneratedDate: Date = new Date();
 
     formData: SBCNode = {
         name: '',
@@ -87,6 +94,15 @@ export class SBCComponent implements OnInit {
     openEditModal(sbc: SBCNode) { this.modalMode = 'edit'; this.formData = { ...sbc }; this.showModal = true; }
     copyRecord(sbc: SBCNode) { this.modalMode = 'create'; this.formData = { ...sbc, id: undefined, name: sbc.name + ' - Copy' }; this.showModal = true; }
     closeModal() { this.showModal = false; this.resetForm(); }
+
+    // Report View Functions
+    openReportView(sbc: SBCNode) {
+        this.reportData = { ...sbc };
+        this.reportGeneratedDate = new Date();
+        this.showReportModal = true;
+    }
+    closeReportModal() { this.showReportModal = false; this.reportData = null; }
+    printReport() { window.print(); }
     resetForm() {
         this.formData = {
             name: '',

@@ -1,14 +1,14 @@
 <div>
     <div class="panel" style="padding: 15px;">
         <div class="mb-5 flex flex-col gap-5 md:flex-row md:items-center">
-            <h5 class="text-medium font-medium dark:text-white-light">Turret Templates</h5>
+            <h5 class="text-medium font-medium dark:text-white-light">Phone Directory</h5>
             <div class="flex ltr:ml-auto rtl:mr-auto">
                 <div class="relative mr-4">
                     <input type="text" placeholder="Search..." class="form-input-sm form-input w-auto pr-8"
                         [(ngModel)]="search" />
                 </div>
                 <button type="button" class="btn btn-warning btn-sm" (click)="openCreateModal()">
-                    + Add New
+                    + Add Contact
                 </button>
             </div>
         </div>
@@ -23,14 +23,27 @@
                 <thead>
                     <tr>
                         <th>Name</th>
-                        <th>Description</th>
+                        <th>Company</th>
+                        <th>Phone Numbers</th>
+                        <th>Email</th>
+                        <th class="text-center">Active</th>
                         <th class="text-center">Actions</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr *ngFor="let item of filteredItems">
                         <td class="font-semibold">{{ item.name }}</td>
-                        <td>{{ item.description || '-' }}</td>
+                        <td>{{ item.company || '-' }}</td>
+                        <td>
+                            <span *ngFor="let phone of item.phones; let last = last" class="text-xs">
+                                {{ phone }}{{ !last ? ', ' : '' }}
+                            </span>
+                        </td>
+                        <td>{{ item.email || '-' }}</td>
+                        <td class="text-center">
+                            <span *ngIf="item.is_active" class="badge bg-success">Active</span>
+                            <span *ngIf="!item.is_active" class="badge bg-danger">Inactive</span>
+                        </td>
                         <td class="text-center">
                             <div class="flex items-center justify-center gap-1">
                                 <button type="button" class="btn btn-sm btn-outline-primary border-0 p-1"
@@ -58,7 +71,7 @@
         <div class="panel w-full max-w-lg p-5">
             <div class="mb-5 flex items-center justify-between">
                 <h5 class="text-lg font-semibold dark:text-white">
-                    {{ modalMode === 'create' ? 'Add Template' : 'Edit Template' }}
+                    {{ modalMode === 'create' ? 'Add Contact' : 'Edit Contact' }}
                 </h5>
                 <button type="button" (click)="closeModal()">x</button>
             </div>
@@ -68,23 +81,34 @@
                     <input type="text" class="form-input" [(ngModel)]="formData.name" name="name" required />
                 </div>
                 <div class="mb-4">
-                    <label class="mb-1 block">Description</label>
-                    <textarea class="form-textarea" [(ngModel)]="formData.description" name="description"
-                        rows="2"></textarea>
+                    <label class="mb-1 block">Company</label>
+                    <input type="text" class="form-input" [(ngModel)]="formData.company" name="company" />
                 </div>
                 <div class="mb-4">
-                    <label class="mb-1 block">Layout Type</label>
-                    <select class="form-select" [(ngModel)]="formData.layout_type" name="layout_type">
-                        <option value="LTR">Left to Right (Default)</option>
-                        <option value="RTL">Right to Left</option>
-                        <option value="Standard">Standard Grid</option>
-                    </select>
+                    <label class="mb-1 block">Phone Numbers <span class="text-danger">*</span></label>
+                    <div *ngFor="let phone of formData.phones; let i = index; trackBy: trackByIndex"
+                        class="flex gap-2 mb-2">
+                        <input type="text" class="form-input" [(ngModel)]="formData.phones[i]" [name]="'phone_' + i" />
+                        <button type="button" class="btn btn-sm btn-outline-danger" (click)="removePhone(i)"
+                            *ngIf="formData.phones.length > 1">-</button>
+                    </div>
+                    <button type="button" class="btn btn-sm btn-outline-primary mt-1" (click)="addPhone()">+ Add
+                        Phone</button>
                 </div>
-                <div class="mb-4" *ngIf="modalMode === 'edit'">
-                    <label class="mb-1 block">Layout JSON (24 Slots)</label>
-                    <textarea class="form-textarea font-mono text-xs" [(ngModel)]="formData.layout_json"
-                        name="layout_json" rows="8"></textarea>
-                    <p class="text-xs text-gray-500 mt-1">Paste valid JSON layout configuration here.</p>
+                <div class="mb-4">
+                    <label class="mb-1 block">Email</label>
+                    <input type="email" class="form-input" [(ngModel)]="formData.email" name="email" />
+                </div>
+                <div class="mb-4">
+                    <label class="mb-1 block">Notes</label>
+                    <textarea class="form-textarea" [(ngModel)]="formData.notes" name="notes" rows="2"></textarea>
+                </div>
+                <div class="mb-4">
+                    <label class="inline-flex items-center">
+                        <input type="checkbox" class="form-checkbox" [(ngModel)]="formData.is_active"
+                            name="is_active" />
+                        <span class="ml-2">Active</span>
+                    </label>
                 </div>
 
                 <div class="mt-6 flex justify-end gap-4">

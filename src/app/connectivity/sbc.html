@@ -4,7 +4,8 @@
             <h5 class="text-medium font-medium dark:text-white-light">SBC Nodes (Servers)</h5>
             <div class="flex ltr:ml-auto rtl:mr-auto">
                 <div class="relative mr-4">
-                    <input type="text" class="form-input-sm form-input w-auto pr-8" [(ngModel)]="search" />
+                    <input type="text" placeholder="Search..." class="form-input-sm form-input w-auto pr-8"
+                        [(ngModel)]="search" />
                     <div class="absolute top-1/2 right-2 -translate-y-1/2"><svg width="16" height="16"
                             viewBox="0 0 24 24" fill="none" class="text-white-dark">
                             <circle cx="11.5" cy="11.5" r="9.5" stroke="currentColor" stroke-width="1.5" opacity="0.5">
@@ -60,6 +61,8 @@
                             </td>
                             <td class="text-center">
                                 <div class="flex items-center justify-center gap-1">
+                                    <button type="button" class="btn btn-sm btn-outline-info border-0 p-1"
+                                        (click)="openReportView(sbc)" title="View Report"><icon-eye /></button>
                                     <button type="button" class="btn btn-sm btn-outline-primary border-0 p-1"
                                         (click)="copyRecord(sbc)" title="Copy"><icon-copy /></button>
                                     <button type="button" class="btn btn-sm btn-outline-warning border-0 p-1"
@@ -129,6 +132,105 @@
                                 Changes' }}</button>
                         </div>
                     </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Report View Modal (Printable) -->
+    <div *ngIf="showReportModal" class="fixed inset-0 z-[999] overflow-y-auto bg-[black]/60 print:bg-white print:static"
+        (click)="closeReportModal()">
+        <div class="flex min-h-screen items-start justify-center px-4 py-8 print:p-0">
+            <div class="panel my-8 w-full max-w-4xl overflow-hidden rounded-lg border-0 bg-white print:shadow-none print:my-0 print:max-w-none"
+                (click)="$event.stopPropagation()">
+
+                <!-- Report Header (hides on print) -->
+                <div class="flex items-center justify-between bg-[#fbfbfb] px-5 py-3 dark:bg-[#121c2c] print:hidden">
+                    <h5 class="text-lg font-bold">View</h5>
+                    <div class="flex items-center gap-2">
+                        <button type="button" class="btn btn-primary btn-sm" (click)="printReport()">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" class="mr-1">
+                                <path d="M6 9V2H18V9" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round" />
+                                <path
+                                    d="M6 18H4C3.46957 18 2.96086 17.7893 2.58579 17.4142C2.21071 17.0391 2 16.5304 2 16V11C2 10.4696 2.21071 9.96086 2.58579 9.58579C2.96086 9.21071 3.46957 9 4 9H20C20.5304 9 21.0391 9.21071 21.4142 9.58579C21.7893 9.96086 22 10.4696 22 11V16C22 16.5304 21.7893 17.0391 21.4142 17.4142C21.0391 17.7893 20.5304 18 20 18H18"
+                                    stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round" />
+                                <rect x="6" y="14" width="12" height="8" stroke="currentColor" stroke-width="2"
+                                    stroke-linecap="round" stroke-linejoin="round" />
+                            </svg>
+                            Print
+                        </button>
+                        <button type="button" class="text-white-dark hover:text-dark" (click)="closeReportModal()">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                                <path d="M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+                                <path d="M6 6L18 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Report Content (Printable Area) -->
+                <div class="p-6 print:p-4" id="reportContent">
+                    <!-- SBC Info Section -->
+                    <div class="mb-6">
+                        <h2
+                            class="text-lg font-semibold text-gray-700 border-b border-white-light dark:border-[#1b2e4b] pb-2 mb-3">
+                            SBC Node Information</h2>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div class="border-b border-dotted border-white-light dark:border-[#1b2e4b] pb-2">
+                                <span class="text-sm text-gray-500">SBC Name:</span>
+                                <span class="font-semibold ml-2">{{ reportData?.name }}</span>
+                            </div>
+                            <div class="border-b border-dotted border-white-light dark:border-[#1b2e4b] pb-2">
+                                <span class="text-sm text-gray-500">Status:</span>
+                                <span class="ml-2 px-2 py-1 text-xs rounded"
+                                    [ngClass]="reportData?.is_active ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'">
+                                    {{ reportData?.is_active ? 'Active' : 'Inactive' }}
+                                </span>
+                            </div>
+                            <div class="border-b border-dotted border-white-light dark:border-[#1b2e4b] pb-2">
+                                <span class="text-sm text-gray-500">IP Address / Host:</span>
+                                <span class="font-mono ml-2">{{ reportData?.host }}</span>
+                            </div>
+                            <div class="border-b border-dotted border-white-light dark:border-[#1b2e4b] pb-2">
+                                <span class="text-sm text-gray-500">SIP Port:</span>
+                                <span class="font-mono ml-2">{{ reportData?.port }}</span>
+                            </div>
+                            <div
+                                class="border-b border-dotted border-white-light dark:border-[#1b2e4b] pb-2 col-span-2">
+                                <span class="text-sm text-gray-500">Type:</span>
+                                <span class="font-semibold ml-2 uppercase">{{ reportData?.type }}</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Description Section -->
+                    <div class="mb-6" *ngIf="reportData?.description">
+                        <h2
+                            class="text-lg font-semibold text-gray-700 border-b border-white-light dark:border-[#1b2e4b] pb-2 mb-3">
+                            Description</h2>
+                        <p class="text-gray-600 whitespace-pre-wrap">{{ reportData?.description }}</p>
+                    </div>
+
+                    <!-- Record Information -->
+                    <div class="mb-4">
+                        <h2
+                            class="text-lg font-semibold text-gray-700 border-b border-white-light dark:border-[#1b2e4b] pb-2 mb-3">
+                            Record Information</h2>
+                        <div class="grid grid-cols-2 gap-4 text-sm">
+                            <div>
+                                <span class="text-gray-500">Generated:</span>
+                                <span class="ml-2">{{ reportGeneratedDate | date:'medium' }}</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Footer -->
+                    <div
+                        class="border-t border-white-light dark:border-[#1b2e4b] pt-4 mt-6 text-center text-xs text-gray-500 dark:text-gray-400">
+                        <p>© 2026 SmartUCX</p>
+                    </div>
                 </div>
             </div>
         </div>

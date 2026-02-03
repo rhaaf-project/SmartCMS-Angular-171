@@ -391,6 +391,37 @@ ssh root@103.154.80.171 "mysql -u root -e 'CREATE DATABASE IF NOT EXISTS new_pro
 
 ## 🔍 Troubleshooting
 
+### Local API CORS Error / 404 Not Found (COMMON!)
+
+**Symptoms:**
+- Browser console: `CORS policy: No 'Access-Control-Allow-Origin' header`
+- Browser console: `net::ERR_CONNECTION_REFUSED` or `net::ERR_FAILED`
+- PHP server log: `[404]: GET /api/v1/xxx - No such file or directory`
+
+**Cause:** 
+PHP built-in server dijalankan **tanpa router file**, sehingga request ke `/api/v1/...` tidak diteruskan ke `api.php`.
+
+**Solution:**
+```powershell
+# ❌ WRONG - Akan return 404 untuk semua API calls
+& "C:\wamp64\bin\php\php8.2.29\php.exe" -S localhost:8000
+
+# ✅ CORRECT - api.php sebagai router
+& "C:\wamp64\bin\php\php8.2.29\php.exe" -S localhost:8000 api.php
+                                                          ↑ WAJIB!
+```
+
+> [!IMPORTANT]
+> File `api.php` di akhir command adalah **ROUTER FILE**. 
+> Tanpanya, PHP server tidak tahu cara memproses `/api/v1/xxx` requests.
+
+**Quick Check:**
+```powershell
+# Test API langsung
+Invoke-WebRequest -Uri "http://localhost:8000/api/v1/turret-policies" -UseBasicParsing
+# Harus return JSON data, bukan error
+```
+
 ### API Returns Raw PHP Code
 - **Cause:** Nginx tidak memproses PHP via fastcgi
 - **Fix:** Pastikan location block `/api/` me-rewrite ke `/api.php` dan ada `location = /api.php` dengan fastcgi_pass

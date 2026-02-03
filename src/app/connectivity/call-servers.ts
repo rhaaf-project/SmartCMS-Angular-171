@@ -65,6 +65,11 @@ export class CallServersComponent implements OnInit {
     showModal = false;
     modalMode: 'create' | 'edit' | 'view' = 'create';
 
+    // Report View
+    showReportModal = false;
+    reportData: CallServer | null = null;
+    reportGeneratedDate: Date = new Date();
+
     formData: CallServer = {
         head_office_id: null,
         name: '',
@@ -153,6 +158,22 @@ export class CallServersComponent implements OnInit {
     closeModal() {
         this.showModal = false;
         this.resetForm();
+    }
+
+    // Report View Functions
+    openReportView(callServer: CallServer) {
+        this.reportData = { ...callServer };
+        this.reportGeneratedDate = new Date();
+        this.showReportModal = true;
+    }
+
+    closeReportModal() {
+        this.showReportModal = false;
+        this.reportData = null;
+    }
+
+    printReport() {
+        window.print();
     }
 
     resetForm() {

@@ -10,3 +10,36 @@
 @import 'nouislider/dist/nouislider.min.css';
 @import 'sweetalert2/themes/minimal.css';
 @import 'tailwind.css';
+
+/* Print Styles - Only show report modal content when printing */
+@media print {
+
+    /* Hide sidebar, header, navigation */
+    nav.sidebar,
+    .navbar,
+    header,
+    .sidebar {
+        display: none !important;
+    }
+
+    /* Hide page content except report */
+    .main-container>.main-content .panel:not(:has(#reportContent)) {
+        display: none !important;
+    }
+
+    /* Only show report modal */
+    #reportContent {
+        display: block !important;
+        position: static !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        padding: 20px !important;
+        margin: 0 !important;
+    }
+
+    /* Reset panel for print */
+    .panel {
+        box-shadow: none !important;
+        border: none !important;
+    }
+}

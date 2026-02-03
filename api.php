@@ -89,6 +89,8 @@ $tableMap = [
     'turret-templates' => 'turret_templates',
     'turret-groups' => 'turret_groups',
     'turret-group-members' => 'turret_group_members',
+    'phone-directories' => 'phone_directories',
+    'turret-policies' => 'turret_policies',
 ];
 
 $table = $tableMap[$resource] ?? null;

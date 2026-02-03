@@ -1,14 +1,14 @@
 <div>
     <div class="panel" style="padding: 15px;">
         <div class="mb-5 flex flex-col gap-5 md:flex-row md:items-center">
-            <h5 class="text-medium font-medium dark:text-white-light">Turret Groups</h5>
+            <h5 class="text-medium font-medium dark:text-white-light">Turret Policies</h5>
             <div class="flex ltr:ml-auto rtl:mr-auto">
                 <div class="relative mr-4">
                     <input type="text" placeholder="Search..." class="form-input-sm form-input w-auto pr-8"
                         [(ngModel)]="search" />
                 </div>
                 <button type="button" class="btn btn-warning btn-sm" (click)="openCreateModal()">
-                    + Add New
+                    + Add Policy
                 </button>
             </div>
         </div>
@@ -22,9 +22,12 @@
             <table class="table-hover">
                 <thead>
                     <tr>
-                        <th>Name</th>
-                        <th>Description</th>
-                        <th class="text-center">Members</th>
+                        <th>Policy Name</th>
+                        <th class="text-center">Max Ch</th>
+                        <th class="text-center">Recording</th>
+                        <th class="text-center">Intercom</th>
+                        <th class="text-center">Group Talk</th>
+                        <th class="text-center">External</th>
                         <th class="text-center">Active</th>
                         <th class="text-center">Actions</th>
                     </tr>
@@ -32,11 +35,22 @@
                 <tbody>
                     <tr *ngFor="let item of filteredItems">
                         <td class="font-semibold">{{ item.name }}</td>
-                        <td>{{ item.description || '-' }}</td>
+                        <td class="text-center">{{ item.max_channels }}</td>
                         <td class="text-center">
-                            <span class="badge badge-outline-primary">
-                                {{ item.members?.length || 0 }} members
-                            </span>
+                            <span *ngIf="item.allow_recording" class="text-success">✓</span>
+                            <span *ngIf="!item.allow_recording" class="text-danger">✗</span>
+                        </td>
+                        <td class="text-center">
+                            <span *ngIf="item.allow_intercom" class="text-success">✓</span>
+                            <span *ngIf="!item.allow_intercom" class="text-danger">✗</span>
+                        </td>
+                        <td class="text-center">
+                            <span *ngIf="item.allow_group_talk" class="text-success">✓</span>
+                            <span *ngIf="!item.allow_group_talk" class="text-danger">✗</span>
+                        </td>
+                        <td class="text-center">
+                            <span *ngIf="item.allow_external" class="text-success">✓</span>
+                            <span *ngIf="!item.allow_external" class="text-danger">✗</span>
                         </td>
                         <td class="text-center">
                             <span *ngIf="item.is_active" class="badge bg-success">Active</span>
@@ -69,14 +83,41 @@
         <div class="panel w-full max-w-lg p-5">
             <div class="mb-5 flex items-center justify-between">
                 <h5 class="text-lg font-semibold dark:text-white">
-                    {{ modalMode === 'create' ? 'Add Group' : 'Edit Group' }}
+                    {{ modalMode === 'create' ? 'Add Policy' : 'Edit Policy' }}
                 </h5>
                 <button type="button" (click)="closeModal()">x</button>
             </div>
             <form (ngSubmit)="saveRecord()">
                 <div class="mb-4">
-                    <label class="mb-1 block">Group Name <span class="text-danger">*</span></label>
+                    <label class="mb-1 block">Policy Name <span class="text-danger">*</span></label>
                     <input type="text" class="form-input" [(ngModel)]="formData.name" name="name" required />
+                </div>
+                <div class="mb-4">
+                    <label class="mb-1 block">Max Channels</label>
+                    <input type="number" class="form-input" [(ngModel)]="formData.max_channels" name="max_channels"
+                        min="1" max="32" />
+                </div>
+                <div class="mb-4 grid grid-cols-2 gap-4">
+                    <label class="inline-flex items-center">
+                        <input type="checkbox" class="form-checkbox" [(ngModel)]="formData.allow_recording"
+                            name="allow_recording" />
+                        <span class="ml-2">Allow Recording</span>
+                    </label>
+                    <label class="inline-flex items-center">
+                        <input type="checkbox" class="form-checkbox" [(ngModel)]="formData.allow_intercom"
+                            name="allow_intercom" />
+                        <span class="ml-2">Allow Intercom</span>
+                    </label>
+                    <label class="inline-flex items-center">
+                        <input type="checkbox" class="form-checkbox" [(ngModel)]="formData.allow_group_talk"
+                            name="allow_group_talk" />
+                        <span class="ml-2">Allow Group Talk</span>
+                    </label>
+                    <label class="inline-flex items-center">
+                        <input type="checkbox" class="form-checkbox" [(ngModel)]="formData.allow_external"
+                            name="allow_external" />
+                        <span class="ml-2">Allow External Calls</span>
+                    </label>
                 </div>
                 <div class="mb-4">
                     <label class="mb-1 block">Description</label>
@@ -89,20 +130,6 @@
                             name="is_active" />
                         <span class="ml-2">Active</span>
                     </label>
-                </div>
-
-                <div class="mb-4">
-                    <label class="mb-1 block border-b pb-1">Group Members (Extensions)</label>
-                    <div class="h-48 overflow-y-auto border p-2 rounded bg-gray-50 dark:bg-black/20">
-                        <div *ngFor="let ext of allExtensions" class="flex items-center mb-1">
-                            <input type="checkbox" class="form-checkbox" [(ngModel)]="selectedMembersMap[ext.extension]"
-                                [name]="'ext_' + ext.id" />
-                            <span class="ml-2">{{ ext.name }} ({{ ext.extension }})</span>
-                        </div>
-                        <div *ngIf="allExtensions.length === 0" class="text-center text-gray-500 mt-10">
-                            No extensions found
-                        </div>
-                    </div>
                 </div>
 
                 <div class="mt-6 flex justify-end gap-4">
