@@ -7,6 +7,7 @@ import { toggleAnimation } from '../shared/animations';
 import { IconPencilComponent } from '../shared/icon/icon-pencil';
 import { IconTrashLinesComponent } from '../shared/icon/icon-trash-lines';
 import { IconPlusComponent } from '../shared/icon/icon-plus';
+import { IconCopyComponent } from '../shared/icon/icon-copy';
 
 @Component({
     templateUrl: './static-route.html',
@@ -16,6 +17,7 @@ import { IconPlusComponent } from '../shared/icon/icon-plus';
         IconPencilComponent,
         IconTrashLinesComponent,
         IconPlusComponent,
+        IconCopyComponent,
     ],
     animations: [toggleAnimation],
 })
@@ -86,5 +88,11 @@ export class StaticRouteComponent implements OnInit {
         if (confirm('Are you sure you want to delete this route?')) {
             this.routes = this.routes.filter(r => r.id !== id);
         }
+    }
+
+    copyRecord(route: any) {
+        this.modalMode = 'create';
+        this.formData = { ...route, id: null, destination: route.destination + ' (copy)' };
+        this.showModal = true;
     }
 }

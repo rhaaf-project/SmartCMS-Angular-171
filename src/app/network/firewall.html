@@ -59,6 +59,10 @@
                             </td>
                             <td class="text-center">
                                 <div class="flex items-center justify-center gap-1">
+                                    <button type="button" class="btn btn-sm btn-outline-primary border-0 p-1"
+                                        (click)="copyRecord(rule)" title="Copy">
+                                        <icon-copy />
+                                    </button>
                                     <button type="button" class="btn btn-sm btn-outline-warning border-0 p-1"
                                         (click)="openEditModal(rule)" title="Edit">
                                         <icon-pencil />
@@ -102,7 +106,7 @@
                             <div class="md:col-span-2">
                                 <label for="name">Rule Name <span class="text-danger">*</span></label>
                                 <input id="name" type="text" [(ngModel)]="formData.name" name="name" class="form-input"
-                                    placeholder="e.g., SIP Signaling" required />
+                                    required />
                             </div>
                             <div>
                                 <label for="protocol">Protocol</label>
@@ -114,12 +118,12 @@
                             <div>
                                 <label for="port">Port / Range <span class="text-danger">*</span></label>
                                 <input id="port" type="text" [(ngModel)]="formData.port" name="port" class="form-input"
-                                    placeholder="5060 or 10000-20000" required />
+                                    required />
                             </div>
                             <div>
                                 <label for="source">Source</label>
                                 <input id="source" type="text" [(ngModel)]="formData.source" name="source"
-                                    class="form-input" placeholder="Any or 192.168.1.0/24" />
+                                    class="form-input" />
                             </div>
                             <div>
                                 <label for="action">Action</label>
@@ -130,7 +134,7 @@
                             <div>
                                 <label for="priority">Priority</label>
                                 <input id="priority" type="number" [(ngModel)]="formData.priority" name="priority"
-                                    class="form-input" placeholder="1-999" />
+                                    class="form-input" />
                                 <span class="text-xs text-white-dark">Lower number = higher priority</span>
                             </div>
                             <div class="flex items-end">

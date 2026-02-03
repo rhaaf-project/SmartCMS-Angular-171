@@ -56,6 +56,10 @@
                             </td>
                             <td class="text-center">
                                 <div class="flex items-center justify-center gap-1">
+                                    <button type="button" class="btn btn-sm btn-outline-primary border-0 p-1"
+                                        (click)="copyRecord(route)" title="Copy">
+                                        <icon-copy />
+                                    </button>
                                     <button type="button" class="btn btn-sm btn-outline-warning border-0 p-1"
                                         (click)="openEditModal(route)" title="Edit">
                                         <icon-pencil />
@@ -95,12 +99,12 @@
                             <div>
                                 <label for="destination">Destination (CIDR) <span class="text-danger">*</span></label>
                                 <input id="destination" type="text" [(ngModel)]="formData.destination"
-                                    name="destination" class="form-input" placeholder="192.168.1.0/24" required />
+                                    name="destination" class="form-input" required />
                             </div>
                             <div>
                                 <label for="gateway">Gateway <span class="text-danger">*</span></label>
                                 <input id="gateway" type="text" [(ngModel)]="formData.gateway" name="gateway"
-                                    class="form-input" placeholder="10.0.0.1" required />
+                                    class="form-input" required />
                             </div>
                             <div>
                                 <label for="interface">Interface</label>

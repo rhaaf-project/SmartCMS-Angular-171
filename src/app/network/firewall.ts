@@ -8,6 +8,7 @@ import { IconPencilComponent } from '../shared/icon/icon-pencil';
 import { IconTrashLinesComponent } from '../shared/icon/icon-trash-lines';
 import { IconPlusComponent } from '../shared/icon/icon-plus';
 import { IconCircleCheckComponent } from '../shared/icon/icon-circle-check';
+import { IconCopyComponent } from '../shared/icon/icon-copy';
 
 @Component({
     templateUrl: './firewall.html',
@@ -18,6 +19,7 @@ import { IconCircleCheckComponent } from '../shared/icon/icon-circle-check';
         IconTrashLinesComponent,
         IconPlusComponent,
         IconCircleCheckComponent,
+        IconCopyComponent,
     ],
     animations: [toggleAnimation],
 })
@@ -107,5 +109,11 @@ export class FirewallComponent implements OnInit {
             case 'REJECT': return 'badge bg-warning';
             default: return 'badge bg-dark';
         }
+    }
+
+    copyRecord(rule: any) {
+        this.modalMode = 'create';
+        this.formData = { ...rule, id: null, name: rule.name + ' (copy)' };
+        this.showModal = true;
     }
 }
