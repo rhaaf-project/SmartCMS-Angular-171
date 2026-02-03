@@ -4,8 +4,7 @@
             <h5 class="text-medium font-medium dark:text-white-light">Inbound Routing</h5>
             <div class="flex ltr:ml-auto rtl:mr-auto">
                 <div class="relative mr-4">
-                    <input type="text" class="form-input-sm form-input w-auto pr-8"
-                        [(ngModel)]="search" />
+                    <input type="text" class="form-input-sm form-input w-auto pr-8" [(ngModel)]="search" />
                     <div class="absolute top-1/2 right-2 -translate-y-1/2"><svg width="16" height="16"
                             viewBox="0 0 24 24" fill="none" class="text-white-dark">
                             <circle cx="11.5" cy="11.5" r="9.5" stroke="currentColor" stroke-width="1.5" opacity="0.5">
@@ -31,7 +30,7 @@
                         <tr>
                             <th>Call Server</th>
                             <th>Name</th>
-                            <th>DID Number</th>
+                            <th>DID</th>
                             <th>Destination</th>
                             <th class="text-center">Active</th>
                             <th class="text-center">Actions</th>
@@ -102,11 +101,11 @@
                             </div>
                             <div>
                                 <label for="name">Name <span class="text-danger">*</span></label>
-                                <input id="name" type="text" [(ngModel)]="formData.name" name="name"
-                                    class="form-input" required />
+                                <input id="name" type="text" [(ngModel)]="formData.name" name="name" class="form-input"
+                                    required />
                             </div>
                             <div>
-                                <label for="did_number">DID Number</label>
+                                <label for="did_number">DID</label>
                                 <input id="did_number" type="text" [(ngModel)]="formData.did_number" name="did_number"
                                     class="form-input" />
                             </div>
