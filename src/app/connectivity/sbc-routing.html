@@ -129,24 +129,23 @@
                                             class="form-input bg-dark/20 cursor-not-allowed" readonly />
                                     </div>
                                     <div>
-                                        <label class="text-xs text-white-dark uppercase">Connection (Inbound
-                                            Leg)</label>
+                                        <label class="text-xs text-white-dark uppercase">DID</label>
+                                        <input type="text" [(ngModel)]="formData.src_pattern" name="src_pattern"
+                                            class="form-input" />
+                                    </div>
+                                    <div>
+                                        <label class="text-xs text-white-dark uppercase">CID</label>
+                                        <input type="text" [(ngModel)]="formData.src_cid_filter" name="src_cid_filter"
+                                            class="form-input" />
+                                    </div>
+                                    <div>
+                                        <label class="text-xs text-white-dark uppercase">Connection</label>
                                         <select [(ngModel)]="formData.src_from_sbc_id" name="src_from_sbc_id"
                                             class="form-select">
                                             <option [ngValue]="null">Select an option</option>
                                             <option *ngFor="let trunk of trunks" [ngValue]="trunk.id">{{ trunk.name }}
                                             </option>
                                         </select>
-                                    </div>
-                                    <div>
-                                        <label class="text-xs text-white-dark uppercase">DID / Number</label>
-                                        <input type="text" [(ngModel)]="formData.src_pattern" name="src_pattern"
-                                            class="form-input" />
-                                    </div>
-                                    <div>
-                                        <label class="text-xs text-white-dark uppercase">Caller ID</label>
-                                        <input type="text" [(ngModel)]="formData.src_cid_filter" name="src_cid_filter"
-                                            class="form-input" />
                                     </div>
                                 </div>
                             </div>
@@ -162,24 +161,23 @@
                                             readonly />
                                     </div>
                                     <div>
-                                        <label class="text-xs text-white-dark uppercase">Connection (Outbound
-                                            Leg)</label>
+                                        <label class="text-xs text-white-dark uppercase">DID</label>
+                                        <input type="text" [(ngModel)]="formData.dest_pattern" name="dest_pattern"
+                                            class="form-input" />
+                                    </div>
+                                    <div>
+                                        <label class="text-xs text-white-dark uppercase">CID</label>
+                                        <input type="text" [(ngModel)]="formData.dest_cid_filter" name="dest_cid_filter"
+                                            class="form-input" />
+                                    </div>
+                                    <div>
+                                        <label class="text-xs text-white-dark uppercase">Connection</label>
                                         <select [(ngModel)]="formData.dest_from_sbc_id" name="dest_from_sbc_id"
                                             class="form-select">
                                             <option [ngValue]="null">Select an option</option>
                                             <option *ngFor="let trunk of trunks" [ngValue]="trunk.id">{{ trunk.name }}
                                             </option>
                                         </select>
-                                    </div>
-                                    <div>
-                                        <label class="text-xs text-white-dark uppercase">DID / Number</label>
-                                        <input type="text" [(ngModel)]="formData.dest_pattern" name="dest_pattern"
-                                            class="form-input" />
-                                    </div>
-                                    <div>
-                                        <label class="text-xs text-white-dark uppercase">Caller ID</label>
-                                        <input type="text" [(ngModel)]="formData.dest_cid_filter" name="dest_cid_filter"
-                                            class="form-input" />
                                     </div>
                                 </div>
                             </div>
