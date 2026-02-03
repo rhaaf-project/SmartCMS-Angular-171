@@ -31,7 +31,6 @@
                         <tr>
                             <th>Name</th>
                             <th>Mode</th>
-                            <th>Directory</th>
                             <th>Sort</th>
                             <th>Format</th>
                             <th class="text-center">Active</th>
@@ -40,19 +39,18 @@
                     </thead>
                     <tbody>
                         <tr *ngIf="isLoading">
-                            <td colspan="7" class="text-center">
+                            <td colspan="6" class="text-center">
                                 <div
                                     class="inline-block h-8 w-8 animate-spin rounded-full border-4 border-primary border-l-transparent">
                                 </div>
                             </td>
                         </tr>
                         <tr *ngIf="!isLoading && filteredItems.length === 0">
-                            <td colspan="7" class="text-center">No MOH classes found</td>
+                            <td colspan="6" class="text-center">No MOH classes found</td>
                         </tr>
                         <tr *ngFor="let item of filteredItems">
                             <td class="font-semibold">{{ item.name }}</td>
                             <td><span class="badge badge-outline-info">{{ item.mode }}</span></td>
-                            <td class="font-mono text-xs">{{ item.directory }}</td>
                             <td>{{ item.sort }}</td>
                             <td><span class="badge badge-outline-secondary">{{ item.format }}</span></td>
                             <td class="text-center">
