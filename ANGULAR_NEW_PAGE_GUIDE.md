@@ -47,6 +47,8 @@ CMS/src/app/
 - TypeScript strict mode enabled
 - Lazy-loaded routes using `loadComponent` and `loadChildren`
 - Manual sidebar configuration (not auto-generated)
+- **⚠️ CRITICAL: All data MUST be fetched from API (`api.php`) - NEVER use localStorage as primary data source**
+- localStorage is ONLY for caching/fallback, always fetch fresh data from API on component init
 
 ---
 
