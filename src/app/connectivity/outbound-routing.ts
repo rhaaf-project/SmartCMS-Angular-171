@@ -13,6 +13,15 @@ import { IconCircleCheckComponent } from '../shared/icon/icon-circle-check';
 import { IconCopyComponent } from '../shared/icon/icon-copy';
 import Swal from 'sweetalert2';
 
+interface DialPattern {
+    id?: number;
+    outbound_routing_id?: number;
+    prepend: string | null;
+    prefix: string | null;
+    match_pattern: string | null;
+    caller_id: string | null;
+}
+
 interface OutboundRouting {
     id?: number;
     call_server_id: number | null;
@@ -23,6 +32,7 @@ interface OutboundRouting {
     priority: number;
     description: string | null;
     is_active: boolean;
+    dial_patterns: DialPattern[];
 }
 
 interface CallServer { id: number; name: string; }
@@ -43,7 +53,7 @@ export class OutboundRoutingComponent implements OnInit {
     showModal = false;
     modalMode: 'create' | 'edit' | 'view' = 'create';
 
-    formData: OutboundRouting = { call_server_id: null, name: '', dial_pattern: null, trunk_id: null, priority: 0, description: null, is_active: true };
+    formData: OutboundRouting = { call_server_id: null, name: '', dial_pattern: null, trunk_id: null, priority: 0, description: null, is_active: true, dial_patterns: [] };
 
     private http = inject(HttpClient);
 
@@ -78,10 +88,43 @@ export class OutboundRoutingComponent implements OnInit {
     }
 
     openCreateModal() { this.modalMode = 'create'; this.resetForm(); this.showModal = true; }
-    openEditModal(route: OutboundRouting) { this.modalMode = 'edit'; this.formData = { ...route }; this.showModal = true; }
-    copyRecord(route: OutboundRouting) { this.modalMode = 'create'; this.formData = { ...route, id: undefined, name: route.name + ' - New' }; this.showModal = true; }
+    openEditModal(route: OutboundRouting) {
+        this.modalMode = 'edit';
+        // Load full route data with dial_patterns
+        this.http.get<any>(`${environment.apiUrl}/v1/outbound-routings/${route.id}`).subscribe({
+            next: (response) => {
+                this.formData = { ...response.data, dial_patterns: response.data.dial_patterns || [] };
+                this.showModal = true;
+            },
+            error: () => {
+                this.formData = { ...route, dial_patterns: route.dial_patterns || [] };
+                this.showModal = true;
+            }
+        });
+    }
+    copyRecord(route: OutboundRouting) {
+        this.modalMode = 'create';
+        this.formData = {
+            ...route,
+            id: undefined,
+            name: route.name + ' - New',
+            dial_patterns: (route.dial_patterns || []).map(p => ({ ...p, id: undefined, outbound_routing_id: undefined }))
+        };
+        this.showModal = true;
+    }
     closeModal() { this.showModal = false; this.resetForm(); }
-    resetForm() { this.formData = { call_server_id: null, name: '', dial_pattern: null, trunk_id: null, priority: 0, description: null, is_active: true }; }
+    resetForm() { this.formData = { call_server_id: null, name: '', dial_pattern: null, trunk_id: null, priority: 0, description: null, is_active: true, dial_patterns: [] }; }
+
+    // Dial Pattern Management
+    addDialPattern() {
+        this.formData.dial_patterns.push({ prepend: null, prefix: null, match_pattern: null, caller_id: null });
+    }
+    removeDialPattern(index: number) {
+        this.formData.dial_patterns.splice(index, 1);
+    }
+    trackByIndex(index: number): number {
+        return index;
+    }
 
     handleSubmit() {
         if (this.modalMode === 'create') { this.createRoute(); }
@@ -89,7 +132,16 @@ export class OutboundRoutingComponent implements OnInit {
     }
 
     createRoute() {
-        const createData = { call_server_id: this.formData.call_server_id, name: this.formData.name, dial_pattern: this.formData.dial_pattern, trunk_id: this.formData.trunk_id, priority: this.formData.priority, description: this.formData.description, is_active: this.formData.is_active };
+        const createData = {
+            call_server_id: this.formData.call_server_id,
+            name: this.formData.name,
+            dial_pattern: this.formData.dial_pattern,
+            trunk_id: this.formData.trunk_id,
+            priority: this.formData.priority,
+            description: this.formData.description,
+            is_active: this.formData.is_active,
+            dial_patterns: this.formData.dial_patterns
+        };
         this.http.post<any>(`${environment.apiUrl}/v1/outbound-routings`, createData).subscribe({
             next: () => { this.showSuccessMessage('Route created successfully'); this.closeModal(); this.loadRoutes(); },
             error: (error) => { this.showErrorMessage(error.error?.error || 'Failed to create route'); },
@@ -97,7 +149,16 @@ export class OutboundRoutingComponent implements OnInit {
     }
 
     updateRoute() {
-        const updateData = { call_server_id: this.formData.call_server_id, name: this.formData.name, dial_pattern: this.formData.dial_pattern, trunk_id: this.formData.trunk_id, priority: this.formData.priority, description: this.formData.description, is_active: this.formData.is_active };
+        const updateData = {
+            call_server_id: this.formData.call_server_id,
+            name: this.formData.name,
+            dial_pattern: this.formData.dial_pattern,
+            trunk_id: this.formData.trunk_id,
+            priority: this.formData.priority,
+            description: this.formData.description,
+            is_active: this.formData.is_active,
+            dial_patterns: this.formData.dial_patterns
+        };
         this.http.put<any>(`${environment.apiUrl}/v1/outbound-routings/${this.formData.id}`, updateData).subscribe({
             next: () => { this.showSuccessMessage('Route updated successfully'); this.closeModal(); this.loadRoutes(); },
             error: (error) => { this.showErrorMessage(error.error?.error || 'Failed to update route'); },

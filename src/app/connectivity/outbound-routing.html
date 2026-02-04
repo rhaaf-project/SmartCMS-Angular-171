@@ -126,11 +126,6 @@
                                     required />
                             </div>
                             <div>
-                                <label for="dial_pattern">Dial Pattern</label>
-                                <input id="dial_pattern" type="text" [(ngModel)]="formData.dial_pattern"
-                                    name="dial_pattern" class="form-input" />
-                            </div>
-                            <div>
                                 <label for="trunk_id">Trunk</label>
                                 <select id="trunk_id" [(ngModel)]="formData.trunk_id" name="trunk_id"
                                     class="form-select">
@@ -149,6 +144,89 @@
                                         class="ml-2">Active</span></label>
                             </div>
                         </div>
+
+                        <!-- Dial Patterns Section -->
+                        <div class="mb-5">
+                            <h6 class="font-semibold text-base mb-3 border-b pb-2">Dial Patterns</h6>
+                            <div class="table-responsive">
+                                <table class="table-bordered w-full">
+                                    <thead>
+                                        <tr class="bg-gray-100 dark:bg-gray-900">
+                                            <th class="p-2">Prepend</th>
+                                            <th class="p-2">Prefix</th>
+                                            <th class="p-2">Match Pattern</th>
+                                            <th class="p-2">CallerID</th>
+                                            <th class="p-2 text-center w-20">Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr
+                                            *ngFor="let pattern of formData.dial_patterns; let i = index; trackBy: trackByIndex">
+                                            <td class="p-2">
+                                                <input type="text" class="form-input form-input-sm"
+                                                    [(ngModel)]="pattern.prepend" [name]="'prepend_' + i" />
+                                            </td>
+                                            <td class="p-2">
+                                                <input type="text" class="form-input form-input-sm"
+                                                    [(ngModel)]="pattern.prefix" [name]="'prefix_' + i" />
+                                            </td>
+                                            <td class="p-2">
+                                                <input type="text" class="form-input form-input-sm"
+                                                    [(ngModel)]="pattern.match_pattern" [name]="'match_pattern_' + i" />
+                                            </td>
+                                            <td class="p-2">
+                                                <input type="text" class="form-input form-input-sm"
+                                                    [(ngModel)]="pattern.caller_id" [name]="'caller_id_' + i" />
+                                            </td>
+                                            <td class="p-2 text-center">
+                                                <div class="flex items-center justify-center gap-1">
+                                                    <button type="button"
+                                                        class="btn btn-sm btn-outline-primary border-0 p-1"
+                                                        (click)="addDialPattern()" title="Add">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                                            viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                            stroke-width="2">
+                                                            <line x1="12" y1="5" x2="12" y2="19"></line>
+                                                            <line x1="5" y1="12" x2="19" y2="12"></line>
+                                                        </svg>
+                                                    </button>
+                                                    <button type="button"
+                                                        class="btn btn-sm btn-outline-danger border-0 p-1"
+                                                        (click)="removeDialPattern(i)" title="Remove">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                                            viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                            stroke-width="1.5">
+                                                            <polyline points="3 6 5 6 21 6"></polyline>
+                                                            <path
+                                                                d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2">
+                                                            </path>
+                                                        </svg>
+                                                    </button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr *ngIf="formData.dial_patterns.length === 0">
+                                            <td colspan="5" class="text-center text-gray-400 py-4">
+                                                No dial patterns defined. Click "Add Pattern" below.
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="mt-3">
+                                <button type="button"
+                                    class="flex items-center text-primary font-semibold hover:underline"
+                                    (click)="addDialPattern()">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2" class="mr-1">
+                                        <line x1="12" y1="5" x2="12" y2="19"></line>
+                                        <line x1="5" y1="12" x2="19" y2="12"></line>
+                                    </svg>
+                                    Add Pattern
+                                </button>
+                            </div>
+                        </div>
+
                         <div class="mt-8 flex items-center justify-start gap-3">
                             <button type="submit" class="btn btn-warning">Save changes</button>
                             <button type="button" class="btn btn-dark" (click)="closeModal()">Cancel</button>

@@ -26,6 +26,7 @@
                 <table class="table-hover">
                     <thead>
                         <tr>
+                            <th>Device</th>
                             <th>Destination</th>
                             <th>Gateway</th>
                             <th>Interface</th>
@@ -36,19 +37,23 @@
                     </thead>
                     <tbody>
                         <tr *ngIf="isLoading">
-                            <td colspan="6" class="text-center">
+                            <td colspan="7" class="text-center">
                                 <div
                                     class="inline-block h-8 w-8 animate-spin rounded-full border-4 border-primary border-l-transparent">
                                 </div>
                             </td>
                         </tr>
                         <tr *ngIf="!isLoading && filteredRoutes.length === 0">
-                            <td colspan="6" class="text-center">No routes found</td>
+                            <td colspan="7" class="text-center">No routes found</td>
                         </tr>
                         <tr *ngFor="let route of filteredRoutes">
+                            <td>
+                                <div class="font-semibold">{{ getDeviceName(route) }}</div>
+                                <div class="text-xs text-gray-500">{{ getDeviceTypeLabel(route.device_type) }}</div>
+                            </td>
                             <td class="font-mono">{{ route.destination }}</td>
                             <td class="font-mono">{{ route.gateway }}</td>
-                            <td><span class="badge badge-outline-info">{{ route.interface }}</span></td>
+                            <td><span class="badge badge-outline-info">{{ route.interface_name }}</span></td>
                             <td>{{ route.metric }}</td>
                             <td class="text-center">
                                 <span *ngIf="route.is_active" class="badge bg-success">Active</span>
@@ -73,7 +78,7 @@
                                         </svg>
                                     </button>
                                     <button type="button" class="btn btn-sm btn-outline-danger border-0 p-1"
-                                        (click)="deleteRoute(route.id)" title="Delete">
+                                        (click)="deleteRoute(route.id!)" title="Delete">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
                                             viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
                                             <polyline points="3 6 5 6 21 6"></polyline>
@@ -110,28 +115,52 @@
                 <div class="p-5">
                     <form (ngSubmit)="handleSubmit()">
                         <div class="mb-5 grid grid-cols-1 gap-5">
+                            <!-- Device Type -->
+                            <div>
+                                <label for="device_type">Device Type <span class="text-danger">*</span></label>
+                                <select id="device_type" [(ngModel)]="formData.device_type" name="device_type"
+                                    class="form-select" (change)="onDeviceTypeChange()" required>
+                                    <option [ngValue]="null">Select Device Type</option>
+                                    <option *ngFor="let dt of deviceTypes" [ngValue]="dt.value">{{ dt.label }}</option>
+                                </select>
+                            </div>
+                            <!-- Device -->
+                            <div>
+                                <label for="device_id">Device <span class="text-danger">*</span></label>
+                                <select id="device_id" [(ngModel)]="formData.device_id" name="device_id"
+                                    class="form-select" [disabled]="!formData.device_type" required>
+                                    <option [ngValue]="null">Select Device</option>
+                                    <option *ngFor="let dev of availableDevices" [ngValue]="dev.id">{{ dev.name }}
+                                    </option>
+                                </select>
+                            </div>
+                            <!-- Destination -->
                             <div>
                                 <label for="destination">Destination (CIDR) <span class="text-danger">*</span></label>
                                 <input id="destination" type="text" [(ngModel)]="formData.destination"
                                     name="destination" class="form-input" required />
                             </div>
+                            <!-- Gateway -->
                             <div>
                                 <label for="gateway">Gateway <span class="text-danger">*</span></label>
                                 <input id="gateway" type="text" [(ngModel)]="formData.gateway" name="gateway"
                                     class="form-input" required />
                             </div>
+                            <!-- Interface -->
                             <div>
-                                <label for="interface">Interface</label>
-                                <select id="interface" [(ngModel)]="formData.interface" name="interface"
+                                <label for="interface_name">Interface</label>
+                                <select id="interface_name" [(ngModel)]="formData.interface_name" name="interface_name"
                                     class="form-select">
                                     <option *ngFor="let iface of interfaces" [value]="iface">{{ iface }}</option>
                                 </select>
                             </div>
+                            <!-- Metric -->
                             <div>
                                 <label for="metric">Metric</label>
                                 <input id="metric" type="number" [(ngModel)]="formData.metric" name="metric"
                                     class="form-input" />
                             </div>
+                            <!-- Active -->
                             <div>
                                 <label class="inline-flex cursor-pointer">
                                     <input type="checkbox" [(ngModel)]="formData.is_active" name="is_active"

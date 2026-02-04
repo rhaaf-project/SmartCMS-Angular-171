@@ -1,7 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { HttpClient } from '@angular/common/http';
 import { toggleAnimation } from '../shared/animations';
+import { environment } from '../../environments/environment';
+import Swal from 'sweetalert2';
 
 // Icons
 import { IconPencilComponent } from '../shared/icon/icon-pencil';
@@ -9,6 +12,25 @@ import { IconTrashLinesComponent } from '../shared/icon/icon-trash-lines';
 import { IconPlusComponent } from '../shared/icon/icon-plus';
 import { IconCircleCheckComponent } from '../shared/icon/icon-circle-check';
 import { IconCopyComponent } from '../shared/icon/icon-copy';
+
+interface FirewallRule {
+    id?: number;
+    name: string;
+    protocol: 'TCP' | 'UDP' | 'ICMP' | 'ALL';
+    port: string;
+    source: string;
+    action: 'ACCEPT' | 'DROP' | 'REJECT';
+    priority: number;
+    device_type: 'call_server' | 'sbc' | 'recording' | null;
+    device_id: number | null;
+    is_active: boolean;
+}
+
+interface Device {
+    id: number;
+    name: string;
+    type?: string;
+}
 
 @Component({
     templateUrl: './firewall.html',
@@ -29,54 +51,119 @@ export class FirewallComponent implements OnInit {
     modalMode: 'create' | 'edit' = 'create';
     isLoading = false;
 
-    // Mock data for firewall rules (PBX/Asterisk relevant)
-    rules = [
-        { id: 1, name: 'SIP Signaling', protocol: 'UDP', port: '5060', source: 'Any', action: 'ACCEPT', priority: 10, is_active: true },
-        { id: 2, name: 'SIP TLS', protocol: 'TCP', port: '5061', source: 'Any', action: 'ACCEPT', priority: 20, is_active: true },
-        { id: 3, name: 'RTP Media', protocol: 'UDP', port: '10000-20000', source: 'Any', action: 'ACCEPT', priority: 30, is_active: true },
-        { id: 4, name: 'IAX2 Trunk', protocol: 'UDP', port: '4569', source: '192.168.1.0/24', action: 'ACCEPT', priority: 40, is_active: true },
-        { id: 5, name: 'AMI Manager', protocol: 'TCP', port: '5038', source: '10.0.0.0/8', action: 'ACCEPT', priority: 50, is_active: true },
-        { id: 6, name: 'SSH Admin', protocol: 'TCP', port: '22', source: '10.0.0.0/8', action: 'ACCEPT', priority: 100, is_active: true },
-        { id: 7, name: 'Block External SIP', protocol: 'UDP', port: '5060', source: '0.0.0.0/0', action: 'DROP', priority: 999, is_active: false },
-    ];
+    rules: FirewallRule[] = [];
 
-    formData: any = {
+    formData: FirewallRule = {
         name: '',
         protocol: 'UDP',
         port: '',
         source: 'Any',
         action: 'ACCEPT',
         priority: 100,
+        device_type: null,
+        device_id: null,
         is_active: true,
     };
 
     protocols = ['TCP', 'UDP', 'ICMP', 'ALL'];
     actions = ['ACCEPT', 'DROP', 'REJECT'];
+    deviceTypes = [
+        { value: 'call_server', label: 'Call Server' },
+        { value: 'sbc', label: 'SBC' },
+        { value: 'recording', label: 'Recording Server' },
+    ];
+
+    // Device lists
+    callServers: Device[] = [];
+    sbcs: Device[] = [];
+    recordingServers: Device[] = [];
+
+    private http = inject(HttpClient);
 
     constructor() { }
 
-    ngOnInit(): void { }
+    ngOnInit(): void {
+        this.loadRules();
+        this.loadDevices();
+    }
+
+    loadRules() {
+        this.isLoading = true;
+        this.http.get<any>(`${environment.apiUrl}/v1/firewall-rules`).subscribe({
+            next: (response) => {
+                this.rules = response.data || [];
+                this.isLoading = false;
+            },
+            error: (error) => {
+                console.error('Failed to load rules:', error);
+                this.isLoading = false;
+            }
+        });
+    }
+
+    loadDevices() {
+        this.http.get<any>(`${environment.apiUrl}/v1/call-servers`).subscribe({
+            next: (response) => {
+                const all = response.data || [];
+                this.callServers = all.filter((d: any) => d.type !== 'sbc' && d.type !== 'recording');
+                this.sbcs = all.filter((d: any) => d.type === 'sbc');
+                this.recordingServers = all.filter((d: any) => d.type === 'recording');
+            },
+            error: (error) => console.error('Failed to load devices:', error)
+        });
+    }
 
     get filteredRules() {
-        if (!this.search) return this.rules.sort((a, b) => a.priority - b.priority);
-        const s = this.search.toLowerCase();
-        return this.rules
-            .filter(r =>
+        let filtered = this.rules;
+        if (this.search) {
+            const s = this.search.toLowerCase();
+            filtered = this.rules.filter(r =>
                 r.name.toLowerCase().includes(s) ||
                 r.protocol.toLowerCase().includes(s) ||
                 r.port.toLowerCase().includes(s) ||
                 r.source.toLowerCase().includes(s)
-            )
-            .sort((a, b) => a.priority - b.priority);
+            );
+        }
+        return filtered.sort((a, b) => a.priority - b.priority);
+    }
+
+    get availableDevices(): Device[] {
+        switch (this.formData.device_type) {
+            case 'call_server': return this.callServers;
+            case 'sbc': return this.sbcs;
+            case 'recording': return this.recordingServers;
+            default: return [];
+        }
+    }
+
+    onDeviceTypeChange() {
+        this.formData.device_id = null;
+    }
+
+    getDeviceName(rule: FirewallRule): string {
+        if (!rule.device_type || !rule.device_id) return '-';
+        let devices: Device[] = [];
+        switch (rule.device_type) {
+            case 'call_server': devices = this.callServers; break;
+            case 'sbc': devices = this.sbcs; break;
+            case 'recording': devices = this.recordingServers; break;
+        }
+        const device = devices.find(d => d.id === rule.device_id);
+        return device ? device.name : `ID: ${rule.device_id}`;
+    }
+
+    getDeviceTypeLabel(type: string | null): string {
+        const found = this.deviceTypes.find(t => t.value === type);
+        return found ? found.label : '-';
     }
 
     openCreateModal() {
         this.modalMode = 'create';
-        this.formData = { name: '', protocol: 'UDP', port: '', source: 'Any', action: 'ACCEPT', priority: 100, is_active: true };
+        this.formData = { name: '', protocol: 'UDP', port: '', source: 'Any', action: 'ACCEPT', priority: 100, device_type: null, device_id: null, is_active: true };
         this.showModal = true;
     }
 
-    openEditModal(rule: any) {
+    openEditModal(rule: FirewallRule) {
         this.modalMode = 'edit';
         this.formData = { ...rule };
         this.showModal = true;
@@ -87,19 +174,55 @@ export class FirewallComponent implements OnInit {
     }
 
     handleSubmit() {
-        if (this.modalMode === 'create') {
-            this.rules.push({ ...this.formData, id: Date.now() });
-        } else {
-            const idx = this.rules.findIndex(r => r.id === this.formData.id);
-            if (idx !== -1) this.rules[idx] = { ...this.formData };
+        if (!this.formData.name || !this.formData.port) {
+            this.showMessage('Name and Port are required', 'error');
+            return;
         }
-        this.closeModal();
+        if (!this.formData.device_type || !this.formData.device_id) {
+            this.showMessage('Please select a device', 'error');
+            return;
+        }
+
+        const payload = {
+            name: this.formData.name,
+            protocol: this.formData.protocol,
+            port: this.formData.port,
+            source: this.formData.source,
+            action: this.formData.action,
+            priority: this.formData.priority,
+            device_type: this.formData.device_type,
+            device_id: this.formData.device_id,
+            is_active: this.formData.is_active,
+        };
+
+        if (this.modalMode === 'create') {
+            this.http.post<any>(`${environment.apiUrl}/v1/firewall-rules`, payload).subscribe({
+                next: () => { this.showMessage('Rule created successfully'); this.closeModal(); this.loadRules(); },
+                error: (error) => this.showMessage(error.error?.error || 'Failed to create rule', 'error')
+            });
+        } else {
+            this.http.put<any>(`${environment.apiUrl}/v1/firewall-rules/${this.formData.id}`, payload).subscribe({
+                next: () => { this.showMessage('Rule updated successfully'); this.closeModal(); this.loadRules(); },
+                error: (error) => this.showMessage(error.error?.error || 'Failed to update rule', 'error')
+            });
+        }
     }
 
     deleteRule(id: number) {
-        if (confirm('Are you sure you want to delete this firewall rule?')) {
-            this.rules = this.rules.filter(r => r.id !== id);
-        }
+        Swal.fire({
+            title: 'Are you sure?',
+            text: 'This firewall rule will be deleted!',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Yes, delete it!',
+        }).then((result) => {
+            if (result.isConfirmed) {
+                this.http.delete<any>(`${environment.apiUrl}/v1/firewall-rules/${id}`).subscribe({
+                    next: () => { this.showMessage('Rule deleted successfully'); this.loadRules(); },
+                    error: (error) => this.showMessage(error.error?.error || 'Failed to delete rule', 'error')
+                });
+            }
+        });
     }
 
     getActionClass(action: string): string {
@@ -111,9 +234,13 @@ export class FirewallComponent implements OnInit {
         }
     }
 
-    copyRecord(rule: any) {
+    copyRecord(rule: FirewallRule) {
         this.modalMode = 'create';
-        this.formData = { ...rule, id: null, name: rule.name + ' (copy)' };
+        this.formData = { ...rule, id: undefined, name: rule.name + ' (copy)' };
         this.showModal = true;
+    }
+
+    showMessage(msg: string, type: 'success' | 'error' = 'success') {
+        Swal.fire({ icon: type, title: type === 'error' ? 'Error' : 'Success', text: msg, timer: 2000, showConfirmButton: false });
     }
 }

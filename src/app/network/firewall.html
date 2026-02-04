@@ -26,6 +26,7 @@
                 <table class="table-hover">
                     <thead>
                         <tr>
+                            <th>Device</th>
                             <th>Priority</th>
                             <th>Name</th>
                             <th>Protocol</th>
@@ -38,16 +39,20 @@
                     </thead>
                     <tbody>
                         <tr *ngIf="isLoading">
-                            <td colspan="8" class="text-center">
+                            <td colspan="9" class="text-center">
                                 <div
                                     class="inline-block h-8 w-8 animate-spin rounded-full border-4 border-primary border-l-transparent">
                                 </div>
                             </td>
                         </tr>
                         <tr *ngIf="!isLoading && filteredRules.length === 0">
-                            <td colspan="8" class="text-center">No firewall rules found</td>
+                            <td colspan="9" class="text-center">No firewall rules found</td>
                         </tr>
                         <tr *ngFor="let rule of filteredRules" [class.opacity-50]="!rule.is_active">
+                            <td>
+                                <div class="font-semibold">{{ getDeviceName(rule) }}</div>
+                                <div class="text-xs text-gray-500">{{ getDeviceTypeLabel(rule.device_type) }}</div>
+                            </td>
                             <td><span class="badge badge-outline-primary">{{ rule.priority }}</span></td>
                             <td class="font-semibold">{{ rule.name }}</td>
                             <td><span class="badge badge-outline-info">{{ rule.protocol }}</span></td>
@@ -76,7 +81,7 @@
                                         </svg>
                                     </button>
                                     <button type="button" class="btn btn-sm btn-outline-danger border-0 p-1"
-                                        (click)="deleteRule(rule.id)" title="Delete">
+                                        (click)="deleteRule(rule.id!)" title="Delete">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
                                             viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
                                             <polyline points="3 6 5 6 21 6"></polyline>
@@ -117,11 +122,32 @@
                 <div class="p-5">
                     <form (ngSubmit)="handleSubmit()">
                         <div class="mb-5 grid grid-cols-1 gap-5 md:grid-cols-2">
+                            <!-- Device Type -->
+                            <div>
+                                <label for="device_type">Device Type <span class="text-danger">*</span></label>
+                                <select id="device_type" [(ngModel)]="formData.device_type" name="device_type"
+                                    class="form-select" (change)="onDeviceTypeChange()" required>
+                                    <option [ngValue]="null">Select Device Type</option>
+                                    <option *ngFor="let dt of deviceTypes" [ngValue]="dt.value">{{ dt.label }}</option>
+                                </select>
+                            </div>
+                            <!-- Device -->
+                            <div>
+                                <label for="device_id">Device <span class="text-danger">*</span></label>
+                                <select id="device_id" [(ngModel)]="formData.device_id" name="device_id"
+                                    class="form-select" [disabled]="!formData.device_type" required>
+                                    <option [ngValue]="null">Select Device</option>
+                                    <option *ngFor="let dev of availableDevices" [ngValue]="dev.id">{{ dev.name }}
+                                    </option>
+                                </select>
+                            </div>
+                            <!-- Rule Name -->
                             <div class="md:col-span-2">
                                 <label for="name">Rule Name <span class="text-danger">*</span></label>
                                 <input id="name" type="text" [(ngModel)]="formData.name" name="name" class="form-input"
                                     required />
                             </div>
+                            <!-- Protocol -->
                             <div>
                                 <label for="protocol">Protocol</label>
                                 <select id="protocol" [(ngModel)]="formData.protocol" name="protocol"
@@ -129,28 +155,33 @@
                                     <option *ngFor="let proto of protocols" [value]="proto">{{ proto }}</option>
                                 </select>
                             </div>
+                            <!-- Port -->
                             <div>
                                 <label for="port">Port / Range <span class="text-danger">*</span></label>
                                 <input id="port" type="text" [(ngModel)]="formData.port" name="port" class="form-input"
                                     required />
                             </div>
+                            <!-- Source -->
                             <div>
                                 <label for="source">Source</label>
                                 <input id="source" type="text" [(ngModel)]="formData.source" name="source"
                                     class="form-input" />
                             </div>
+                            <!-- Action -->
                             <div>
                                 <label for="action">Action</label>
                                 <select id="action" [(ngModel)]="formData.action" name="action" class="form-select">
                                     <option *ngFor="let act of actions" [value]="act">{{ act }}</option>
                                 </select>
                             </div>
+                            <!-- Priority -->
                             <div>
                                 <label for="priority">Priority</label>
                                 <input id="priority" type="number" [(ngModel)]="formData.priority" name="priority"
                                     class="form-input" />
                                 <span class="text-xs text-white-dark">Lower number = higher priority</span>
                             </div>
+                            <!-- Active -->
                             <div class="flex items-end">
                                 <label class="inline-flex cursor-pointer">
                                     <input type="checkbox" [(ngModel)]="formData.is_active" name="is_active"

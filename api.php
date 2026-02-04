@@ -98,6 +98,8 @@ $tableMap = [
     'turret-group-members' => 'turret_group_members',
     'phone-directories' => 'phone_directories',
     'turret-policies' => 'turret_policies',
+    'static-routes' => 'static_routes',
+    'firewall-rules' => 'firewall_rules',
 ];
 
 $table = $tableMap[$resource] ?? null;
@@ -695,6 +697,13 @@ try {
                     }
                 }
 
+                // Load outbound dial patterns
+                if ($table === 'outbound_routings') {
+                    $stmtPatterns = $pdo->prepare("SELECT * FROM outbound_dial_patterns WHERE outbound_routing_id = ? ORDER BY id ASC");
+                    $stmtPatterns->execute([$id]);
+                    $data['dial_patterns'] = $stmtPatterns->fetchAll(PDO::FETCH_ASSOC);
+                }
+
                 echo json_encode(['data' => $data]);
             } else {
                 // Get all records with counts
@@ -800,8 +809,8 @@ try {
                     }
                 }
 
-                // Add call_server relation for extensions, vpws, cas, sbcs, trunks, private_wires, device_3rd_parties, inbound_routings, outbound_routings, intercoms
-                $csAffectedTables = ['extensions', 'vpws', 'cas', 'sbcs', 'trunks', 'private_wires', 'device_3rd_parties', 'inbound_routings', 'outbound_routings', 'intercoms'];
+                // Add call_server relation for extensions, vpws, cas, sbcs, trunks, private_wires, device_3rd_parties, inbound_routings, outbound_routings, intercoms, lines
+                $csAffectedTables = ['lines', 'extensions', 'vpws', 'cas', 'sbcs', 'trunks', 'private_wires', 'device_3rd_parties', 'inbound_routings', 'outbound_routings', 'intercoms'];
                 if (in_array($table, $csAffectedTables)) {
                     foreach ($rows as &$row) {
                         if (isset($row['call_server_id']) && $row['call_server_id']) {
@@ -969,6 +978,8 @@ try {
                     unset($filteredInput['entries']);
                 if (isset($filteredInput['members']) && $table === 'turret_groups')
                     unset($filteredInput['members']);
+                if (isset($filteredInput['dial_patterns']))
+                    unset($filteredInput['dial_patterns']);
 
                 if ($method === 'POST') {
                     $columns = array_keys($filteredInput);
@@ -1023,6 +1034,24 @@ try {
                             $entry['digits'] ?? '',
                             $entry['destination'] ?? null,
                             isset($entry['return_to_ivr']) && $entry['return_to_ivr'] ? 1 : 0
+                        ]);
+                    }
+                }
+
+                // Handle Outbound Dial Patterns Saving
+                if ($table === 'outbound_routings' && isset($input['dial_patterns']) && is_array($input['dial_patterns'])) {
+                    // Delete existing patterns
+                    $pdo->prepare("DELETE FROM outbound_dial_patterns WHERE outbound_routing_id = ?")->execute([$dataId]);
+
+                    // Insert new patterns
+                    $stmtPattern = $pdo->prepare("INSERT INTO outbound_dial_patterns (outbound_routing_id, prepend, prefix, match_pattern, caller_id) VALUES (?, ?, ?, ?, ?)");
+                    foreach ($input['dial_patterns'] as $pattern) {
+                        $stmtPattern->execute([
+                            $dataId,
+                            $pattern['prepend'] ?? null,
+                            $pattern['prefix'] ?? null,
+                            $pattern['match_pattern'] ?? null,
+                            $pattern['caller_id'] ?? null
                         ]);
                     }
                 }
