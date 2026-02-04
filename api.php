@@ -244,6 +244,41 @@ if ($resource === 'usage-report' && $method === 'GET') {
     exit;
 }
 
+// SBC Status Monitor endpoint - get connection statuses for a specific SBC
+if (preg_match('/^sbc-status\/(\d+)$/', $resource . '/' . $id, $matches)) {
+    $sbcId = $matches[1];
+    try {
+        $stmt = $pdo->prepare("
+            SELECT 
+                scs.id,
+                scs.sbc_id,
+                scs.peer_name,
+                scs.peer_type,
+                scs.remote_address,
+                scs.local_user,
+                scs.registration_status,
+                scs.connection_status,
+                scs.latency_ms,
+                scs.active_calls,
+                scs.max_calls,
+                scs.last_activity,
+                cs.name as sbc_name,
+                cs.host as sbc_host
+            FROM sbc_connection_status scs
+            LEFT JOIN call_servers cs ON scs.sbc_id = cs.id
+            WHERE scs.sbc_id = ?
+            ORDER BY scs.peer_type ASC, scs.peer_name ASC
+        ");
+        $stmt->execute([$sbcId]);
+        $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        echo json_encode(['success' => true, 'data' => $data]);
+    } catch (Exception $e) {
+        echo json_encode(['success' => false, 'error' => $e->getMessage(), 'data' => []]);
+    }
+    exit;
+}
+
 // Dropdowns endpoint for select options
 if ($resource === 'dropdowns' && $method === 'GET') {
     $type = $_GET['type'] ?? '';

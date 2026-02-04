@@ -131,5 +131,10 @@ export const CONNECTIVITY_ROUTES: Routes = [
         loadComponent: () => import('./time-conditions').then((d) => d.TimeConditionsComponent),
         title: 'Time Conditions | SmartUCX',
     },
+    {
+        path: 'sbc-status-monitor',
+        loadComponent: () => import('./sbc-status-monitor').then((d) => d.SBCStatusMonitorComponent),
+        title: 'SBC Status Monitor | SmartUCX',
+    },
 ];
 
