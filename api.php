@@ -66,7 +66,7 @@ $tableMap = [
     'call-servers' => 'call_servers',
     'lines' => 'lines',
     'extensions' => 'extensions',
-    'vpws' => 'vpws',
+    'vpws' => 'private_wires',
     'cas' => 'cas',
     'device-3rd-parties' => 'device_3rd_parties',
     'private-wires' => 'private_wires',
@@ -104,28 +104,142 @@ $table = $tableMap[$resource] ?? null;
 
 // Stats endpoint for dashboard
 if ($resource === 'stats' && $method === 'GET') {
+    // Helper function to get active/inactive counts
+    function getStats($pdo, $table)
+    {
+        try {
+            // Check if table exists
+            $check = $pdo->query("SHOW TABLES LIKE '$table'");
+            if ($check->rowCount() === 0) {
+                return ['active' => 0, 'inactive' => 0];
+            }
+
+            // Check if is_active column exists
+            $cols = $pdo->query("SHOW COLUMNS FROM `$table` LIKE 'is_active'");
+            if ($cols->rowCount() > 0) {
+                $active = $pdo->query("SELECT COUNT(*) FROM `$table` WHERE is_active = 1")->fetchColumn() ?: 0;
+                $inactive = $pdo->query("SELECT COUNT(*) FROM `$table` WHERE is_active = 0")->fetchColumn() ?: 0;
+            } else {
+                // No is_active column, count all as active
+                $active = $pdo->query("SELECT COUNT(*) FROM `$table`")->fetchColumn() ?: 0;
+                $inactive = 0;
+            }
+            return ['active' => (int) $active, 'inactive' => (int) $inactive];
+        } catch (Exception $e) {
+            return ['active' => 0, 'inactive' => 0];
+        }
+    }
+
     try {
         $stats = [
-            'total_customers' => $pdo->query("SELECT COUNT(*) FROM customers")->fetchColumn() ?: 0,
-            'total_head_offices' => $pdo->query("SELECT COUNT(*) FROM head_offices")->fetchColumn() ?: 0,
-            'total_branches' => $pdo->query("SELECT COUNT(*) FROM branches")->fetchColumn() ?: 0,
-            'total_call_servers' => $pdo->query("SELECT COUNT(*) FROM call_servers")->fetchColumn() ?: 0,
-            'total_extensions' => $pdo->query("SELECT COUNT(*) FROM extensions")->fetchColumn() ?: 0,
-            'total_trunks' => $pdo->query("SELECT COUNT(*) FROM trunks")->fetchColumn() ?: 0,
+            // Row 1: Organization
+            'ho' => getStats($pdo, 'head_offices'),
+            'branch' => getStats($pdo, 'branches'),
+            'subBranch' => getStats($pdo, 'sub_branches'),
+            'callServer' => getStats($pdo, 'call_servers'),
+
+            // Row 2: Line
+            'line' => getStats($pdo, 'lines'),
+            'extension' => getStats($pdo, 'extensions'),
+            'privateWire' => getStats($pdo, 'private_wires'),
+            'cas' => getStats($pdo, 'cas'),
+            'intercom' => getStats($pdo, 'intercoms'),
+
+            // Row 3: Trunk/Routing
+            'trunk' => getStats($pdo, 'trunks'),
+            'inbound' => getStats($pdo, 'inbound_routings'),
+            'outbound' => getStats($pdo, 'outbound_routings'),
+            'conference' => getStats($pdo, 'conferences'),
+
+            // Row 4: SBC
+            'sbc' => getStats($pdo, 'sbcs'),
+            'sbcConnection' => getStats($pdo, 'sbc_connections'),
+            'sbcRouting' => getStats($pdo, 'sbc_routes'),
+            'sipThirdParty' => getStats($pdo, 'device_3rd_parties'),
+
+            // Row 5: Device
+            'turret' => getStats($pdo, 'turret_devices'),
+            'webDevice' => getStats($pdo, 'web_devices'),
+            'thirdPartyDevice' => getStats($pdo, 'device_3rd_parties'),
+
+            // Row 6: Voice Gateway
+            'analogFxoGateway' => getStats($pdo, 'analog_fxo_gateways'),
+            'analogFxsGateway' => getStats($pdo, 'analog_fxs_gateways'),
+            'e1Gateway' => getStats($pdo, 'e1_gateways'),
+            'e1CasGateway' => getStats($pdo, 'e1_cas_gateways'),
+
+            // Row 7: Recording & Alarm
+            'recordingServer' => getStats($pdo, 'recording_servers'),
+            'recordingChannel' => getStats($pdo, 'recording_channels'),
+            'alarmNotification' => getStats($pdo, 'alarm_notifications'),
         ];
         echo json_encode(['success' => true, 'data' => $stats]);
     } catch (Exception $e) {
+        // Return empty stats on error
+        echo json_encode(['success' => true, 'data' => []]);
+    }
+    exit;
+}
+
+// Usage Report endpoint for call statistics per extension
+if ($resource === 'usage-report' && $method === 'GET') {
+    try {
+        $date = $_GET['date'] ?? date('Y-m-d');
+        $branchId = $_GET['branch_id'] ?? null;
+        $callServerId = $_GET['call_server_id'] ?? null;
+
+        $where = "WHERE u.date = ?";
+        $params = [$date];
+
+        if ($branchId) {
+            $where .= " AND u.branch_id = ?";
+            $params[] = $branchId;
+        }
+
+        if ($callServerId) {
+            $where .= " AND u.call_server_id = ?";
+            $params[] = $callServerId;
+        }
+
+        $sql = "SELECT 
+            u.*,
+            b.name as branch_name,
+            cs.name as call_server_name,
+            cs.host as ip_address
+        FROM usage_statistics u
+        LEFT JOIN branches b ON u.branch_id = b.id
+        LEFT JOIN call_servers cs ON u.call_server_id = cs.id
+        $where
+        ORDER BY u.extension_number ASC";
+
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute($params);
+        $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        // Format total_time as HH:MM:SS
+        foreach ($data as &$row) {
+            $row['total_time_inbound_formatted'] = gmdate("H:i:s", $row['total_time_inbound'] ?? 0);
+            $row['total_time_outbound_formatted'] = gmdate("H:i:s", $row['total_time_outbound'] ?? 0);
+        }
+
+        // Get filter options
+        $branches = $pdo->query("SELECT id, name FROM branches ORDER BY name")->fetchAll(PDO::FETCH_ASSOC);
+        $callServers = $pdo->query("SELECT id, name, host FROM call_servers ORDER BY name")->fetchAll(PDO::FETCH_ASSOC);
+
         echo json_encode([
             'success' => true,
-            'data' => [
-                'total_customers' => 0,
-                'total_head_offices' => 0,
-                'total_branches' => 0,
-                'total_call_servers' => 0,
-                'total_extensions' => 0,
-                'total_trunks' => 0,
+            'data' => $data,
+            'filters' => [
+                'branches' => $branches,
+                'call_servers' => $callServers
+            ],
+            'meta' => [
+                'date' => $date,
+                'total_records' => count($data)
             ]
         ]);
+    } catch (Exception $e) {
+        echo json_encode(['success' => false, 'error' => $e->getMessage(), 'data' => []]);
     }
     exit;
 }

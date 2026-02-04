@@ -50,9 +50,9 @@
                         <tr *ngFor="let vpw of vpws">
                             <td>{{ vpw.call_server?.name || '-' }}</td>
                             <td>
-                                <div class="font-semibold">{{ vpw.vpw_number }}</div>
+                                <div class="font-semibold">{{ vpw.number }}</div>
                             </td>
-                            <td class="text-center">
+                            <td class="text-center" style="text-align: -webkit-center;">
                                 <icon-circle-check *ngIf="vpw.destination_local" class="text-success" />
                                 <icon-x-circle *ngIf="!vpw.destination_local" class="text-danger" />
                             </td>
@@ -122,7 +122,7 @@
                             </div>
                             <div>
                                 <label for="vpw_number">VPW <span class="text-danger">*</span></label>
-                                <input id="vpw_number" type="text" [(ngModel)]="formData.vpw_number" name="vpw_number"
+                                <input id="vpw_number" type="text" [(ngModel)]="formData.number" name="vpw_number"
                                     class="form-input" required />
                             </div>
                             <div>

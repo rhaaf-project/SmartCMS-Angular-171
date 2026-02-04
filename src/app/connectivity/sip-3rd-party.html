@@ -54,7 +54,8 @@
                             </td>
                             <td>{{ device.manufacturer || '-' }}</td>
                             <td>{{ device.ip_address || '-' }}</td>
-                            <td class="text-center"><icon-circle-check *ngIf="device.is_active" class="text-success" />
+                            <td class="text-center" style="text-align: -webkit-center;"><icon-circle-check
+                                    *ngIf="device.is_active" class="text-success" />
                             </td>
                             <td class="text-center">
                                 <div class="flex items-center justify-center gap-1">

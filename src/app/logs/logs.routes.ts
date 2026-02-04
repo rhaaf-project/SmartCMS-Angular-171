@@ -21,4 +21,9 @@ export const logsRoutes: Routes = [
         loadComponent: () => import('./alarm-notification').then((d) => d.AlarmNotificationComponent),
         title: 'Alarm & Notification | SmartUCX',
     },
+    {
+        path: 'usage-report',
+        loadComponent: () => import('./usage-report').then((d) => d.UsageReportComponent),
+        title: 'Usage Report | SmartUCX',
+    },
 ];

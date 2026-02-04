@@ -18,7 +18,7 @@ interface VPW {
     id?: number;
     call_server_id: number | null;
     call_server?: { id: number; name: string };
-    vpw_number: string;
+    number: string;
     destination_local: boolean;
     destination: string | null;
     is_active: boolean;
@@ -40,7 +40,7 @@ export class VPWComponent implements OnInit {
     showModal = false;
     modalMode: 'create' | 'edit' | 'view' = 'create';
 
-    formData: VPW = { call_server_id: null, vpw_number: '', destination_local: false, destination: null, is_active: true };
+    formData: VPW = { call_server_id: null, number: '', destination_local: false, destination: null, is_active: true };
 
     private http = inject(HttpClient);
 
@@ -69,9 +69,9 @@ export class VPWComponent implements OnInit {
 
     openCreateModal() { this.modalMode = 'create'; this.resetForm(); this.showModal = true; }
     openEditModal(vpw: VPW) { this.modalMode = 'edit'; this.formData = { ...vpw }; this.showModal = true; }
-    copyRecord(vpw: VPW) { this.modalMode = 'create'; this.formData = { ...vpw, id: undefined, vpw_number: vpw.vpw_number + '-new' }; this.showModal = true; }
+    copyRecord(vpw: VPW) { this.modalMode = 'create'; this.formData = { ...vpw, id: undefined, number: vpw.number + '-new' }; this.showModal = true; }
     closeModal() { this.showModal = false; this.resetForm(); }
-    resetForm() { this.formData = { call_server_id: null, vpw_number: '', destination_local: false, destination: null, is_active: true }; }
+    resetForm() { this.formData = { call_server_id: null, number: '', destination_local: false, destination: null, is_active: true }; }
 
     handleSubmit() {
         if (this.modalMode === 'create') { this.createVPW(); }
@@ -79,22 +79,17 @@ export class VPWComponent implements OnInit {
     }
 
     createVPW() {
-        const createData = { call_server_id: this.formData.call_server_id, vpw_number: this.formData.vpw_number, destination_local: this.formData.destination_local, destination: this.formData.destination, is_active: this.formData.is_active };
+        const createData = {
+            call_server_id: this.formData.call_server_id,
+            name: `VPW - ${this.formData.number}`,
+            number: this.formData.number,
+            destination: this.formData.destination,
+            description: 'Created from VPW interface',
+            is_active: this.formData.is_active
+        };
+
         this.http.post<any>(`${environment.apiUrl}/v1/vpws`, createData).subscribe({
             next: () => {
-                // Auto-create Private Wire
-                const pwData = {
-                    call_server_id: this.formData.call_server_id,
-                    name: `VPW - ${this.formData.vpw_number}`,
-                    number: this.formData.vpw_number,
-                    destination: this.formData.destination,
-                    description: 'Auto-created from VPW',
-                    is_active: this.formData.is_active
-                };
-                this.http.post(`${environment.apiUrl}/v1/private-wires`, pwData).subscribe({
-                    error: (err) => console.error('Failed to auto-create Private Wire:', err)
-                });
-
                 this.showSuccessMessage('VPW created successfully');
                 this.closeModal();
                 this.loadVPWs();
@@ -104,7 +99,13 @@ export class VPWComponent implements OnInit {
     }
 
     updateVPW() {
-        const updateData = { call_server_id: this.formData.call_server_id, vpw_number: this.formData.vpw_number, destination_local: this.formData.destination_local, destination: this.formData.destination, is_active: this.formData.is_active };
+        const updateData = {
+            call_server_id: this.formData.call_server_id,
+            name: `VPW - ${this.formData.number}`,
+            number: this.formData.number,
+            destination: this.formData.destination,
+            is_active: this.formData.is_active
+        };
         this.http.put<any>(`${environment.apiUrl}/v1/vpws/${this.formData.id}`, updateData).subscribe({
             next: () => { this.showSuccessMessage('VPW updated successfully'); this.closeModal(); this.loadVPWs(); },
             error: (error) => { console.error('Failed to update VPW:', error); this.showErrorMessage(error.error?.error || 'Failed to update VPW'); },

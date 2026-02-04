@@ -42,21 +42,46 @@ export class IndexComponent {
                 console.error('Failed to load stats:', error);
                 // Set default values
                 this.stats = {
+                    // Row 1: Organization
                     ho: { active: 0, inactive: 0 },
                     branch: { active: 0, inactive: 0 },
+                    subBranch: { active: 0, inactive: 0 },
                     callServer: { active: 0, inactive: 0 },
-                    users: { active: 0, inactive: 0 },
+
+                    // Row 2: Line
                     line: { active: 0, inactive: 0 },
                     extension: { active: 0, inactive: 0 },
-                    vpw: { active: 0, inactive: 0 },
-                    cas: { active: 0, inactive: 0 },
-                    trunk: { active: 0, inactive: 0 },
-                    sbc: { active: 0, inactive: 0 },
                     privateWire: { active: 0, inactive: 0 },
+                    cas: { active: 0, inactive: 0 },
                     intercom: { active: 0, inactive: 0 },
-                    inboundRoute: { active: 0, inactive: 0 },
-                    outboundRoute: { active: 0, inactive: 0 },
-                    thirdParty: { active: 0, inactive: 0 },
+
+                    // Row 3: Trunk/Routing
+                    trunk: { active: 0, inactive: 0 },
+                    inbound: { active: 0, inactive: 0 },
+                    outbound: { active: 0, inactive: 0 },
+                    conference: { active: 0, inactive: 0 },
+
+                    // Row 4: SBC
+                    sbc: { active: 0, inactive: 0 },
+                    sbcConnection: { active: 0, inactive: 0 },
+                    sbcRouting: { active: 0, inactive: 0 },
+                    sipThirdParty: { active: 0, inactive: 0 },
+
+                    // Row 5: Device
+                    turret: { active: 0, inactive: 0 },
+                    webDevice: { active: 0, inactive: 0 },
+                    thirdPartyDevice: { active: 0, inactive: 0 },
+
+                    // Row 6: Voice Gateway
+                    analogFxoGateway: { active: 0, inactive: 0 },
+                    analogFxsGateway: { active: 0, inactive: 0 },
+                    e1Gateway: { active: 0, inactive: 0 },
+                    e1CasGateway: { active: 0, inactive: 0 },
+
+                    // Row 7: Recording & Alarm
+                    recordingServer: { active: 0, inactive: 0 },
+                    recordingChannel: { active: 0, inactive: 0 },
+                    alarmNotification: { active: 0, inactive: 0 },
                 };
                 this.isLoading = false;
             },

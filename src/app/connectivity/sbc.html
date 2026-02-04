@@ -55,7 +55,7 @@
                             <td>{{ sbc.host }}</td>
                             <td>{{ sbc.port }}</td>
                             <td>{{ sbc.description || '-' }}</td>
-                            <td class="text-center">
+                            <td class="text-center" style="text-align: -webkit-center;">
                                 <icon-circle-check *ngIf="sbc.is_active" class="text-success" />
                                 <icon-x-circle *ngIf="!sbc.is_active" class="text-danger" />
                             </td>

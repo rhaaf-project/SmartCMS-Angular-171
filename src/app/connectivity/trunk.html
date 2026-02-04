@@ -57,7 +57,7 @@
                             <td>{{ trunk.sip_server }}</td>
                             <td>{{ trunk.outcid || '-' }}</td>
                             <td>{{ trunk.maxchans }}</td>
-                            <td class="text-center">
+                            <td class="text-center" style="text-align: -webkit-center;">
                                 <icon-circle-check *ngIf="!trunk.disabled" class="text-success" />
                                 <icon-x-circle *ngIf="trunk.disabled" class="text-danger" />
                             </td>
