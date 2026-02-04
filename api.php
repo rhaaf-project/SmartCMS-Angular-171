@@ -279,6 +279,148 @@ if (preg_match('/^sbc-status\/(\d+)$/', $resource . '/' . $id, $matches)) {
     exit;
 }
 
+// Topology endpoint - generate network diagram data from real database
+if ($resource === 'topology' && $method === 'GET') {
+    $companyId = $_GET['company_id'] ?? null;
+
+    try {
+        $nodes = [];
+        $edges = [];
+
+        // Build WHERE clause for company filter
+        $hoWhere = "WHERE ho.is_active = 1";
+        $hoParams = [];
+        if ($companyId) {
+            $hoWhere .= " AND ho.customer_id = ?";
+            $hoParams[] = $companyId;
+        }
+
+        // Get head offices with call server info
+        $hoSql = "SELECT 
+            ho.id, ho.name, ho.code, ho.type, ho.city,
+            ho.customer_id, c.name as company_name,
+            GROUP_CONCAT(DISTINCT cs.host SEPARATOR ', ') as ips
+        FROM head_offices ho
+        LEFT JOIN customers c ON ho.customer_id = c.id
+        LEFT JOIN call_servers cs ON cs.head_office_id = ho.id AND cs.is_active = 1
+        $hoWhere
+        GROUP BY ho.id
+        ORDER BY ho.name";
+
+        $stmt = $pdo->prepare($hoSql);
+        $stmt->execute($hoParams);
+        $headOffices = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        // Add head office nodes
+        foreach ($headOffices as $ho) {
+            $nodes[] = [
+                'id' => 'ho_' . $ho['id'],
+                'label' => $ho['name'],
+                'title' => $ho['name'] . ' (' . ($ho['company_name'] ?? 'N/A') . ')',
+                'group' => 'headoffice',
+                'status' => 'OK',
+                'ip' => $ho['ips'] ?? 'N/A',
+                'has_sbc' => false
+            ];
+        }
+
+        // Get branches with SBC info
+        $brWhere = "WHERE b.is_active = 1";
+        $brParams = [];
+        if ($companyId) {
+            $brWhere .= " AND b.customer_id = ?";
+            $brParams[] = $companyId;
+        }
+
+        // Check if sbc_id column exists in branches table
+        $sbcColumnExists = false;
+        try {
+            $colCheck = $pdo->query("SHOW COLUMNS FROM branches LIKE 'sbc_id'");
+            $sbcColumnExists = $colCheck->rowCount() > 0;
+        } catch (Exception $e) {
+            // Column doesn't exist, continue without it
+        }
+
+        if ($sbcColumnExists) {
+            $brSql = "SELECT 
+                b.id, b.name, b.code, b.head_office_id, b.customer_id,
+                b.call_server_id, b.sbc_id,
+                cs.host as ip,
+                c.name as company_name,
+                sbc.name as sbc_name
+            FROM branches b
+            LEFT JOIN customers c ON b.customer_id = c.id
+            LEFT JOIN call_servers cs ON b.call_server_id = cs.id
+            LEFT JOIN call_servers sbc ON b.sbc_id = sbc.id
+            $brWhere
+            ORDER BY b.name";
+        } else {
+            $brSql = "SELECT 
+                b.id, b.name, b.code, b.head_office_id, b.customer_id,
+                b.call_server_id, NULL as sbc_id,
+                cs.host as ip,
+                c.name as company_name,
+                NULL as sbc_name
+            FROM branches b
+            LEFT JOIN customers c ON b.customer_id = c.id
+            LEFT JOIN call_servers cs ON b.call_server_id = cs.id
+            $brWhere
+            ORDER BY b.name";
+        }
+
+        $stmt = $pdo->prepare($brSql);
+        $stmt->execute($brParams);
+        $branches = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        // Add branch nodes and edges
+        foreach ($branches as $br) {
+            $hasSbc = !empty($br['sbc_id']);
+
+            $nodes[] = [
+                'id' => 'br_' . $br['id'],
+                'label' => $br['name'],
+                'title' => $br['name'] . ' (' . ($br['company_name'] ?? 'N/A') . ')',
+                'group' => 'branch',
+                'status' => 'OK',
+                'ip' => $br['ip'] ?? 'N/A',
+                'has_sbc' => $hasSbc
+            ];
+
+            // Create edge to head office if linked
+            if ($br['head_office_id']) {
+                $edges[] = [
+                    'from' => 'ho_' . $br['head_office_id'],
+                    'to' => 'br_' . $br['id'],
+                    'label' => '',
+                    'color' => '#22c55e' // green for active
+                ];
+            }
+        }
+
+        // Get companies for filter dropdown
+        $companies = $pdo->query("SELECT id, name, code FROM customers WHERE is_active = 1 ORDER BY name")->fetchAll(PDO::FETCH_ASSOC);
+
+        echo json_encode([
+            'success' => true,
+            'data' => [
+                'nodes' => $nodes,
+                'edges' => $edges
+            ],
+            'filters' => [
+                'companies' => $companies
+            ],
+            'meta' => [
+                'total_nodes' => count($nodes),
+                'total_edges' => count($edges),
+                'company_id' => $companyId
+            ]
+        ]);
+    } catch (Exception $e) {
+        echo json_encode(['success' => false, 'error' => $e->getMessage(), 'data' => ['nodes' => [], 'edges' => []]]);
+    }
+    exit;
+}
+
 // Dropdowns endpoint for select options
 if ($resource === 'dropdowns' && $method === 'GET') {
     $type = $_GET['type'] ?? '';

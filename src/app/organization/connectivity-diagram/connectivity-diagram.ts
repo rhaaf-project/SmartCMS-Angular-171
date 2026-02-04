@@ -2,8 +2,15 @@ import { Component, AfterViewInit, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { Router, RouterModule } from '@angular/router';
+import { FormsModule } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import { environment } from '../../../environments/environment';
+
+interface Company {
+    id: number;
+    name: string;
+    code: string;
+}
 
 // Import vis-network
 declare var vis: any;
@@ -34,7 +41,7 @@ interface TopologyData {
 @Component({
     selector: 'app-connectivity-diagram',
     templateUrl: './connectivity-diagram.html',
-    imports: [CommonModule, RouterModule],
+    imports: [CommonModule, RouterModule, FormsModule],
 })
 export class ConnectivityDiagramComponent implements OnInit, AfterViewInit {
     store: any;
@@ -45,6 +52,10 @@ export class ConnectivityDiagramComponent implements OnInit, AfterViewInit {
     hoCount = 0;
     branchCount = 0;
     connectionCount = 0;
+
+    // Company filter
+    companies: Company[] = [];
+    selectedCompanyId: string = '';
 
     private http = inject(HttpClient);
     private network: any = null;
@@ -91,11 +102,20 @@ export class ConnectivityDiagramComponent implements OnInit, AfterViewInit {
 
     loadTopologyData() {
         this.isLoading = true;
-        const apiUrl = `${environment.apiUrl}/v1/topology`;
+        let apiUrl = `${environment.apiUrl}/v1/topology`;
+
+        // Add company filter if selected
+        if (this.selectedCompanyId) {
+            apiUrl += `?company_id=${this.selectedCompanyId}`;
+        }
 
         this.http.get<any>(apiUrl).subscribe({
             next: (response) => {
                 this.topologyData = response.data || { nodes: [], edges: [] };
+                // Load companies from filter options
+                if (response.filters?.companies) {
+                    this.companies = response.filters.companies;
+                }
                 this.isLoading = false;
                 // Use setTimeout to ensure DOM is ready
                 setTimeout(() => {
@@ -107,6 +127,10 @@ export class ConnectivityDiagramComponent implements OnInit, AfterViewInit {
                 this.isLoading = false;
             },
         });
+    }
+
+    onCompanyChange() {
+        this.loadTopologyData();
     }
 
     renderNetwork() {
