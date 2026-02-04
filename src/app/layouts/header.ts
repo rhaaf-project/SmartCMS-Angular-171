@@ -225,8 +225,9 @@ export class HeaderComponent {
         // Log logout activity
         const userEmail = localStorage.getItem('userEmail') || '';
         const userName = localStorage.getItem('userName') || '';
+        const apiUrl = `${environment.apiUrl}/v1/logout`;
 
-        fetch(`http://localhost:8000/api/v1/logout`, {
+        fetch(apiUrl, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ email: userEmail, name: userName })

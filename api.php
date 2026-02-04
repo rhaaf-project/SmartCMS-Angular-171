@@ -40,7 +40,14 @@ try {
 
 // Parse request
 $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
-$uri = str_replace(['/api/v1/', '/api/'], '', $uri);
+// Handle subdirectory deployment (e.g. /SmartCMS/api/v1/...)
+if (preg_match('#/api/v1/(.*)#', $uri, $matches)) {
+    $uri = $matches[1];
+} elseif (preg_match('#/api/(.*)#', $uri, $matches)) {
+    $uri = $matches[1];
+} else {
+    $uri = str_replace(['/api/v1/', '/api/'], '', $uri);
+}
 $method = $_SERVER['REQUEST_METHOD'];
 $input = json_decode(file_get_contents('php://input'), true) ?? [];
 
