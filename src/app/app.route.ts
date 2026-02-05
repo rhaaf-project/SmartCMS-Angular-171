@@ -130,8 +130,16 @@ export const routes: Routes = [
             { path: 'backup', component: NAComponent },
             { path: 'backup/:any', component: NAComponent },
             { path: 'backup/:any/:any2', component: NAComponent },
-            { path: 'cms-admin/group', component: NAComponent },
-            { path: 'cms-admin/policy', component: NAComponent },
+            {
+                path: 'cms-admin/group',
+                loadComponent: () => import('./cms-admin/cms-na/cms-na').then((d) => d.CMSNAComponent),
+                data: { title: 'CMS Group | SmartUCX' }
+            },
+            {
+                path: 'cms-admin/policy',
+                loadComponent: () => import('./cms-admin/cms-na/cms-na').then((d) => d.CMSNAComponent),
+                data: { title: 'CMS Policy | SmartUCX' }
+            },
         ],
     },
 

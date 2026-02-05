@@ -74,8 +74,9 @@
     </div>
 
     <!-- Modal -->
-    <div *ngIf="showModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/60">
-        <div class="panel w-full max-w-4xl max-h-[90vh] overflow-y-auto !p-0">
+    <div *ngIf="showModal" class="fixed inset-0 z-[999] overflow-y-auto bg-[black]/60" (click)="closeModal()">
+        <div class="flex min-h-screen items-start justify-center px-4 py-8">
+            <div class="panel my-8 w-full max-w-4xl overflow-hidden rounded-lg border-0 !p-0" (click)="$event.stopPropagation()">
             <!-- Modal Header -->
             <div class="flex items-center justify-between px-5 py-4 bg-[#1a2941] rounded-t-md sticky top-0 z-10">
                 <h5 class="text-lg font-semibold text-white">

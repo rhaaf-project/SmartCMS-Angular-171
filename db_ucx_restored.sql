@@ -36,7 +36,7 @@ CREATE TABLE `activity_logs` (
   PRIMARY KEY (`id`),
   KEY `user_id` (`user_id`),
   CONSTRAINT `activity_logs_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `cms_users` (`id`) ON DELETE SET NULL
-) ENGINE=InnoDB AUTO_INCREMENT=70 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=71 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -45,65 +45,7 @@ CREATE TABLE `activity_logs` (
 
 LOCK TABLES `activity_logs` WRITE;
 /*!40000 ALTER TABLE `activity_logs` DISABLE KEYS */;
-INSERT INTO `activity_logs` VALUES (1,NULL,'login','auth',NULL,NULL,'{\"email\":\"root@smartcms.local\",\"name\":\"Root Admin\"}','::1','Mozilla/5.0 (Windows NT; Windows NT 10.0; en-US) WindowsPowerShell/5.1.22621.6133','2026-02-01 14:01:47');
-INSERT INTO `activity_logs` VALUES (2,NULL,'logout','auth',NULL,NULL,'{\"email\":\"root@smartcms.local\",\"name\":\"\"}','::1','Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36','2026-02-01 14:12:00');
-INSERT INTO `activity_logs` VALUES (3,NULL,'login','auth',NULL,NULL,'{\"email\":\"root@smartcms.local\",\"name\":\"Root Admin\"}','::1','Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36','2026-02-01 14:12:11');
-INSERT INTO `activity_logs` VALUES (4,NULL,'logout','auth',NULL,NULL,'{\"email\":\"root@smartcms.local\",\"name\":\"Root Admin\"}','::1','Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36','2026-02-01 14:12:27');
-INSERT INTO `activity_logs` VALUES (5,NULL,'login','auth',NULL,NULL,'{\"email\":\"root@smartcms.local\",\"name\":\"Root Admin\"}','::1','Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36','2026-02-01 14:12:52');
-INSERT INTO `activity_logs` VALUES (6,NULL,'login','auth',NULL,NULL,'{\"email\":\"root@smartcms.local\",\"name\":\"Root Admin\"}','::1','Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36','2026-02-01 14:13:51');
-INSERT INTO `activity_logs` VALUES (7,NULL,'logout','auth',NULL,NULL,'{\"email\":\"root@smartcms.local\",\"name\":\"Root Admin\"}','::1','Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36','2026-02-01 14:14:31');
-INSERT INTO `activity_logs` VALUES (8,NULL,'logout','auth',NULL,NULL,'{\"email\":\"cmsadmin@smartx.local\",\"name\":\"\"}','::1','Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36','2026-02-01 14:14:59');
-INSERT INTO `activity_logs` VALUES (9,NULL,'logout','auth',NULL,NULL,'{\"email\":\"cmsadmin@smartx.local\",\"name\":\"\"}','::1','Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36','2026-02-01 14:16:42');
-INSERT INTO `activity_logs` VALUES (10,NULL,'logout','auth',NULL,NULL,'{\"email\":\"root@smartcms.local\",\"name\":\"\"}','::1','Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36','2026-02-01 15:21:41');
-INSERT INTO `activity_logs` VALUES (11,NULL,'login','auth',NULL,NULL,'{\"email\":\"cmsadmin@smartx.local\",\"name\":\"CMS Admin\"}','::1','Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36','2026-02-01 15:21:46');
-INSERT INTO `activity_logs` VALUES (12,NULL,'logout','auth',NULL,NULL,'{\"email\":\"cmsadmin@smartx.local\",\"name\":\"CMS Admin\"}','::1','Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36','2026-02-01 15:21:51');
-INSERT INTO `activity_logs` VALUES (13,NULL,'login','auth',NULL,NULL,'{\"email\":\"root@smartcms.local\",\"name\":\"Root Admin\"}','::1','Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36','2026-02-01 15:21:55');
-INSERT INTO `activity_logs` VALUES (14,1,'login','auth',1,NULL,'{\"email\":\"root@smartcms.local\",\"name\":\"Root Admin\"}','::1','Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36','2026-02-01 15:45:21');
-INSERT INTO `activity_logs` VALUES (15,1,'login','auth',1,NULL,'{\"email\":\"root@smartcms.local\",\"name\":\"Root Admin\"}','::1','Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36','2026-02-01 15:56:12');
-INSERT INTO `activity_logs` VALUES (16,NULL,'logout','auth',NULL,NULL,'{\"email\":\"root@smartcms.local\",\"name\":\"Root Admin\"}','::1','Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36','2026-02-01 15:57:54');
-INSERT INTO `activity_logs` VALUES (17,1,'login','auth',1,NULL,'{\"email\":\"root@smartcms.local\",\"name\":\"Root Admin\"}','::1','Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36','2026-02-01 15:58:24');
-INSERT INTO `activity_logs` VALUES (18,1,'login','auth',1,NULL,'{\"email\":\"root@smartcms.local\",\"name\":\"Root Admin\"}','::1','Mozilla/5.0 (Windows NT; Windows NT 10.0; en-US) WindowsPowerShell/5.1.22621.6133','2026-02-01 18:15:57');
-INSERT INTO `activity_logs` VALUES (19,NULL,'logout','auth',NULL,NULL,'{\"email\":\"cmsadmin@smartx.local\",\"name\":\"\"}','::1','Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36','2026-02-01 18:19:29');
-INSERT INTO `activity_logs` VALUES (20,1,'login','auth',1,NULL,'{\"email\":\"root@smartcms.local\",\"name\":\"Root Admin\"}','::1','Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36','2026-02-01 18:19:33');
-INSERT INTO `activity_logs` VALUES (21,NULL,'logout','auth',NULL,NULL,'{\"email\":\"root@smartcms.local\",\"name\":\"Root Admin\"}','::1','Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36','2026-02-01 18:22:10');
-INSERT INTO `activity_logs` VALUES (27,NULL,'login','auth',2,NULL,'{\"email\":\"cmsadmin@smartx.local\",\"name\":\"CMS Admin\"}','::1','Mozilla/5.0 (Windows NT; Windows NT 10.0; en-US) WindowsPowerShell/5.1.22621.6133','2026-02-01 18:24:31');
-INSERT INTO `activity_logs` VALUES (28,NULL,'login','auth',2,NULL,'{\"email\":\"cmsadmin@smartx.local\",\"name\":\"CMS Admin\"}','::1','Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36','2026-02-01 18:25:18');
-INSERT INTO `activity_logs` VALUES (29,NULL,'logout','auth',NULL,NULL,'{\"email\":\"cmsadmin@smartx.local\",\"name\":\"CMS Admin\"}','::1','Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36','2026-02-01 18:25:38');
-INSERT INTO `activity_logs` VALUES (30,NULL,'login','auth',1,NULL,'{\"email\":\"root@smartcms.local\",\"name\":\"Root Admin\"}','::1','Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36','2026-02-01 18:25:43');
-INSERT INTO `activity_logs` VALUES (31,NULL,'logout','auth',NULL,NULL,'{\"email\":\"root@smartcms.local\",\"name\":\"Root Admin\"}','::1','Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36','2026-02-02 00:12:32');
-INSERT INTO `activity_logs` VALUES (32,NULL,'login','auth',1,NULL,'{\"email\":\"root@smartcms.local\",\"name\":\"Root Admin\"}','::1','Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36','2026-02-02 00:12:35');
-INSERT INTO `activity_logs` VALUES (33,NULL,'login','auth',1,NULL,'{\"email\":\"root@smartcms.local\",\"name\":\"Root Admin\"}','::1','Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36','2026-02-02 00:24:13');
-INSERT INTO `activity_logs` VALUES (34,NULL,'logout','auth',NULL,NULL,'{\"email\":\"root@smartcms.local\",\"name\":\"Root Admin\"}','::1','Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36','2026-02-02 00:29:50');
-INSERT INTO `activity_logs` VALUES (35,NULL,'login','auth',1,NULL,'{\"email\":\"root@smartcms.local\",\"name\":\"Root Admin\"}','::1','Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36','2026-02-02 00:29:52');
-INSERT INTO `activity_logs` VALUES (36,NULL,'logout','auth',NULL,NULL,'{\"email\":\"root@smartcms.local\",\"name\":\"Root Admin\"}','::1','Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36','2026-02-02 00:45:54');
-INSERT INTO `activity_logs` VALUES (37,NULL,'login','auth',1,NULL,'{\"email\":\"root@smartcms.local\",\"name\":\"Root Admin\"}','::1','Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36','2026-02-02 00:45:56');
-INSERT INTO `activity_logs` VALUES (38,NULL,'logout','auth',NULL,NULL,'{\"email\":\"root@smartcms.local\",\"name\":\"Root Admin\"}','::1','Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36','2026-02-02 01:09:17');
-INSERT INTO `activity_logs` VALUES (39,1,'login','auth',1,NULL,'{\"email\":\"root@smartcms.local\",\"name\":\"Root Admin\"}','::1','Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36','2026-02-02 01:12:53');
-INSERT INTO `activity_logs` VALUES (40,1,'update','users',1,NULL,'{\"id\":1,\"name\":\"Root Admin\",\"email\":\"root@smartcms.local\",\"profile_image\":\"user_1769994791_697ffa274a0e1.jpg\",\"password\":\"$2y$10$stMS2vV9t8gJjbe3VAhrdukbK0Ti1KrSOLGTy.UZjKgqjTOb2aPJu\",\"role\":\"admin\",\"is_active\":1,\"last_login\":\"2026-02-02 08:12:53\",\"created_at\":\"2026-02-01 22:37:47\",\"updated_at\":\"2026-02-02 08:12:53\"}','::1','Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36','2026-02-02 01:13:11');
-INSERT INTO `activity_logs` VALUES (41,1,'update','users',1,NULL,'{\"id\":1,\"name\":\"Root Admin\",\"email\":\"root@smartcms.local\",\"profile_image\":\"user_1769994814_697ffa3ed0eb4.jpg\",\"password\":\"$2y$10$UuOc9fL5aomA67RvMsAQieibU.Q\\/.YVNk2ZwZ052pLTyDAUJRcwB2\",\"role\":\"admin\",\"is_active\":1,\"last_login\":\"2026-02-02 08:12:53\",\"created_at\":\"2026-02-01 22:37:47\",\"updated_at\":\"2026-02-02 08:12:53\"}','::1','Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36','2026-02-02 01:13:34');
-INSERT INTO `activity_logs` VALUES (42,NULL,'logout','auth',NULL,NULL,'{\"email\":\"root@smartcms.local\",\"name\":\"Root Admin\"}','::1','Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36','2026-02-02 01:15:19');
-INSERT INTO `activity_logs` VALUES (43,1,'login','auth',1,NULL,'{\"email\":\"root@smartcms.local\",\"name\":\"Root Admin\"}','::1','Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36','2026-02-02 01:15:21');
-INSERT INTO `activity_logs` VALUES (44,1,'update','users',1,NULL,'{\"id\":1,\"name\":\"Root Admin\",\"email\":\"root@smartcms.local\",\"profile_image\":\"user_1769994935_697ffab75a7fa.jpg\",\"password\":\"$2y$10$CyCcGQOCJ3J6Yr3MLyMq.u7NAUu7C6FBqF6hZlm5AV\\/xVaBiNHmQ2\",\"role\":\"admin\",\"is_active\":1,\"last_login\":\"2026-02-02 08:15:21\",\"created_at\":\"2026-02-01 22:37:47\",\"updated_at\":\"2026-02-02 08:15:21\"}','::1','Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36','2026-02-02 01:15:35');
-INSERT INTO `activity_logs` VALUES (45,1,'update','users',1,NULL,'{\"id\":1,\"name\":\"Root Admin\",\"email\":\"root@smartcms.local\",\"profile_image\":\"user_1769994935_697ffab75a7fa.jpg\",\"password\":\"$2y$10$uROCwJdnuQEvAHp0fJyyF.v2jTavZccBeu9GDKd4mIvQDVf1E5yde\",\"role\":\"admin\",\"is_active\":1,\"last_login\":\"2026-02-02 08:15:21\",\"created_at\":\"2026-02-01 22:37:47\",\"updated_at\":\"2026-02-02 08:15:21\"}','::1','Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36','2026-02-02 01:15:46');
-INSERT INTO `activity_logs` VALUES (46,1,'update','users',1,NULL,'{\"id\":1,\"name\":\"Root Admin\",\"email\":\"root@smartcms.local\",\"profile_image\":\"user_1769995225_697ffbd9e4078.jpg\",\"password\":\"$2y$10$ps5kXM6Y.A9JW3mvRkHRTOU9hrZg4\\/LmcQNGICp6XTEHteg4x85lq\",\"role\":\"admin\",\"is_active\":1,\"last_login\":\"2026-02-02 08:15:21\",\"created_at\":\"2026-02-01 22:37:47\",\"updated_at\":\"2026-02-02 08:15:21\"}','::1','Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36','2026-02-02 01:20:25');
-INSERT INTO `activity_logs` VALUES (47,1,'update','users',1,NULL,'{\"id\":1,\"name\":\"Root Admin\",\"email\":\"root@smartcms.local\",\"profile_image\":\"user_1769995349_697ffc551c1b3.jpg\",\"password\":\"$2y$10$RhxdhOeRRYvGP8hL3mSRPe88nWqN26Xf9Ef1ZPmcmnedaZFdrv6zK\",\"role\":\"admin\",\"is_active\":1,\"last_login\":\"2026-02-02 08:15:21\",\"created_at\":\"2026-02-01 22:37:47\",\"updated_at\":\"2026-02-02 08:15:21\"}','::1','Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36','2026-02-02 01:22:29');
-INSERT INTO `activity_logs` VALUES (48,1,'login','auth',1,NULL,'{\"email\":\"root@smartcms.local\",\"name\":\"Root Admin\"}','127.0.0.1','Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36','2026-02-02 11:14:59');
-INSERT INTO `activity_logs` VALUES (50,NULL,'login_failed','auth',NULL,NULL,'{\"email\":\"root@smartx.local\"}','127.0.0.1','Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Mobile Safari/537.36','2026-02-02 23:13:59');
-INSERT INTO `activity_logs` VALUES (53,1,'login','auth',1,NULL,'{\"email\":\"root@smartcms.local\",\"name\":\"Root Admin\"}','127.0.0.1','Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36','2026-02-03 00:06:00');
-INSERT INTO `activity_logs` VALUES (54,1,'login','auth',1,NULL,'{\"email\":\"root@smartcms.local\",\"name\":\"Root Admin\"}','127.0.0.1','Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36','2026-02-03 06:09:28');
-INSERT INTO `activity_logs` VALUES (55,NULL,'login_failed','auth',NULL,NULL,'{\"email\":\"root@smartcms.local\"}','127.0.0.1','Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36','2026-02-03 07:52:11');
-INSERT INTO `activity_logs` VALUES (56,1,'login','auth',1,NULL,'{\"email\":\"root@smartcms.local\",\"name\":\"Root Admin\"}','127.0.0.1','Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36','2026-02-03 07:53:19');
-INSERT INTO `activity_logs` VALUES (57,1,'login','auth',1,NULL,'{\"email\":\"root@smartcms.local\",\"name\":\"Root Admin\"}','127.0.0.1','Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36','2026-02-03 08:16:25');
-INSERT INTO `activity_logs` VALUES (58,1,'login','auth',1,NULL,'{\"email\":\"root@smartcms.local\",\"name\":\"Root Admin\"}','127.0.0.1','Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36','2026-02-03 19:34:24');
-INSERT INTO `activity_logs` VALUES (59,1,'login','auth',1,NULL,'{\"email\":\"root@smartcms.local\",\"name\":\"Root Admin\"}','127.0.0.1','Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36','2026-02-03 19:45:02');
-INSERT INTO `activity_logs` VALUES (60,1,'login','auth',1,NULL,'{\"email\":\"root@smartcms.local\",\"name\":\"Root Admin\"}','127.0.0.1','Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36','2026-02-03 19:48:45');
-INSERT INTO `activity_logs` VALUES (61,1,'login','auth',1,NULL,'{\"email\":\"root@smartcms.local\",\"name\":\"Root Admin\"}','127.0.0.1','Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36','2026-02-03 19:53:14');
-INSERT INTO `activity_logs` VALUES (62,1,'login','auth',1,NULL,'{\"email\":\"root@smartcms.local\",\"name\":\"Root Admin\"}','127.0.0.1','Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36','2026-02-03 20:01:45');
-INSERT INTO `activity_logs` VALUES (63,NULL,'logout','auth',NULL,NULL,'{\"email\":\"root@smartcms.local\",\"name\":\"Root Admin\"}','127.0.0.1','Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36','2026-02-03 20:02:15');
-INSERT INTO `activity_logs` VALUES (65,NULL,'logout','auth',NULL,NULL,'{\"email\":\"root@smartcms.local\",\"name\":\"Root Admin\"}','127.0.0.1','Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36','2026-02-04 11:26:27');
-INSERT INTO `activity_logs` VALUES (67,1,'login','auth',1,NULL,'{\"email\":\"root@smartcms.local\",\"name\":\"Root Admin\"}','::1','Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36','2026-02-04 16:05:37');
-INSERT INTO `activity_logs` VALUES (68,1,'login','auth',1,NULL,'{\"email\":\"root@smartcms.local\",\"name\":\"Root Admin\"}','::1','Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36','2026-02-04 16:48:31');
-INSERT INTO `activity_logs` VALUES (69,1,'login','auth',1,NULL,'{\"email\":\"root@smartcms.local\",\"name\":\"Root Admin\"}','::1','Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36','2026-02-05 05:49:41');
+INSERT INTO `activity_logs` VALUES (1,NULL,'login','auth',NULL,NULL,'{\"email\":\"root@smartcms.local\",\"name\":\"Root Admin\"}','::1','Mozilla/5.0 (Windows NT; Windows NT 10.0; en-US) WindowsPowerShell/5.1.22621.6133','2026-02-01 14:01:47'),(2,NULL,'logout','auth',NULL,NULL,'{\"email\":\"root@smartcms.local\",\"name\":\"\"}','::1','Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36','2026-02-01 14:12:00'),(3,NULL,'login','auth',NULL,NULL,'{\"email\":\"root@smartcms.local\",\"name\":\"Root Admin\"}','::1','Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36','2026-02-01 14:12:11'),(4,NULL,'logout','auth',NULL,NULL,'{\"email\":\"root@smartcms.local\",\"name\":\"Root Admin\"}','::1','Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36','2026-02-01 14:12:27'),(5,NULL,'login','auth',NULL,NULL,'{\"email\":\"root@smartcms.local\",\"name\":\"Root Admin\"}','::1','Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36','2026-02-01 14:12:52'),(6,NULL,'login','auth',NULL,NULL,'{\"email\":\"root@smartcms.local\",\"name\":\"Root Admin\"}','::1','Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36','2026-02-01 14:13:51'),(7,NULL,'logout','auth',NULL,NULL,'{\"email\":\"root@smartcms.local\",\"name\":\"Root Admin\"}','::1','Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36','2026-02-01 14:14:31'),(8,NULL,'logout','auth',NULL,NULL,'{\"email\":\"cmsadmin@smartx.local\",\"name\":\"\"}','::1','Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36','2026-02-01 14:14:59'),(9,NULL,'logout','auth',NULL,NULL,'{\"email\":\"cmsadmin@smartx.local\",\"name\":\"\"}','::1','Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36','2026-02-01 14:16:42'),(10,NULL,'logout','auth',NULL,NULL,'{\"email\":\"root@smartcms.local\",\"name\":\"\"}','::1','Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36','2026-02-01 15:21:41'),(11,NULL,'login','auth',NULL,NULL,'{\"email\":\"cmsadmin@smartx.local\",\"name\":\"CMS Admin\"}','::1','Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36','2026-02-01 15:21:46'),(12,NULL,'logout','auth',NULL,NULL,'{\"email\":\"cmsadmin@smartx.local\",\"name\":\"CMS Admin\"}','::1','Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36','2026-02-01 15:21:51'),(13,NULL,'login','auth',NULL,NULL,'{\"email\":\"root@smartcms.local\",\"name\":\"Root Admin\"}','::1','Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36','2026-02-01 15:21:55'),(14,1,'login','auth',1,NULL,'{\"email\":\"root@smartcms.local\",\"name\":\"Root Admin\"}','::1','Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36','2026-02-01 15:45:21'),(15,1,'login','auth',1,NULL,'{\"email\":\"root@smartcms.local\",\"name\":\"Root Admin\"}','::1','Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36','2026-02-01 15:56:12'),(16,NULL,'logout','auth',NULL,NULL,'{\"email\":\"root@smartcms.local\",\"name\":\"Root Admin\"}','::1','Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36','2026-02-01 15:57:54'),(17,1,'login','auth',1,NULL,'{\"email\":\"root@smartcms.local\",\"name\":\"Root Admin\"}','::1','Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36','2026-02-01 15:58:24'),(18,1,'login','auth',1,NULL,'{\"email\":\"root@smartcms.local\",\"name\":\"Root Admin\"}','::1','Mozilla/5.0 (Windows NT; Windows NT 10.0; en-US) WindowsPowerShell/5.1.22621.6133','2026-02-01 18:15:57'),(19,NULL,'logout','auth',NULL,NULL,'{\"email\":\"cmsadmin@smartx.local\",\"name\":\"\"}','::1','Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36','2026-02-01 18:19:29'),(20,1,'login','auth',1,NULL,'{\"email\":\"root@smartcms.local\",\"name\":\"Root Admin\"}','::1','Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36','2026-02-01 18:19:33'),(21,NULL,'logout','auth',NULL,NULL,'{\"email\":\"root@smartcms.local\",\"name\":\"Root Admin\"}','::1','Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36','2026-02-01 18:22:10'),(27,NULL,'login','auth',2,NULL,'{\"email\":\"cmsadmin@smartx.local\",\"name\":\"CMS Admin\"}','::1','Mozilla/5.0 (Windows NT; Windows NT 10.0; en-US) WindowsPowerShell/5.1.22621.6133','2026-02-01 18:24:31'),(28,NULL,'login','auth',2,NULL,'{\"email\":\"cmsadmin@smartx.local\",\"name\":\"CMS Admin\"}','::1','Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36','2026-02-01 18:25:18'),(29,NULL,'logout','auth',NULL,NULL,'{\"email\":\"cmsadmin@smartx.local\",\"name\":\"CMS Admin\"}','::1','Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36','2026-02-01 18:25:38'),(30,NULL,'login','auth',1,NULL,'{\"email\":\"root@smartcms.local\",\"name\":\"Root Admin\"}','::1','Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36','2026-02-01 18:25:43'),(31,NULL,'logout','auth',NULL,NULL,'{\"email\":\"root@smartcms.local\",\"name\":\"Root Admin\"}','::1','Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36','2026-02-02 00:12:32'),(32,NULL,'login','auth',1,NULL,'{\"email\":\"root@smartcms.local\",\"name\":\"Root Admin\"}','::1','Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36','2026-02-02 00:12:35'),(33,NULL,'login','auth',1,NULL,'{\"email\":\"root@smartcms.local\",\"name\":\"Root Admin\"}','::1','Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36','2026-02-02 00:24:13'),(34,NULL,'logout','auth',NULL,NULL,'{\"email\":\"root@smartcms.local\",\"name\":\"Root Admin\"}','::1','Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36','2026-02-02 00:29:50'),(35,NULL,'login','auth',1,NULL,'{\"email\":\"root@smartcms.local\",\"name\":\"Root Admin\"}','::1','Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36','2026-02-02 00:29:52'),(36,NULL,'logout','auth',NULL,NULL,'{\"email\":\"root@smartcms.local\",\"name\":\"Root Admin\"}','::1','Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36','2026-02-02 00:45:54'),(37,NULL,'login','auth',1,NULL,'{\"email\":\"root@smartcms.local\",\"name\":\"Root Admin\"}','::1','Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36','2026-02-02 00:45:56'),(38,NULL,'logout','auth',NULL,NULL,'{\"email\":\"root@smartcms.local\",\"name\":\"Root Admin\"}','::1','Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36','2026-02-02 01:09:17'),(39,1,'login','auth',1,NULL,'{\"email\":\"root@smartcms.local\",\"name\":\"Root Admin\"}','::1','Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36','2026-02-02 01:12:53'),(40,1,'update','users',1,NULL,'{\"id\":1,\"name\":\"Root Admin\",\"email\":\"root@smartcms.local\",\"profile_image\":\"user_1769994791_697ffa274a0e1.jpg\",\"password\":\"$2y$10$stMS2vV9t8gJjbe3VAhrdukbK0Ti1KrSOLGTy.UZjKgqjTOb2aPJu\",\"role\":\"admin\",\"is_active\":1,\"last_login\":\"2026-02-02 08:12:53\",\"created_at\":\"2026-02-01 22:37:47\",\"updated_at\":\"2026-02-02 08:12:53\"}','::1','Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36','2026-02-02 01:13:11'),(41,1,'update','users',1,NULL,'{\"id\":1,\"name\":\"Root Admin\",\"email\":\"root@smartcms.local\",\"profile_image\":\"user_1769994814_697ffa3ed0eb4.jpg\",\"password\":\"$2y$10$UuOc9fL5aomA67RvMsAQieibU.Q\\/.YVNk2ZwZ052pLTyDAUJRcwB2\",\"role\":\"admin\",\"is_active\":1,\"last_login\":\"2026-02-02 08:12:53\",\"created_at\":\"2026-02-01 22:37:47\",\"updated_at\":\"2026-02-02 08:12:53\"}','::1','Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36','2026-02-02 01:13:34'),(42,NULL,'logout','auth',NULL,NULL,'{\"email\":\"root@smartcms.local\",\"name\":\"Root Admin\"}','::1','Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36','2026-02-02 01:15:19'),(43,1,'login','auth',1,NULL,'{\"email\":\"root@smartcms.local\",\"name\":\"Root Admin\"}','::1','Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36','2026-02-02 01:15:21'),(44,1,'update','users',1,NULL,'{\"id\":1,\"name\":\"Root Admin\",\"email\":\"root@smartcms.local\",\"profile_image\":\"user_1769994935_697ffab75a7fa.jpg\",\"password\":\"$2y$10$CyCcGQOCJ3J6Yr3MLyMq.u7NAUu7C6FBqF6hZlm5AV\\/xVaBiNHmQ2\",\"role\":\"admin\",\"is_active\":1,\"last_login\":\"2026-02-02 08:15:21\",\"created_at\":\"2026-02-01 22:37:47\",\"updated_at\":\"2026-02-02 08:15:21\"}','::1','Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36','2026-02-02 01:15:35'),(45,1,'update','users',1,NULL,'{\"id\":1,\"name\":\"Root Admin\",\"email\":\"root@smartcms.local\",\"profile_image\":\"user_1769994935_697ffab75a7fa.jpg\",\"password\":\"$2y$10$uROCwJdnuQEvAHp0fJyyF.v2jTavZccBeu9GDKd4mIvQDVf1E5yde\",\"role\":\"admin\",\"is_active\":1,\"last_login\":\"2026-02-02 08:15:21\",\"created_at\":\"2026-02-01 22:37:47\",\"updated_at\":\"2026-02-02 08:15:21\"}','::1','Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36','2026-02-02 01:15:46'),(46,1,'update','users',1,NULL,'{\"id\":1,\"name\":\"Root Admin\",\"email\":\"root@smartcms.local\",\"profile_image\":\"user_1769995225_697ffbd9e4078.jpg\",\"password\":\"$2y$10$ps5kXM6Y.A9JW3mvRkHRTOU9hrZg4\\/LmcQNGICp6XTEHteg4x85lq\",\"role\":\"admin\",\"is_active\":1,\"last_login\":\"2026-02-02 08:15:21\",\"created_at\":\"2026-02-01 22:37:47\",\"updated_at\":\"2026-02-02 08:15:21\"}','::1','Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36','2026-02-02 01:20:25'),(47,1,'update','users',1,NULL,'{\"id\":1,\"name\":\"Root Admin\",\"email\":\"root@smartcms.local\",\"profile_image\":\"user_1769995349_697ffc551c1b3.jpg\",\"password\":\"$2y$10$RhxdhOeRRYvGP8hL3mSRPe88nWqN26Xf9Ef1ZPmcmnedaZFdrv6zK\",\"role\":\"admin\",\"is_active\":1,\"last_login\":\"2026-02-02 08:15:21\",\"created_at\":\"2026-02-01 22:37:47\",\"updated_at\":\"2026-02-02 08:15:21\"}','::1','Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36','2026-02-02 01:22:29'),(48,1,'login','auth',1,NULL,'{\"email\":\"root@smartcms.local\",\"name\":\"Root Admin\"}','127.0.0.1','Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36','2026-02-02 11:14:59'),(50,NULL,'login_failed','auth',NULL,NULL,'{\"email\":\"root@smartx.local\"}','127.0.0.1','Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Mobile Safari/537.36','2026-02-02 23:13:59'),(53,1,'login','auth',1,NULL,'{\"email\":\"root@smartcms.local\",\"name\":\"Root Admin\"}','127.0.0.1','Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36','2026-02-03 00:06:00'),(54,1,'login','auth',1,NULL,'{\"email\":\"root@smartcms.local\",\"name\":\"Root Admin\"}','127.0.0.1','Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36','2026-02-03 06:09:28'),(55,NULL,'login_failed','auth',NULL,NULL,'{\"email\":\"root@smartcms.local\"}','127.0.0.1','Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36','2026-02-03 07:52:11'),(56,1,'login','auth',1,NULL,'{\"email\":\"root@smartcms.local\",\"name\":\"Root Admin\"}','127.0.0.1','Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36','2026-02-03 07:53:19'),(57,1,'login','auth',1,NULL,'{\"email\":\"root@smartcms.local\",\"name\":\"Root Admin\"}','127.0.0.1','Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36','2026-02-03 08:16:25'),(58,1,'login','auth',1,NULL,'{\"email\":\"root@smartcms.local\",\"name\":\"Root Admin\"}','127.0.0.1','Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36','2026-02-03 19:34:24'),(59,1,'login','auth',1,NULL,'{\"email\":\"root@smartcms.local\",\"name\":\"Root Admin\"}','127.0.0.1','Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36','2026-02-03 19:45:02'),(60,1,'login','auth',1,NULL,'{\"email\":\"root@smartcms.local\",\"name\":\"Root Admin\"}','127.0.0.1','Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36','2026-02-03 19:48:45'),(61,1,'login','auth',1,NULL,'{\"email\":\"root@smartcms.local\",\"name\":\"Root Admin\"}','127.0.0.1','Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36','2026-02-03 19:53:14'),(62,1,'login','auth',1,NULL,'{\"email\":\"root@smartcms.local\",\"name\":\"Root Admin\"}','127.0.0.1','Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36','2026-02-03 20:01:45'),(63,NULL,'logout','auth',NULL,NULL,'{\"email\":\"root@smartcms.local\",\"name\":\"Root Admin\"}','127.0.0.1','Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36','2026-02-03 20:02:15'),(65,NULL,'logout','auth',NULL,NULL,'{\"email\":\"root@smartcms.local\",\"name\":\"Root Admin\"}','127.0.0.1','Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36','2026-02-04 11:26:27'),(67,1,'login','auth',1,NULL,'{\"email\":\"root@smartcms.local\",\"name\":\"Root Admin\"}','::1','Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36','2026-02-04 16:05:37'),(68,1,'login','auth',1,NULL,'{\"email\":\"root@smartcms.local\",\"name\":\"Root Admin\"}','::1','Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36','2026-02-04 16:48:31'),(69,1,'login','auth',1,NULL,'{\"email\":\"root@smartcms.local\",\"name\":\"Root Admin\"}','::1','Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36','2026-02-05 05:49:41'),(70,1,'login','auth',1,NULL,'{\"email\":\"root@smartcms.local\",\"name\":\"Root Admin\"}','127.0.0.1','Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36','2026-02-05 08:05:26');
 /*!40000 ALTER TABLE `activity_logs` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -344,9 +286,7 @@ CREATE TABLE `call_servers` (
 
 LOCK TABLES `call_servers` WRITE;
 /*!40000 ALTER TABLE `call_servers` DISABLE KEYS */;
-INSERT INTO `call_servers` VALUES (3,2,'SmartUCX-2-KAI','103.154.81.102',5060,NULL,1,'2026-01-30 17:53:31','2026-01-30 17:59:39',NULL);
-INSERT INTO `call_servers` VALUES (4,2,'SmartUCX-3-KAI','103.154.81.103',5060,NULL,1,'2026-01-30 17:53:43','2026-01-30 17:59:48',NULL);
-INSERT INTO `call_servers` VALUES (8,3,'Telkom','192.168.0.10',5060,NULL,1,'2026-02-02 11:16:29','2026-02-04 01:01:03','sbc');
+INSERT INTO `call_servers` VALUES (3,2,'SmartUCX-2-KAI','103.154.81.102',5060,NULL,1,'2026-01-30 17:53:31','2026-01-30 17:59:39',NULL),(4,2,'SmartUCX-3-KAI','103.154.81.103',5060,NULL,1,'2026-01-30 17:53:43','2026-01-30 17:59:48',NULL),(8,3,'Telkom','192.168.0.10',5060,NULL,1,'2026-02-02 11:16:29','2026-02-04 01:01:03','sbc');
 /*!40000 ALTER TABLE `call_servers` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -383,11 +323,7 @@ CREATE TABLE `cas` (
 
 LOCK TABLES `cas` WRITE;
 /*!40000 ALTER TABLE `cas` DISABLE KEYS */;
-INSERT INTO `cas` VALUES (1,3,'CAS E1 Port 1','CAS-001',30,'E1',NULL,1,1,NULL,NULL,0,1,NULL,NULL);
-INSERT INTO `cas` VALUES (2,3,'CAS E1 Port 2','CAS-002',30,'E1',NULL,1,2,NULL,NULL,0,1,NULL,NULL);
-INSERT INTO `cas` VALUES (3,3,'CAS E1 Port 3','CAS-003',30,'E1',NULL,2,1,NULL,NULL,0,1,NULL,NULL);
-INSERT INTO `cas` VALUES (4,3,'CAS PRI Link 1','CAS-004',23,'PRI',NULL,1,1,NULL,NULL,0,1,NULL,NULL);
-INSERT INTO `cas` VALUES (5,3,'CAS PRI Link 2','CAS-005',23,'PRI',NULL,2,1,NULL,NULL,0,1,NULL,NULL);
+INSERT INTO `cas` VALUES (1,3,'CAS E1 Port 1','CAS-001',30,'E1',NULL,1,1,NULL,NULL,0,1,NULL,NULL),(2,3,'CAS E1 Port 2','CAS-002',30,'E1',NULL,1,2,NULL,NULL,0,1,NULL,NULL),(3,3,'CAS E1 Port 3','CAS-003',30,'E1',NULL,2,1,NULL,NULL,0,1,NULL,NULL),(4,3,'CAS PRI Link 1','CAS-004',23,'PRI',NULL,1,1,NULL,NULL,0,1,NULL,NULL),(5,3,'CAS PRI Link 2','CAS-005',23,'PRI',NULL,2,1,NULL,NULL,0,1,NULL,NULL);
 /*!40000 ALTER TABLE `cas` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -594,9 +530,7 @@ CREATE TABLE `customers` (
 
 LOCK TABLES `customers` WRITE;
 /*!40000 ALTER TABLE `customers` DISABLE KEYS */;
-INSERT INTO `customers` VALUES (1,'PT Smart Infinite Prosperity','SIP','Joni Me Ow','joni@smart.com','02150877432','Jakarta, Indonesia',1,'2026-01-29 17:28:18','2026-01-29 17:28:18');
-INSERT INTO `customers` VALUES (2,'PT KAI','KAI IND','Kaimanu','kaimanu@kai,id','123456','Gambir Jakarta',1,'2026-01-29 18:00:14','2026-01-29 18:00:14');
-INSERT INTO `customers` VALUES (3,'PT Garuda','GARUDA IND','Garuda','garuda@garuda.id','123456','Monas Jakarta',1,'2026-01-31 14:03:41','2026-01-31 14:03:41');
+INSERT INTO `customers` VALUES (1,'PT Smart Infinite Prosperity','SIP','Joni Me Ow','joni@smart.com','02150877432','Jakarta, Indonesia',1,'2026-01-29 17:28:18','2026-01-29 17:28:18'),(2,'PT KAI','KAI IND','Kaimanu','kaimanu@kai,id','123456','Gambir Jakarta',1,'2026-01-29 18:00:14','2026-01-29 18:00:14'),(3,'PT Garuda','GARUDA IND','Garuda','garuda@garuda.id','123456','Monas Jakarta',1,'2026-01-31 14:03:41','2026-01-31 14:03:41');
 /*!40000 ALTER TABLE `customers` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -663,11 +597,7 @@ CREATE TABLE `device_3rd_parties` (
 
 LOCK TABLES `device_3rd_parties` WRITE;
 /*!40000 ALTER TABLE `device_3rd_parties` DISABLE KEYS */;
-INSERT INTO `device_3rd_parties` VALUES (1,'Cisco IP Phone 7821','00:1B:54:AA:BB:01','192.168.100.101','ip_phone','Cisco','7821',NULL,1,NULL,NULL);
-INSERT INTO `device_3rd_parties` VALUES (2,'Yealink T46S','80:5E:C0:CC:DD:02','192.168.100.102','ip_phone','Yealink','T46S',NULL,1,NULL,NULL);
-INSERT INTO `device_3rd_parties` VALUES (3,'Grandstream GXP2170','00:0B:82:EE:FF:03','192.168.100.103','ip_phone','Grandstream','GXP2170',NULL,1,NULL,NULL);
-INSERT INTO `device_3rd_parties` VALUES (4,'Polycom VVX 450','64:16:7F:11:22:04','192.168.100.104','ip_phone','Polycom','VVX 450',NULL,1,NULL,NULL);
-INSERT INTO `device_3rd_parties` VALUES (5,'Fanvil X6U','AC:D1:B8:33:44:05','192.168.100.105','ip_phone','Fanvil','X6U',NULL,1,NULL,NULL);
+INSERT INTO `device_3rd_parties` VALUES (1,'Cisco IP Phone 7821','00:1B:54:AA:BB:01','192.168.100.101','ip_phone','Cisco','7821',NULL,1,NULL,NULL),(2,'Yealink T46S','80:5E:C0:CC:DD:02','192.168.100.102','ip_phone','Yealink','T46S',NULL,1,NULL,NULL),(3,'Grandstream GXP2170','00:0B:82:EE:FF:03','192.168.100.103','ip_phone','Grandstream','GXP2170',NULL,1,NULL,NULL),(4,'Polycom VVX 450','64:16:7F:11:22:04','192.168.100.104','ip_phone','Polycom','VVX 450',NULL,1,NULL,NULL),(5,'Fanvil X6U','AC:D1:B8:33:44:05','192.168.100.105','ip_phone','Fanvil','X6U',NULL,1,NULL,NULL);
 /*!40000 ALTER TABLE `device_3rd_parties` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -702,16 +632,7 @@ CREATE TABLE `extensions` (
 
 LOCK TABLES `extensions` WRITE;
 /*!40000 ALTER TABLE `extensions` DISABLE KEYS */;
-INSERT INTO `extensions` VALUES (1,3,'7001','Ext 7001 - SIP','1234',NULL,NULL,30,1,'2026-02-04 11:38:39','2026-02-04 11:38:39');
-INSERT INTO `extensions` VALUES (2,3,'7002','Ext 7002 - SIP','1234',NULL,NULL,30,1,'2026-02-04 11:38:39','2026-02-04 11:38:39');
-INSERT INTO `extensions` VALUES (3,3,'8001','Ext 8001 - Line','1234',NULL,NULL,30,1,'2026-02-04 11:38:39','2026-02-04 11:38:39');
-INSERT INTO `extensions` VALUES (4,3,'8002','Ext 8002 - Line','1234',NULL,NULL,30,1,'2026-02-04 11:38:39','2026-02-04 11:38:39');
-INSERT INTO `extensions` VALUES (5,3,'8101','Ext 8101 - Extension','1234',NULL,NULL,30,1,'2026-02-04 11:38:39','2026-02-04 11:38:39');
-INSERT INTO `extensions` VALUES (6,3,'8102','Ext 8102 - Extension','1234',NULL,NULL,30,1,'2026-02-04 11:38:39','2026-02-04 11:38:39');
-INSERT INTO `extensions` VALUES (7,3,'8201','Ext 8201 - VPW','1234',NULL,NULL,30,1,'2026-02-04 11:38:39','2026-02-04 11:38:39');
-INSERT INTO `extensions` VALUES (8,3,'8202','Ext 8202 - VPW','1234',NULL,NULL,30,1,'2026-02-04 11:38:39','2026-02-04 11:38:39');
-INSERT INTO `extensions` VALUES (9,3,'8301','Ext 8301 - CAS','1234',NULL,NULL,30,1,'2026-02-04 11:38:39','2026-02-04 11:38:39');
-INSERT INTO `extensions` VALUES (10,3,'8302','Ext 8302 - CAS','1234',NULL,NULL,30,1,'2026-02-04 11:38:39','2026-02-04 11:38:39');
+INSERT INTO `extensions` VALUES (1,3,'7001','Ext 7001 - SIP','1234',NULL,NULL,30,1,'2026-02-04 11:38:39','2026-02-04 11:38:39'),(2,3,'7002','Ext 7002 - SIP','1234',NULL,NULL,30,1,'2026-02-04 11:38:39','2026-02-04 11:38:39'),(3,3,'8001','Ext 8001 - Line','1234',NULL,NULL,30,1,'2026-02-04 11:38:39','2026-02-04 11:38:39'),(4,3,'8002','Ext 8002 - Line','1234',NULL,NULL,30,1,'2026-02-04 11:38:39','2026-02-04 11:38:39'),(5,3,'8101','Ext 8101 - Extension','1234',NULL,NULL,30,1,'2026-02-04 11:38:39','2026-02-04 11:38:39'),(6,3,'8102','Ext 8102 - Extension','1234',NULL,NULL,30,1,'2026-02-04 11:38:39','2026-02-04 11:38:39'),(7,3,'8201','Ext 8201 - VPW','1234',NULL,NULL,30,1,'2026-02-04 11:38:39','2026-02-04 11:38:39'),(8,3,'8202','Ext 8202 - VPW','1234',NULL,NULL,30,1,'2026-02-04 11:38:39','2026-02-04 11:38:39'),(9,3,'8301','Ext 8301 - CAS','1234',NULL,NULL,30,1,'2026-02-04 11:38:39','2026-02-04 11:38:39'),(10,3,'8302','Ext 8302 - CAS','1234',NULL,NULL,30,1,'2026-02-04 11:38:39','2026-02-04 11:38:39');
 /*!40000 ALTER TABLE `extensions` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -852,9 +773,7 @@ CREATE TABLE `head_offices` (
 
 LOCK TABLES `head_offices` WRITE;
 /*!40000 ALTER TABLE `head_offices` DISABLE KEYS */;
-INSERT INTO `head_offices` VALUES (1,1,'HO Jakarta','HO-JKT','ha',NULL,NULL,'Jakarta',NULL,NULL,NULL,NULL,NULL,1,'2026-01-29 17:28:18','2026-01-29 17:28:18',NULL,0,NULL);
-INSERT INTO `head_offices` VALUES (2,2,'HO KAI Indonesia','KAI IND 01','ha','Indonesia','DKI','Jakarta','Jakarta Pusat','Gambir','','','',1,'2026-01-29 18:04:43','2026-01-30 18:00:46',6,0,'[{\"call_server_id\":2,\"is_enabled\":true},{\"call_server_id\":3,\"is_enabled\":true},{\"call_server_id\":4,\"is_enabled\":true}]');
-INSERT INTO `head_offices` VALUES (3,3,'HO Garuda Indonesia','GAR IND 01','basic','Indonesia','DKI','Jakarta','Jakarta Pusat','Monas','','','',1,'2026-01-31 14:04:48','2026-01-31 14:04:48',1,0,'[{\"call_server_id\":6,\"is_enabled\":true}]');
+INSERT INTO `head_offices` VALUES (1,1,'HO Jakarta','HO-JKT','ha',NULL,NULL,'Jakarta',NULL,NULL,NULL,NULL,NULL,1,'2026-01-29 17:28:18','2026-01-29 17:28:18',NULL,0,NULL),(2,2,'HO KAI Indonesia','KAI IND 01','ha','Indonesia','DKI','Jakarta','Jakarta Pusat','Gambir','','','',1,'2026-01-29 18:04:43','2026-01-30 18:00:46',6,0,'[{\"call_server_id\":2,\"is_enabled\":true},{\"call_server_id\":3,\"is_enabled\":true},{\"call_server_id\":4,\"is_enabled\":true}]'),(3,3,'HO Garuda Indonesia','GAR IND 01','basic','Indonesia','DKI','Jakarta','Jakarta Pusat','Monas','','','',1,'2026-01-31 14:04:48','2026-01-31 14:04:48',1,0,'[{\"call_server_id\":6,\"is_enabled\":true}]');
 /*!40000 ALTER TABLE `head_offices` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1116,18 +1035,7 @@ CREATE TABLE `lines` (
 
 LOCK TABLES `lines` WRITE;
 /*!40000 ALTER TABLE `lines` DISABLE KEYS */;
-INSERT INTO `lines` VALUES (1,8,'kaimanu','110011','sip',1,NULL,NULL,'1234',1,NULL,NULL);
-INSERT INTO `lines` VALUES (2,3,'kaimanu','110012','sip',1,NULL,NULL,'1234',1,NULL,NULL);
-INSERT INTO `lines` VALUES (3,4,'kaimanu','110013','sip',1,NULL,NULL,'1234',1,NULL,NULL);
-INSERT INTO `lines` VALUES (4,3,'kaimanu','110021','sip',1,NULL,NULL,'1234',1,NULL,NULL);
-INSERT INTO `lines` VALUES (5,3,'kaimanu','110022','sip',1,NULL,NULL,'1234',1,NULL,NULL);
-INSERT INTO `lines` VALUES (6,4,'kaimanu','110023','sip',1,NULL,NULL,'1234',1,NULL,NULL);
-INSERT INTO `lines` VALUES (7,8,'Smartono','100011','sip',1,NULL,NULL,'1234',1,NULL,NULL);
-INSERT INTO `lines` VALUES (8,3,'Line Jakarta-01','021-5001','sip',4,NULL,NULL,NULL,1,NULL,NULL);
-INSERT INTO `lines` VALUES (9,3,'Line Jakarta-02','021-5002','sip',4,NULL,NULL,NULL,1,NULL,NULL);
-INSERT INTO `lines` VALUES (10,3,'Line Bandung-01','022-6001','sip',2,NULL,NULL,NULL,1,NULL,NULL);
-INSERT INTO `lines` VALUES (11,3,'Line Surabaya-01','031-7001','sip',2,NULL,NULL,NULL,1,NULL,NULL);
-INSERT INTO `lines` VALUES (12,4,'Line Medan-01','061-8001','sip',2,NULL,NULL,NULL,1,NULL,NULL);
+INSERT INTO `lines` VALUES (1,8,'kaimanu','110011','sip',1,NULL,NULL,'1234',1,NULL,NULL),(2,3,'kaimanu','110012','sip',1,NULL,NULL,'1234',1,NULL,NULL),(3,4,'kaimanu','110013','sip',1,NULL,NULL,'1234',1,NULL,NULL),(4,3,'kaimanu','110021','sip',1,NULL,NULL,'1234',1,NULL,NULL),(5,3,'kaimanu','110022','sip',1,NULL,NULL,'1234',1,NULL,NULL),(6,4,'kaimanu','110023','sip',1,NULL,NULL,'1234',1,NULL,NULL),(7,8,'Smartono','100011','sip',1,NULL,NULL,'1234',1,NULL,NULL),(8,3,'Line Jakarta-01','021-5001','sip',4,NULL,NULL,NULL,1,NULL,NULL),(9,3,'Line Jakarta-02','021-5002','sip',4,NULL,NULL,NULL,1,NULL,NULL),(10,3,'Line Bandung-01','022-6001','sip',2,NULL,NULL,NULL,1,NULL,NULL),(11,3,'Line Surabaya-01','031-7001','sip',2,NULL,NULL,NULL,1,NULL,NULL),(12,4,'Line Medan-01','061-8001','sip',2,NULL,NULL,NULL,1,NULL,NULL);
 /*!40000 ALTER TABLE `lines` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1152,35 +1060,7 @@ CREATE TABLE `migrations` (
 
 LOCK TABLES `migrations` WRITE;
 /*!40000 ALTER TABLE `migrations` DISABLE KEYS */;
-INSERT INTO `migrations` VALUES (1,'0001_01_01_000000_create_users_table',1);
-INSERT INTO `migrations` VALUES (2,'0001_01_01_000001_create_cache_table',1);
-INSERT INTO `migrations` VALUES (3,'0001_01_01_000002_create_jobs_table',1);
-INSERT INTO `migrations` VALUES (4,'2026_01_14_000000_create_extensions_table',1);
-INSERT INTO `migrations` VALUES (5,'2026_01_14_000001_create_trunks_table',1);
-INSERT INTO `migrations` VALUES (6,'2026_01_14_000002_create_call_servers_table',1);
-INSERT INTO `migrations` VALUES (7,'2026_01_14_000003_add_call_server_to_trunks',1);
-INSERT INTO `migrations` VALUES (8,'2026_01_14_000004_create_outbound_routes_table',1);
-INSERT INTO `migrations` VALUES (9,'2026_01_14_000005_create_inbound_routes_table',1);
-INSERT INTO `migrations` VALUES (10,'2026_01_14_000006_add_call_server_to_extensions',1);
-INSERT INTO `migrations` VALUES (11,'2026_01_14_000007_create_lines_table',1);
-INSERT INTO `migrations` VALUES (12,'2026_01_14_000008_create_vpws_table',1);
-INSERT INTO `migrations` VALUES (13,'2026_01_14_000009_create_cas_table',1);
-INSERT INTO `migrations` VALUES (14,'2026_01_14_000010_add_call_server_to_routes',1);
-INSERT INTO `migrations` VALUES (15,'2026_01_14_000011_create_customers_table',1);
-INSERT INTO `migrations` VALUES (16,'2026_01_14_000012_create_head_offices_table',1);
-INSERT INTO `migrations` VALUES (17,'2026_01_14_000013_create_branches_table',1);
-INSERT INTO `migrations` VALUES (18,'2026_01_14_000014_add_branch_id_to_extensions_lines',1);
-INSERT INTO `migrations` VALUES (19,'2026_01_14_000015_add_head_office_to_call_servers',1);
-INSERT INTO `migrations` VALUES (20,'2026_01_14_000016_remove_call_server_from_head_offices',1);
-INSERT INTO `migrations` VALUES (21,'2026_01_14_000017_create_intercoms_table',1);
-INSERT INTO `migrations` VALUES (22,'2026_01_20_000001_create_sbcs_and_private_wires_tables',1);
-INSERT INTO `migrations` VALUES (23,'2026_01_22_create_firewalls_table',1);
-INSERT INTO `migrations` VALUES (24,'2026_01_22_create_recording_servers_table',1);
-INSERT INTO `migrations` VALUES (25,'2026_01_22_create_static_routes_table',1);
-INSERT INTO `migrations` VALUES (26,'2026_01_23_create_sbc_routes_table',1);
-INSERT INTO `migrations` VALUES (27,'2026_01_28_012547_create_personal_access_tokens_table',1);
-INSERT INTO `migrations` VALUES (28,'2026_01_28_165200_create_sub_branches_table',1);
-INSERT INTO `migrations` VALUES (29,'2026_01_28_170000_create_cdrs_table',1);
+INSERT INTO `migrations` VALUES (1,'0001_01_01_000000_create_users_table',1),(2,'0001_01_01_000001_create_cache_table',1),(3,'0001_01_01_000002_create_jobs_table',1),(4,'2026_01_14_000000_create_extensions_table',1),(5,'2026_01_14_000001_create_trunks_table',1),(6,'2026_01_14_000002_create_call_servers_table',1),(7,'2026_01_14_000003_add_call_server_to_trunks',1),(8,'2026_01_14_000004_create_outbound_routes_table',1),(9,'2026_01_14_000005_create_inbound_routes_table',1),(10,'2026_01_14_000006_add_call_server_to_extensions',1),(11,'2026_01_14_000007_create_lines_table',1),(12,'2026_01_14_000008_create_vpws_table',1),(13,'2026_01_14_000009_create_cas_table',1),(14,'2026_01_14_000010_add_call_server_to_routes',1),(15,'2026_01_14_000011_create_customers_table',1),(16,'2026_01_14_000012_create_head_offices_table',1),(17,'2026_01_14_000013_create_branches_table',1),(18,'2026_01_14_000014_add_branch_id_to_extensions_lines',1),(19,'2026_01_14_000015_add_head_office_to_call_servers',1),(20,'2026_01_14_000016_remove_call_server_from_head_offices',1),(21,'2026_01_14_000017_create_intercoms_table',1),(22,'2026_01_20_000001_create_sbcs_and_private_wires_tables',1),(23,'2026_01_22_create_firewalls_table',1),(24,'2026_01_22_create_recording_servers_table',1),(25,'2026_01_22_create_static_routes_table',1),(26,'2026_01_23_create_sbc_routes_table',1),(27,'2026_01_28_012547_create_personal_access_tokens_table',1),(28,'2026_01_28_165200_create_sub_branches_table',1),(29,'2026_01_28_170000_create_cdrs_table',1);
 /*!40000 ALTER TABLE `migrations` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1366,12 +1246,7 @@ CREATE TABLE `personal_access_tokens` (
 
 LOCK TABLES `personal_access_tokens` WRITE;
 /*!40000 ALTER TABLE `personal_access_tokens` DISABLE KEYS */;
-INSERT INTO `personal_access_tokens` VALUES (1,'App\\Models\\User',2,'api-token','7d407e845c046db541d65dac829e9c35ac79db002f91908c61e9f5a3b6534189','[\"*\"]',NULL,NULL,'2026-01-29 06:25:27','2026-01-29 06:25:27');
-INSERT INTO `personal_access_tokens` VALUES (2,'App\\Models\\User',2,'api-token','901c1a676b71acbf1d8f22b9e10da87afd56e458e8901d9c04204cda3835a2b2','[\"*\"]',NULL,NULL,'2026-01-29 06:29:29','2026-01-29 06:29:29');
-INSERT INTO `personal_access_tokens` VALUES (3,'App\\Models\\User',1,'api-token','82337c16d87f3ac1bf4e0cee10b87f04cf1e31e8dcbd30f77b0e5ac420e833fb','[\"*\"]',NULL,NULL,'2026-01-29 06:33:02','2026-01-29 06:33:02');
-INSERT INTO `personal_access_tokens` VALUES (4,'App\\Models\\User',1,'api-token','7a7711eb764910a7904c596252e698ffbb9e79370da52337b8dca511d0746a6c','[\"*\"]',NULL,NULL,'2026-01-29 10:53:58','2026-01-29 10:53:58');
-INSERT INTO `personal_access_tokens` VALUES (5,'App\\Models\\User',1,'api-token','ccb04207d9ce0c310e6e6dcfb11471415c676ebefd7748e977c1f2eb4bdad5db','[\"*\"]',NULL,NULL,'2026-01-29 14:48:33','2026-01-29 14:48:33');
-INSERT INTO `personal_access_tokens` VALUES (6,'App\\Models\\User',1,'api-token','530e735aa3170a62fe242edf3feec203981c62c44f02c2cc9ff0d2ce844748d8','[\"*\"]',NULL,NULL,'2026-01-30 15:40:33','2026-01-30 15:40:33');
+INSERT INTO `personal_access_tokens` VALUES (1,'App\\Models\\User',2,'api-token','7d407e845c046db541d65dac829e9c35ac79db002f91908c61e9f5a3b6534189','[\"*\"]',NULL,NULL,'2026-01-29 06:25:27','2026-01-29 06:25:27'),(2,'App\\Models\\User',2,'api-token','901c1a676b71acbf1d8f22b9e10da87afd56e458e8901d9c04204cda3835a2b2','[\"*\"]',NULL,NULL,'2026-01-29 06:29:29','2026-01-29 06:29:29'),(3,'App\\Models\\User',1,'api-token','82337c16d87f3ac1bf4e0cee10b87f04cf1e31e8dcbd30f77b0e5ac420e833fb','[\"*\"]',NULL,NULL,'2026-01-29 06:33:02','2026-01-29 06:33:02'),(4,'App\\Models\\User',1,'api-token','7a7711eb764910a7904c596252e698ffbb9e79370da52337b8dca511d0746a6c','[\"*\"]',NULL,NULL,'2026-01-29 10:53:58','2026-01-29 10:53:58'),(5,'App\\Models\\User',1,'api-token','ccb04207d9ce0c310e6e6dcfb11471415c676ebefd7748e977c1f2eb4bdad5db','[\"*\"]',NULL,NULL,'2026-01-29 14:48:33','2026-01-29 14:48:33'),(6,'App\\Models\\User',1,'api-token','530e735aa3170a62fe242edf3feec203981c62c44f02c2cc9ff0d2ce844748d8','[\"*\"]',NULL,NULL,'2026-01-30 15:40:33','2026-01-30 15:40:33');
 /*!40000 ALTER TABLE `personal_access_tokens` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1403,8 +1278,7 @@ CREATE TABLE `phone_directories` (
 
 LOCK TABLES `phone_directories` WRITE;
 /*!40000 ALTER TABLE `phone_directories` DISABLE KEYS */;
-INSERT INTO `phone_directories` VALUES (1,'John Doe','Acme Corp','[\"021-1234567\", \"0812-1234567\"]','john@acme.com',NULL,1,'2026-02-03 19:33:29','2026-02-03 19:33:29');
-INSERT INTO `phone_directories` VALUES (2,'Jane Smith','XYZ Bank','[\"021-7654321\"]','jane@xyz.com',NULL,1,'2026-02-03 19:33:29','2026-02-03 19:33:29');
+INSERT INTO `phone_directories` VALUES (1,'John Doe','Acme Corp','[\"021-1234567\", \"0812-1234567\"]','john@acme.com',NULL,1,'2026-02-03 19:33:29','2026-02-03 19:33:29'),(2,'Jane Smith','XYZ Bank','[\"021-7654321\"]','jane@xyz.com',NULL,1,'2026-02-03 19:33:29','2026-02-03 19:33:29');
 /*!40000 ALTER TABLE `phone_directories` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1435,11 +1309,7 @@ CREATE TABLE `private_wires` (
 
 LOCK TABLES `private_wires` WRITE;
 /*!40000 ALTER TABLE `private_wires` DISABLE KEYS */;
-INSERT INTO `private_wires` VALUES (1,3,'VPW HQ-Branch1','9001','Branch Cimahi',NULL,1,NULL,NULL);
-INSERT INTO `private_wires` VALUES (2,3,'VPW HQ-Branch2','9002','Branch Bandung',NULL,1,NULL,NULL);
-INSERT INTO `private_wires` VALUES (3,3,'VPW HQ-Branch3','9003','Branch Surabaya',NULL,1,NULL,NULL);
-INSERT INTO `private_wires` VALUES (4,3,'VPW Regional-01','9004','Regional West',NULL,1,NULL,NULL);
-INSERT INTO `private_wires` VALUES (5,3,'VPW Regional-02','9005','Regional East',NULL,1,NULL,NULL);
+INSERT INTO `private_wires` VALUES (1,3,'VPW HQ-Branch1','9001','Branch Cimahi',NULL,1,NULL,NULL),(2,3,'VPW HQ-Branch2','9002','Branch Bandung',NULL,1,NULL,NULL),(3,3,'VPW HQ-Branch3','9003','Branch Surabaya',NULL,1,NULL,NULL),(4,3,'VPW Regional-01','9004','Regional West',NULL,1,NULL,NULL),(5,3,'VPW Regional-02','9005','Regional East',NULL,1,NULL,NULL);
 /*!40000 ALTER TABLE `private_wires` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1572,11 +1442,7 @@ CREATE TABLE `sbc_connection_status` (
 
 LOCK TABLES `sbc_connection_status` WRITE;
 /*!40000 ALTER TABLE `sbc_connection_status` DISABLE KEYS */;
-INSERT INTO `sbc_connection_status` VALUES (1,8,'Telkom-ITSP-Primary','ITSP','sip.telkom.net.id:5060','telkom_trunk_01','REGISTERED','OK',18,5,30,'2026-02-04 20:49:00','2026-02-04 13:49:02','2026-02-04 13:49:02');
-INSERT INTO `sbc_connection_status` VALUES (2,8,'Indosat-DID-Trunk','ITSP','trunk.indosat.net:5060','indosat_did_main','REGISTERED','LAGGED',165,2,20,'2026-02-04 20:48:27','2026-02-04 13:49:02','2026-02-04 13:49:02');
-INSERT INTO `sbc_connection_status` VALUES (3,8,'IPG-CallServer-HQ','IP_GROUP','10.10.1.50:5060',NULL,'NOT_REGISTERED','OK',5,12,100,'2026-02-04 20:49:01','2026-02-04 13:49:02','2026-02-04 13:49:02');
-INSERT INTO `sbc_connection_status` VALUES (4,8,'IPG-Branch-Bandung','IP_GROUP','10.10.2.50:5060',NULL,'NOT_REGISTERED','UNREACHABLE',NULL,0,50,'2026-02-04 20:41:02','2026-02-04 13:49:02','2026-02-04 13:49:02');
-INSERT INTO `sbc_connection_status` VALUES (5,8,'TG-PSTN-Outbound','TRUNK_GROUP','10.10.1.100:5060',NULL,'NOT_REGISTERED','OK',12,8,60,'2026-02-04 20:48:57','2026-02-04 13:49:02','2026-02-04 13:49:02');
+INSERT INTO `sbc_connection_status` VALUES (1,8,'Telkom-ITSP-Primary','ITSP','sip.telkom.net.id:5060','telkom_trunk_01','REGISTERED','OK',18,5,30,'2026-02-04 20:49:00','2026-02-04 13:49:02','2026-02-04 13:49:02'),(2,8,'Indosat-DID-Trunk','ITSP','trunk.indosat.net:5060','indosat_did_main','REGISTERED','LAGGED',165,2,20,'2026-02-04 20:48:27','2026-02-04 13:49:02','2026-02-04 13:49:02'),(3,8,'IPG-CallServer-HQ','IP_GROUP','10.10.1.50:5060',NULL,'NOT_REGISTERED','OK',5,12,100,'2026-02-04 20:49:01','2026-02-04 13:49:02','2026-02-04 13:49:02'),(4,8,'IPG-Branch-Bandung','IP_GROUP','10.10.2.50:5060',NULL,'NOT_REGISTERED','UNREACHABLE',NULL,0,50,'2026-02-04 20:41:02','2026-02-04 13:49:02','2026-02-04 13:49:02'),(5,8,'TG-PSTN-Outbound','TRUNK_GROUP','10.10.1.100:5060',NULL,'NOT_REGISTERED','OK',12,8,60,'2026-02-04 20:48:57','2026-02-04 13:49:02','2026-02-04 13:49:02');
 /*!40000 ALTER TABLE `sbc_connection_status` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1658,8 +1524,7 @@ CREATE TABLE `sbcs` (
 
 LOCK TABLES `sbcs` WRITE;
 /*!40000 ALTER TABLE `sbcs` DISABLE KEYS */;
-INSERT INTO `sbcs` VALUES (4,8,'ConnectionTelkom','13.44.13.4',5060,'02150877477',2,'udp','from-pstn','ulaw,alaw','auto','none',NULL,NULL,1,60,0,NULL,NULL);
-INSERT INTO `sbcs` VALUES (5,8,'ConnectionPBX','13.44.13.26',5060,'02150877477',2,'udp','from-pstn','ulaw,alaw','auto','none',NULL,NULL,1,60,0,NULL,NULL);
+INSERT INTO `sbcs` VALUES (4,8,'ConnectionTelkom','13.44.13.4',5060,'02150877477',2,'udp','from-pstn','ulaw,alaw','auto','none',NULL,NULL,1,60,0,NULL,NULL),(5,8,'ConnectionPBX','13.44.13.26',5060,'02150877477',2,'udp','from-pstn','ulaw,alaw','auto','none',NULL,NULL,1,60,0,NULL,NULL);
 /*!40000 ALTER TABLE `sbcs` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1689,9 +1554,7 @@ CREATE TABLE `sessions` (
 
 LOCK TABLES `sessions` WRITE;
 /*!40000 ALTER TABLE `sessions` DISABLE KEYS */;
-INSERT INTO `sessions` VALUES ('FhSrGS4Dv4AZvEaIbWrWJobdPnkbn1mOr6MzhMyH',NULL,'127.0.0.1','Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36','YTo0OntzOjY6Il90b2tlbiI7czo0MDoiZkFjVHBScGt6V1ozWThvTUpGbkx3YmFXcHAwejV5SkxRMlpJeWZWbiI7czo5OiJfcHJldmlvdXMiO2E6Mjp7czozOiJ1cmwiO3M6Mjc6Imh0dHA6Ly8xMDMuMTU0LjgwLjE3MS9hZG1pbiI7czo1OiJyb3V0ZSI7czozMDoiZmlsYW1lbnQuYWRtaW4ucGFnZXMuZGFzaGJvYXJkIjt9czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319czozOiJ1cmwiO2E6MTp7czo4OiJpbnRlbmRlZCI7czoyNzoiaHR0cDovLzEwMy4xNTQuODAuMTcxL2FkbWluIjt9fQ==',1769649373);
-INSERT INTO `sessions` VALUES ('Kpb5f27VGQmXSFcSL6xQEtlOSl0KQ12IUQrCLIBz',NULL,'104.28.245.127','curl/8.13.0','YTozOntzOjY6Il90b2tlbiI7czo0MDoickVVR2V3UkFQZ1dvbmlJMXA5bVdxa01rZmd4S1BnZ0VYSXZFenNWZSI7czo5OiJfcHJldmlvdXMiO2E6Mjp7czozOiJ1cmwiO3M6NDA6Imh0dHA6Ly8xMDMuMTU0LjgwLjE3MS9TbWFydENNUy9pbmRleC5waHAiO3M6NToicm91dGUiO047fXM6NjoiX2ZsYXNoIjthOjI6e3M6Mzoib2xkIjthOjA6e31zOjM6Im5ldyI7YTowOnt9fX0=',1769646971);
-INSERT INTO `sessions` VALUES ('ycWU2N7hkj6NDaAESDLPLETINPkX4NlEpd3wu8bn',NULL,'127.0.0.1','curl/8.13.0','YTozOntzOjY6Il90b2tlbiI7czo0MDoiSGg5dlBDMUtrbVJpRVo2Zm5wdTdKZmVXQU13dVFuakV0UDRkVzlXYSI7czo5OiJfcHJldmlvdXMiO2E6Mjp7czozOiJ1cmwiO3M6MjE6Imh0dHA6Ly8xMDMuMTU0LjgwLjE3MSI7czo1OiJyb3V0ZSI7Tjt9czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319fQ==',1769649242);
+INSERT INTO `sessions` VALUES ('FhSrGS4Dv4AZvEaIbWrWJobdPnkbn1mOr6MzhMyH',NULL,'127.0.0.1','Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36','YTo0OntzOjY6Il90b2tlbiI7czo0MDoiZkFjVHBScGt6V1ozWThvTUpGbkx3YmFXcHAwejV5SkxRMlpJeWZWbiI7czo5OiJfcHJldmlvdXMiO2E6Mjp7czozOiJ1cmwiO3M6Mjc6Imh0dHA6Ly8xMDMuMTU0LjgwLjE3MS9hZG1pbiI7czo1OiJyb3V0ZSI7czozMDoiZmlsYW1lbnQuYWRtaW4ucGFnZXMuZGFzaGJvYXJkIjt9czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319czozOiJ1cmwiO2E6MTp7czo4OiJpbnRlbmRlZCI7czoyNzoiaHR0cDovLzEwMy4xNTQuODAuMTcxL2FkbWluIjt9fQ==',1769649373),('Kpb5f27VGQmXSFcSL6xQEtlOSl0KQ12IUQrCLIBz',NULL,'104.28.245.127','curl/8.13.0','YTozOntzOjY6Il90b2tlbiI7czo0MDoickVVR2V3UkFQZ1dvbmlJMXA5bVdxa01rZmd4S1BnZ0VYSXZFenNWZSI7czo5OiJfcHJldmlvdXMiO2E6Mjp7czozOiJ1cmwiO3M6NDA6Imh0dHA6Ly8xMDMuMTU0LjgwLjE3MS9TbWFydENNUy9pbmRleC5waHAiO3M6NToicm91dGUiO047fXM6NjoiX2ZsYXNoIjthOjI6e3M6Mzoib2xkIjthOjA6e31zOjM6Im5ldyI7YTowOnt9fX0=',1769646971),('ycWU2N7hkj6NDaAESDLPLETINPkX4NlEpd3wu8bn',NULL,'127.0.0.1','curl/8.13.0','YTozOntzOjY6Il90b2tlbiI7czo0MDoiSGg5dlBDMUtrbVJpRVo2Zm5wdTdKZmVXQU13dVFuakV0UDRkVzlXYSI7czo5OiJfcHJldmlvdXMiO2E6Mjp7czozOiJ1cmwiO3M6MjE6Imh0dHA6Ly8xMDMuMTU0LjgwLjE3MSI7czo1OiJyb3V0ZSI7Tjt9czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319fQ==',1769649242);
 /*!40000 ALTER TABLE `sessions` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1730,8 +1593,7 @@ CREATE TABLE `static_routes` (
 
 LOCK TABLES `static_routes` WRITE;
 /*!40000 ALTER TABLE `static_routes` DISABLE KEYS */;
-INSERT INTO `static_routes` VALUES (1,NULL,'','','192.168.100.1','',NULL,NULL,NULL,'111','eth0','100','call_server',4,1);
-INSERT INTO `static_routes` VALUES (2,NULL,'','','192.168.100.1','',NULL,NULL,NULL,'222','eth0','100','sbc',8,1);
+INSERT INTO `static_routes` VALUES (1,NULL,'','','192.168.100.1','',NULL,NULL,NULL,'111','eth0','100','call_server',4,1),(2,NULL,'','','192.168.100.1','',NULL,NULL,NULL,'222','eth0','100','sbc',8,1);
 /*!40000 ALTER TABLE `static_routes` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1774,8 +1636,7 @@ CREATE TABLE `sub_branches` (
 
 LOCK TABLES `sub_branches` WRITE;
 /*!40000 ALTER TABLE `sub_branches` DISABLE KEYS */;
-INSERT INTO `sub_branches` VALUES (1,2,1,4,'KAI Juanda Cimahi','KAI CMH 011','Indonesia','Jawa Barat','Cimahi','Cimahi Tengah','Jl. Juanda Cimahi','','','',1,'2026-01-30 10:05:14','2026-01-30 18:01:35');
-INSERT INTO `sub_branches` VALUES (2,2,1,8,'KAI Juanda Cimahi 2','KAI CMH 0112','Indonesia','Jawa Barat','Cimahi','Cimahi Tengah','Jl. Juanda Cimahi','','','',1,'2026-02-04 16:21:23','2026-02-04 16:21:39');
+INSERT INTO `sub_branches` VALUES (1,2,1,4,'KAI Juanda Cimahi','KAI CMH 011','Indonesia','Jawa Barat','Cimahi','Cimahi Tengah','Jl. Juanda Cimahi','','','',1,'2026-01-30 10:05:14','2026-01-30 18:01:35'),(2,2,1,8,'KAI Juanda Cimahi 2','KAI CMH 0112','Indonesia','Jawa Barat','Cimahi','Cimahi Tengah','Jl. Juanda Cimahi','','','',1,'2026-02-04 16:21:23','2026-02-04 16:21:39');
 /*!40000 ALTER TABLE `sub_branches` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1961,8 +1822,7 @@ CREATE TABLE `turret_policies` (
 
 LOCK TABLES `turret_policies` WRITE;
 /*!40000 ALTER TABLE `turret_policies` DISABLE KEYS */;
-INSERT INTO `turret_policies` VALUES (1,'Standard Trader',4,1,1,1,1,'Default policy for traders',1,'2026-02-03 19:33:29','2026-02-03 19:33:29');
-INSERT INTO `turret_policies` VALUES (2,'Senior Trader',8,1,1,1,1,'Extended channels for senior traders',1,'2026-02-03 19:33:29','2026-02-03 19:33:29');
+INSERT INTO `turret_policies` VALUES (1,'Standard Trader',4,1,1,1,1,'Default policy for traders',1,'2026-02-03 19:33:29','2026-02-03 19:33:29'),(2,'Senior Trader',8,1,1,1,1,'Extended channels for senior traders',1,'2026-02-03 19:33:29','2026-02-03 19:33:29');
 /*!40000 ALTER TABLE `turret_policies` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -2064,16 +1924,7 @@ CREATE TABLE `usage_statistics` (
 
 LOCK TABLES `usage_statistics` WRITE;
 /*!40000 ALTER TABLE `usage_statistics` DISABLE KEYS */;
-INSERT INTO `usage_statistics` VALUES (1,'2026-02-04',1,3,'8001',4,5,0,0,0,0,0,0,0,0,1932,43960,'2026-02-04 07:32:37');
-INSERT INTO `usage_statistics` VALUES (2,'2026-02-04',1,3,'8002',1,4,0,0,0,0,0,0,0,0,1933,43961,'2026-02-04 07:32:37');
-INSERT INTO `usage_statistics` VALUES (3,'2026-02-04',1,3,'8101',0,0,3,10,0,0,0,0,0,0,794,43962,'2026-02-04 07:32:37');
-INSERT INTO `usage_statistics` VALUES (4,'2026-02-04',1,3,'8102',0,0,0,2,0,0,0,0,0,0,1935,43963,'2026-02-04 07:32:37');
-INSERT INTO `usage_statistics` VALUES (5,'2026-02-04',1,3,'8201',0,0,0,0,7,2,0,0,0,0,1936,43964,'2026-02-04 07:32:37');
-INSERT INTO `usage_statistics` VALUES (6,'2026-02-04',1,3,'8202',0,0,0,0,1,0,0,0,0,0,1937,43965,'2026-02-04 07:32:37');
-INSERT INTO `usage_statistics` VALUES (7,'2026-02-04',1,3,'8301',0,0,0,0,0,0,3,7,0,0,1938,43966,'2026-02-04 07:32:37');
-INSERT INTO `usage_statistics` VALUES (8,'2026-02-04',1,3,'8302',0,0,0,0,0,0,3,5,0,0,1939,43967,'2026-02-04 07:32:37');
-INSERT INTO `usage_statistics` VALUES (9,'2026-02-04',1,3,'7001',0,0,0,0,0,0,0,0,32,45,1940,43968,'2026-02-04 07:32:37');
-INSERT INTO `usage_statistics` VALUES (10,'2026-02-04',1,3,'7002',0,0,0,0,0,0,0,0,12,6,1941,43969,'2026-02-04 07:32:37');
+INSERT INTO `usage_statistics` VALUES (1,'2026-02-04',1,3,'8001',4,5,0,0,0,0,0,0,0,0,1932,43960,'2026-02-04 07:32:37'),(2,'2026-02-04',1,3,'8002',1,4,0,0,0,0,0,0,0,0,1933,43961,'2026-02-04 07:32:37'),(3,'2026-02-04',1,3,'8101',0,0,3,10,0,0,0,0,0,0,794,43962,'2026-02-04 07:32:37'),(4,'2026-02-04',1,3,'8102',0,0,0,2,0,0,0,0,0,0,1935,43963,'2026-02-04 07:32:37'),(5,'2026-02-04',1,3,'8201',0,0,0,0,7,2,0,0,0,0,1936,43964,'2026-02-04 07:32:37'),(6,'2026-02-04',1,3,'8202',0,0,0,0,1,0,0,0,0,0,1937,43965,'2026-02-04 07:32:37'),(7,'2026-02-04',1,3,'8301',0,0,0,0,0,0,3,7,0,0,1938,43966,'2026-02-04 07:32:37'),(8,'2026-02-04',1,3,'8302',0,0,0,0,0,0,3,5,0,0,1939,43967,'2026-02-04 07:32:37'),(9,'2026-02-04',1,3,'7001',0,0,0,0,0,0,0,0,32,45,1940,43968,'2026-02-04 07:32:37'),(10,'2026-02-04',1,3,'7002',0,0,0,0,0,0,0,0,12,6,1941,43969,'2026-02-04 07:32:37');
 /*!40000 ALTER TABLE `usage_statistics` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -2106,10 +1957,7 @@ CREATE TABLE `users` (
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` VALUES (1,'Root Admin','root@smartcms.local','user_1769995349_697ffc551c1b3.jpg','$2y$10$RhxdhOeRRYvGP8hL3mSRPe88nWqN26Xf9Ef1ZPmcmnedaZFdrv6zK','admin',1,'2026-02-05 05:49:41','2026-02-01 15:37:47','2026-02-05 05:49:41');
-INSERT INTO `users` VALUES (2,'CMS Admin','cmsadmin@smartx.local',NULL,'$2y$12$cLO6WBNDC4merbNAH2eMWOIwcE5pY4HbyZnTbJhFS0SlRpO9QEj.e','admin',1,'2026-02-01 18:25:18','2026-02-01 15:37:47','2026-02-01 18:25:18');
-INSERT INTO `users` VALUES (3,'Operator User','operator@smartx.local',NULL,'\\.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi','operator',1,NULL,'2026-02-01 15:37:47','2026-02-01 15:37:47');
-INSERT INTO `users` VALUES (4,'Admin User','admin@smartx.local','user_1770074198_6981305604095.jpg','$2y$12$FFwec5m/ZQ6yo/To8fouXeKYvAlua/JVsJDjPgfuSfT/UfgTyOSgG','admin',1,'2026-02-04 11:26:32','2026-02-01 18:12:14','2026-02-04 11:26:32');
+INSERT INTO `users` VALUES (1,'Root Admin','root@smartcms.local','user_1769995349_697ffc551c1b3.jpg','$2y$10$RhxdhOeRRYvGP8hL3mSRPe88nWqN26Xf9Ef1ZPmcmnedaZFdrv6zK','admin',1,'2026-02-05 08:05:26','2026-02-01 15:37:47','2026-02-05 08:05:26'),(2,'CMS Admin','cmsadmin@smartx.local',NULL,'$2y$12$cLO6WBNDC4merbNAH2eMWOIwcE5pY4HbyZnTbJhFS0SlRpO9QEj.e','admin',1,'2026-02-01 18:25:18','2026-02-01 15:37:47','2026-02-01 18:25:18'),(3,'Operator User','operator@smartx.local',NULL,'\\.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi','operator',1,NULL,'2026-02-01 15:37:47','2026-02-01 15:37:47'),(4,'Admin User','admin@smartx.local','user_1770074198_6981305604095.jpg','$2y$12$FFwec5m/ZQ6yo/To8fouXeKYvAlua/JVsJDjPgfuSfT/UfgTyOSgG','admin',1,'2026-02-04 11:26:32','2026-02-01 18:12:14','2026-02-04 11:26:32');
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -2157,4 +2005,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2026-02-05 14:36:15
+-- Dump completed on 2026-02-05 15:34:48

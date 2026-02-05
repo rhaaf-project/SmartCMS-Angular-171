@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { Store } from '@ngrx/store';
@@ -10,6 +10,7 @@ import { Store } from '@ngrx/store';
     imports: [CommonModule, RouterLink]
 })
 export class NAComponent {
+    @Input() showIcon: boolean = true;
     store: any;
 
     constructor(public storeData: Store<any>) {
