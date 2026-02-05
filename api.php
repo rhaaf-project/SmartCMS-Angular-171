@@ -98,6 +98,9 @@ $tableMap = [
     'turret-group-members' => 'turret_group_members',
     'phone-directories' => 'phone_directories',
     'turret-policies' => 'turret_policies',
+    'turret-user-phonebooks' => 'turret_user_phonebooks',
+    'turret-channel-states' => 'turret_channel_states',
+    'turret-user-preferences' => 'turret_user_preferences',
     'static-routes' => 'static_routes',
     'firewall-rules' => 'firewall_rules',
 ];
