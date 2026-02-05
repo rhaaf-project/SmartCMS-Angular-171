@@ -1,10 +1,12 @@
 body.modal-open {
-    overflow: hidden; /* Optional: hides body scroll bar when modal is open. */
+    overflow: hidden;
+    /* Optional: hides body scroll bar when modal is open. */
 }
 
 .modal {
     @apply !z-[52] h-full !items-start overflow-auto !bg-[black]/60 px-4 py-8 opacity-0 transition-opacity duration-300;
 }
+
 ngx-custom-modal .modal {
     @apply flex justify-center;
 }
@@ -16,15 +18,17 @@ ngx-custom-modal .modal {
 .modal .modal-content {
     @apply relative bg-white text-base !border-none text-black shadow dark:bg-[#0e1726] dark:text-white-dark overflow-hidden;
 }
+
 .modal .modal-header {
     @apply !p-0 !border-0;
 }
-.modal .modal-header > div {
+
+.modal .modal-header>div {
     @apply bg-[#fbfbfb] w-full py-3 text-lg font-bold dark:bg-[#121c2c] ltr:pl-5 ltr:pr-[50px] rtl:pl-[50px] rtl:pr-5;
 }
 
 .modal .modal-header .close {
-    @apply absolute top-3 z-10 opacity-100 !shadow-none shrink-0 !text-3xl font-normal !leading-7 text-gray-400 hover:text-gray-800 dark:hover:text-gray-600 ltr:right-5  rtl:left-5;
+    @apply absolute top-3 z-10 opacity-100 !shadow-none shrink-0 !text-3xl font-normal !leading-7 text-gray-400 hover:text-gray-800 dark:hover:text-gray-600 ltr:right-5 rtl:left-5;
     text-shadow: none;
 }
 
@@ -65,7 +69,7 @@ ngx-custom-modal .modal {
 }
 
 .video-modal .modal-header .close {
-    @apply top-0 ltr:!right-0;
+    @apply top-0 ltr:right-0;
 }
 
 .video-modal .modal-dialog {
@@ -174,4 +178,75 @@ ngx-custom-modal .modal {
 
 .modal.slider-modal .modal-header .close {
     @apply ltr:right-0 rtl:left-0;
+}
+
+/* Custom inline modal glow effect */
+.fixed.inset-0.z-50>.panel {
+    box-shadow:
+        0 0 60px rgba(14, 23, 38, 0.8),
+        0 0 100px rgba(59, 130, 246, 0.15),
+        0 25px 50px -12px rgba(0, 0, 0, 0.5);
+    border: 1px solid rgba(59, 130, 246, 0.2);
+}
+
+/* Light theme modal glow */
+html:not(.dark) .fixed.inset-0.z-50>.panel {
+    box-shadow:
+        0 0 60px rgba(0, 0, 0, 0.2),
+        0 0 100px rgba(59, 130, 246, 0.1),
+        0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    border: 1px solid rgba(59, 130, 246, 0.15);
+}
+
+/* Custom thin scrollbar for modals */
+.fixed.inset-0.z-50 .overflow-y-auto,
+.fixed.inset-0.z-50 .panel.overflow-y-auto,
+.fixed.inset-0.z-50>.panel {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(59, 130, 246, 0.4) transparent;
+}
+
+.fixed.inset-0.z-50 .overflow-y-auto::-webkit-scrollbar,
+.fixed.inset-0.z-50 .panel.overflow-y-auto::-webkit-scrollbar,
+.fixed.inset-0.z-50>.panel::-webkit-scrollbar {
+    width: 2px !important;
+}
+
+.fixed.inset-0.z-50 .overflow-y-auto::-webkit-scrollbar-track,
+.fixed.inset-0.z-50 .panel.overflow-y-auto::-webkit-scrollbar-track,
+.fixed.inset-0.z-50>.panel::-webkit-scrollbar-track {
+    background: transparent;
+    border-radius: 2px;
+}
+
+.fixed.inset-0.z-50 .overflow-y-auto::-webkit-scrollbar-thumb,
+.fixed.inset-0.z-50 .panel.overflow-y-auto::-webkit-scrollbar-thumb,
+.fixed.inset-0.z-50>.panel::-webkit-scrollbar-thumb {
+    background: rgba(59, 130, 246, 0.5);
+    border-radius: 2px;
+}
+
+.fixed.inset-0.z-50 .overflow-y-auto::-webkit-scrollbar-thumb:hover,
+.fixed.inset-0.z-50 .panel.overflow-y-auto::-webkit-scrollbar-thumb:hover,
+.fixed.inset-0.z-50>.panel::-webkit-scrollbar-thumb:hover {
+    background: rgba(59, 130, 246, 0.7);
+}
+
+/* Light theme scrollbar */
+html:not(.dark) .fixed.inset-0.z-50 .overflow-y-auto,
+html:not(.dark) .fixed.inset-0.z-50 .panel.overflow-y-auto,
+html:not(.dark) .fixed.inset-0.z-50>.panel {
+    scrollbar-color: rgba(59, 130, 246, 0.3) transparent;
+}
+
+html:not(.dark) .fixed.inset-0.z-50 .overflow-y-auto::-webkit-scrollbar-thumb,
+html:not(.dark) .fixed.inset-0.z-50 .panel.overflow-y-auto::-webkit-scrollbar-thumb,
+html:not(.dark) .fixed.inset-0.z-50>.panel::-webkit-scrollbar-thumb {
+    background: rgba(59, 130, 246, 0.3);
+}
+
+html:not(.dark) .fixed.inset-0.z-50 .overflow-y-auto::-webkit-scrollbar-thumb:hover,
+html:not(.dark) .fixed.inset-0.z-50 .panel.overflow-y-auto::-webkit-scrollbar-thumb:hover,
+html:not(.dark) .fixed.inset-0.z-50>.panel::-webkit-scrollbar-thumb:hover {
+    background: rgba(59, 130, 246, 0.5);
 }

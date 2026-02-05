@@ -48,6 +48,7 @@ export function indexReducer(state = initialState, action: any) {
     } else if (type === 'toggleTheme') {
         payload = payload || state.theme; // light|dark|system
         localStorage.setItem('theme', payload);
+        console.log(`[Reducer] toggleTheme called. Payload: ${payload}, Previous State: ${state.theme}`);
         let isDarkMode = state.isDarkMode || false;
         if (payload == 'light') {
             isDarkMode = false;

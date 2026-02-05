@@ -22,7 +22,15 @@ export class AppService {
 
         // set default styles
         let val: any = localStorage.getItem('theme'); // light, dark, system
+        console.log(`[AppService] Initializing Theme. Config: ${$themeConfig.theme}, LocalStorage: ${val}`);
+
+        // Force default to dark if no local storage found, ignoring system pref for now to satisfy user requirement
+        if (!val) {
+            val = 'dark';
+        }
+
         val = val || $themeConfig.theme;
+        console.log(`[AppService] Resolved Theme: ${val}`);
         this.store.dispatch({ type: 'toggleTheme', payload: val });
 
         val = localStorage.getItem('menu'); // vertical, collapsible-vertical, horizontal

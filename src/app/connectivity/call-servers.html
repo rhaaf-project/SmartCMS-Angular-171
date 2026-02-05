@@ -65,7 +65,7 @@
                             </td>
                             <td>{{ server.host }}</td>
                             <td>{{ server.port }}</td>
-                            <td class="text-center">
+                            <td class="text-center" style="text-align: -webkit-center;">
                                 <icon-circle-check *ngIf="server.is_active" class="text-success" />
                             </td>
                             <td>{{ server.ext_count || 0 }}</td>
@@ -121,7 +121,7 @@
         <div class="flex min-h-screen items-start justify-center px-4 py-8">
             <div class="panel my-8 w-full max-w-2xl overflow-hidden rounded-lg border-0 p-0"
                 (click)="$event.stopPropagation()" [@toggleAnimation]>
-                <div class="flex items-center justify-between bg-[#fbfbfb] px-5 py-3 dark:bg-[#121c2c]">
+                <div class="flex items-center justify-between px-5 py-4 bg-[#1a2941] rounded-t-md">
                     <h5 class="text-lg font-bold">
                         {{ modalMode === 'create' ? 'Create Call Server' : modalMode === 'edit' ? 'Edit Call Server' :
                         'View Call Server' }}
@@ -205,7 +205,7 @@
                 (click)="$event.stopPropagation()">
 
                 <!-- Report Header (hides on print) -->
-                <div class="flex items-center justify-between bg-[#fbfbfb] px-5 py-3 dark:bg-[#121c2c] print:hidden">
+                <div class="flex items-center justify-between px-5 py-4 bg-[#1a2941] rounded-t-md print:hidden">
                     <h5 class="text-lg font-bold">View</h5>
                     <div class="flex items-center gap-2">
                         <button type="button" class="btn btn-primary btn-sm" (click)="printReport()">

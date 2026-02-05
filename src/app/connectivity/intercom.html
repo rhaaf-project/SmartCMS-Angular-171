@@ -57,7 +57,7 @@
                             <td>{{ intercom.extension }}</td>
                             <td>{{ intercom.description || '-' }}</td>
                             <td>{{ intercom.alert_info }}</td>
-                            <td class="text-center">
+                            <td class="text-center" style="text-align: -webkit-center;">
                                 <icon-circle-check *ngIf="!intercom.disabled" class="text-success" />
                                 <icon-x-circle *ngIf="intercom.disabled" class="text-danger" />
                             </td>
@@ -104,8 +104,8 @@
         <div class="flex min-h-screen items-start justify-center px-4 py-8">
             <div class="panel my-8 w-full max-w-3xl overflow-hidden rounded-lg border-0 p-0"
                 (click)="$event.stopPropagation()" [@toggleAnimation]>
-                <div class="flex items-center justify-between bg-[#fbfbfb] px-5 py-3 dark:bg-[#121c2c]">
-                    <h5 class="text-lg font-bold">{{ modalMode === 'create' ? 'Create Intercom' : 'Edit Intercom' }}
+                <div class="flex items-center justify-between px-5 py-4 bg-[#1a2941] rounded-t-md">
+                    <h5 class="text-lg font-semibold text-white">{{ modalMode === 'create' ? 'Create Intercom' : 'Edit Intercom' }}
                     </h5>
                     <button type="button" class="text-white-dark hover:text-dark" (click)="closeModal()"><svg width="20"
                             height="20" viewBox="0 0 24 24" fill="none">
