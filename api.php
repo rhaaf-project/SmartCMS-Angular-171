@@ -107,6 +107,40 @@ $tableMap = [
 
 $table = $tableMap[$resource] ?? null;
 
+// System Config endpoint for Turret (SIP server, etc.)
+if ($resource === 'system-config' && $method === 'GET') {
+    try {
+        // Check if system_config table exists
+        $tableCheck = $pdo->query("SHOW TABLES LIKE 'system_config'");
+        if ($tableCheck->rowCount() > 0) {
+            $stmt = $pdo->query("SELECT config_key, config_value FROM system_config");
+            $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            echo json_encode(['success' => true, 'data' => $data]);
+        } else {
+            // Return defaults if table doesn't exist
+            echo json_encode([
+                'success' => true,
+                'data' => [
+                    ['config_key' => 'sip_server', 'config_value' => '103.154.80.172'],
+                    ['config_key' => 'sip_port', 'config_value' => '5060'],
+                    ['config_key' => 'stun_server', 'config_value' => 'stun:stun.l.google.com:19302']
+                ]
+            ]);
+        }
+    } catch (Exception $e) {
+        // Return defaults on error
+        echo json_encode([
+            'success' => true,
+            'data' => [
+                ['config_key' => 'sip_server', 'config_value' => '103.154.80.172'],
+                ['config_key' => 'sip_port', 'config_value' => '5060'],
+                ['config_key' => 'stun_server', 'config_value' => 'stun:stun.l.google.com:19302']
+            ]
+        ]);
+    }
+    exit;
+}
+
 // Stats endpoint for dashboard
 if ($resource === 'stats' && $method === 'GET') {
     // Helper function to get active/inactive counts
