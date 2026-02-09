@@ -36,7 +36,7 @@ CREATE TABLE `activity_logs` (
   PRIMARY KEY (`id`),
   KEY `user_id` (`user_id`),
   CONSTRAINT `activity_logs_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `cms_users` (`id`) ON DELETE SET NULL
-) ENGINE=InnoDB AUTO_INCREMENT=70 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=71 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -104,6 +104,7 @@ INSERT INTO `activity_logs` VALUES (65,NULL,'logout','auth',NULL,NULL,'{\"email\
 INSERT INTO `activity_logs` VALUES (67,1,'login','auth',1,NULL,'{\"email\":\"root@smartcms.local\",\"name\":\"Root Admin\"}','::1','Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36','2026-02-04 16:05:37');
 INSERT INTO `activity_logs` VALUES (68,1,'login','auth',1,NULL,'{\"email\":\"root@smartcms.local\",\"name\":\"Root Admin\"}','::1','Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36','2026-02-04 16:48:31');
 INSERT INTO `activity_logs` VALUES (69,1,'login','auth',1,NULL,'{\"email\":\"root@smartcms.local\",\"name\":\"Root Admin\"}','::1','Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36','2026-02-05 05:49:41');
+INSERT INTO `activity_logs` VALUES (70,1,'login','auth',1,NULL,'{\"email\":\"root@smartcms.local\",\"name\":\"Root Admin\"}','127.0.0.1','Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36','2026-02-05 08:05:26');
 /*!40000 ALTER TABLE `activity_logs` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1880,6 +1881,47 @@ INSERT INTO `trunks` VALUES (1,8,'Garuda','',5060,NULL,2,'udp','from-pstn','ulaw
 UNLOCK TABLES;
 
 --
+-- Table structure for table `turret_channel_states`
+--
+
+DROP TABLE IF EXISTS `turret_channel_states`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `turret_channel_states` (
+  `id` bigint NOT NULL AUTO_INCREMENT,
+  `turret_user_id` bigint NOT NULL,
+  `channel_key` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `contact_name` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `extension` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `volume_in` int DEFAULT '50',
+  `volume_out` int DEFAULT '50',
+  `is_ptt` tinyint(1) DEFAULT '0',
+  `group_ids` json DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `turret_user_id` (`turret_user_id`,`channel_key`),
+  KEY `idx_turret_user` (`turret_user_id`)
+) ENGINE=MyISAM AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `turret_channel_states`
+--
+
+LOCK TABLES `turret_channel_states` WRITE;
+/*!40000 ALTER TABLE `turret_channel_states` DISABLE KEYS */;
+INSERT INTO `turret_channel_states` VALUES (1,1,'ch-1','BCA FX Desk','1001',80,70,0,NULL,'2026-02-05 13:19:00','2026-02-05 13:19:00');
+INSERT INTO `turret_channel_states` VALUES (2,1,'ch-2','BI Treasury','1002',75,75,1,NULL,'2026-02-05 13:19:00','2026-02-05 13:19:00');
+INSERT INTO `turret_channel_states` VALUES (3,1,'ch-3','Mom','0812-1111-1111',50,50,0,NULL,'2026-02-05 13:19:00','2026-02-05 13:19:00');
+INSERT INTO `turret_channel_states` VALUES (4,1,'ch-4','Support IT','7000',60,60,0,NULL,'2026-02-05 13:19:00','2026-02-05 13:19:00');
+INSERT INTO `turret_channel_states` VALUES (5,2,'ch-1','DBS Partner','2001',90,80,0,NULL,'2026-02-05 13:19:43','2026-02-05 13:19:43');
+INSERT INTO `turret_channel_states` VALUES (6,2,'ch-2','Tokyo Dealer','2002',70,70,1,NULL,'2026-02-05 13:19:43','2026-02-05 13:19:43');
+INSERT INTO `turret_channel_states` VALUES (7,2,'ch-3','Emergency','110',100,100,0,NULL,'2026-02-05 13:19:43','2026-02-05 13:19:43');
+/*!40000 ALTER TABLE `turret_channel_states` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `turret_group_members`
 --
 
@@ -1995,6 +2037,99 @@ LOCK TABLES `turret_templates` WRITE;
 UNLOCK TABLES;
 
 --
+-- Table structure for table `turret_user_phonebooks`
+--
+
+DROP TABLE IF EXISTS `turret_user_phonebooks`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `turret_user_phonebooks` (
+  `id` bigint NOT NULL AUTO_INCREMENT,
+  `turret_user_id` bigint NOT NULL,
+  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `phone` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `company` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `email` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `notes` text COLLATE utf8mb4_unicode_ci,
+  `is_favourite` tinyint(1) DEFAULT '0',
+  `is_archived` tinyint(1) DEFAULT '0',
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `idx_turret_user` (`turret_user_id`),
+  KEY `idx_archived` (`is_archived`)
+) ENGINE=MyISAM AUTO_INCREMENT=26 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `turret_user_phonebooks`
+--
+
+LOCK TABLES `turret_user_phonebooks` WRITE;
+/*!40000 ALTER TABLE `turret_user_phonebooks` DISABLE KEYS */;
+INSERT INTO `turret_user_phonebooks` VALUES (1,1,'Mom','0812-1111-1111',NULL,NULL,NULL,1,0,'2026-02-05 11:37:47','2026-02-05 11:37:47');
+INSERT INTO `turret_user_phonebooks` VALUES (2,1,'Client BCA','021-5001-001','BCA','client@bca.co.id',NULL,1,0,'2026-02-05 11:37:47','2026-02-05 11:37:47');
+INSERT INTO `turret_user_phonebooks` VALUES (3,1,'Broker SGX','+65-6222-3333','SGX','broker@sgx.com',NULL,0,0,'2026-02-05 11:37:47','2026-02-05 11:37:47');
+INSERT INTO `turret_user_phonebooks` VALUES (4,1,'Support IT','7000','Internal',NULL,NULL,0,0,'2026-02-05 11:37:47','2026-02-05 11:37:47');
+INSERT INTO `turret_user_phonebooks` VALUES (5,1,'Boss','6000','Internal',NULL,NULL,1,0,'2026-02-05 11:37:47','2026-02-05 11:37:47');
+INSERT INTO `turret_user_phonebooks` VALUES (6,2,'Partner DBS','+65-6888-8888','DBS Bank','partner@dbs.com',NULL,1,0,'2026-02-05 11:37:47','2026-02-05 11:37:47');
+INSERT INTO `turret_user_phonebooks` VALUES (7,2,'Sister','0813-2222-2222',NULL,NULL,NULL,1,0,'2026-02-05 11:37:47','2026-02-05 11:37:47');
+INSERT INTO `turret_user_phonebooks` VALUES (8,2,'Client Mandiri','021-5002-002','Mandiri','fx@mandiri.co.id',NULL,0,0,'2026-02-05 11:37:47','2026-02-05 11:37:47');
+INSERT INTO `turret_user_phonebooks` VALUES (9,2,'Dealer Tokyo','+81-3-1234-5678','Tokyo Branch','dealer@tokyo.jp',NULL,0,0,'2026-02-05 11:37:47','2026-02-05 11:37:47');
+INSERT INTO `turret_user_phonebooks` VALUES (10,2,'Emergency','110',NULL,NULL,NULL,0,0,'2026-02-05 11:37:47','2026-02-05 11:37:47');
+INSERT INTO `turret_user_phonebooks` VALUES (11,3,'Wife','0814-3333-3333',NULL,NULL,NULL,1,0,'2026-02-05 11:37:47','2026-02-05 11:37:47');
+INSERT INTO `turret_user_phonebooks` VALUES (12,3,'Bloomberg Desk','+1-212-555-0100','Bloomberg','desk@bloomberg.com',NULL,1,0,'2026-02-05 11:37:47','2026-02-05 11:37:47');
+INSERT INTO `turret_user_phonebooks` VALUES (13,3,'Reuters Contact','+44-20-7777-8888','Reuters',NULL,NULL,0,0,'2026-02-05 11:37:47','2026-02-05 11:37:47');
+INSERT INTO `turret_user_phonebooks` VALUES (14,3,'Treasury Head','6010','Internal',NULL,NULL,1,0,'2026-02-05 11:37:47','2026-02-05 11:37:47');
+INSERT INTO `turret_user_phonebooks` VALUES (15,3,'Risk Manager','6020','Internal',NULL,NULL,0,0,'2026-02-05 11:37:47','2026-02-05 11:37:47');
+INSERT INTO `turret_user_phonebooks` VALUES (16,4,'Dad','0815-4444-4444',NULL,NULL,NULL,1,0,'2026-02-05 11:37:47','2026-02-05 11:37:47');
+INSERT INTO `turret_user_phonebooks` VALUES (17,4,'Binance Support','+65-9999-0000','Binance','support@binance.com',NULL,0,0,'2026-02-05 11:37:47','2026-02-05 11:37:47');
+INSERT INTO `turret_user_phonebooks` VALUES (18,4,'Coinbase Rep','+1-415-555-1234','Coinbase','rep@coinbase.com',NULL,0,0,'2026-02-05 11:37:47','2026-02-05 11:37:47');
+INSERT INTO `turret_user_phonebooks` VALUES (19,4,'Crypto Analyst','6030','Internal',NULL,NULL,1,0,'2026-02-05 11:37:47','2026-02-05 11:37:47');
+INSERT INTO `turret_user_phonebooks` VALUES (20,4,'Settlement Team','6040','Internal',NULL,NULL,0,0,'2026-02-05 11:37:47','2026-02-05 11:37:47');
+INSERT INTO `turret_user_phonebooks` VALUES (21,5,'Brother','0816-5555-5555',NULL,NULL,NULL,1,0,'2026-02-05 11:37:47','2026-02-05 11:37:47');
+INSERT INTO `turret_user_phonebooks` VALUES (22,5,'Gold Dealer London','+44-20-1234-5678','LBMA','gold@lbma.com',NULL,1,0,'2026-02-05 11:37:47','2026-02-05 11:37:47');
+INSERT INTO `turret_user_phonebooks` VALUES (23,5,'Silver Broker','+1-312-555-9999','COMEX','silver@comex.com',NULL,1,0,'2026-02-05 11:37:47','2026-02-05 11:37:47');
+INSERT INTO `turret_user_phonebooks` VALUES (24,5,'Commodity Head','6050','Internal',NULL,NULL,1,0,'2026-02-05 11:37:47','2026-02-05 11:37:47');
+INSERT INTO `turret_user_phonebooks` VALUES (25,5,'Compliance','6060','Internal',NULL,NULL,0,0,'2026-02-05 11:37:47','2026-02-05 11:37:47');
+/*!40000 ALTER TABLE `turret_user_phonebooks` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `turret_user_preferences`
+--
+
+DROP TABLE IF EXISTS `turret_user_preferences`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `turret_user_preferences` (
+  `id` bigint NOT NULL AUTO_INCREMENT,
+  `turret_user_id` bigint NOT NULL,
+  `preference_key` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `preference_value` json DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `turret_user_id` (`turret_user_id`,`preference_key`),
+  KEY `idx_turret_user` (`turret_user_id`)
+) ENGINE=MyISAM AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `turret_user_preferences`
+--
+
+LOCK TABLES `turret_user_preferences` WRITE;
+/*!40000 ALTER TABLE `turret_user_preferences` DISABLE KEYS */;
+INSERT INTO `turret_user_preferences` VALUES (1,1,'template_id','1','2026-02-05 13:22:04','2026-02-05 13:22:04');
+INSERT INTO `turret_user_preferences` VALUES (2,1,'theme','{\"value\": \"dark\"}','2026-02-05 13:23:29','2026-02-05 13:23:29');
+INSERT INTO `turret_user_preferences` VALUES (3,1,'ptt_hotkey','{\"value\": \"Alt\"}','2026-02-05 13:23:29','2026-02-05 13:23:29');
+INSERT INTO `turret_user_preferences` VALUES (4,2,'template_id','{\"value\": \"2\"}','2026-02-05 13:23:29','2026-02-05 13:23:29');
+INSERT INTO `turret_user_preferences` VALUES (5,2,'theme','{\"value\": \"light\"}','2026-02-05 13:23:29','2026-02-05 13:23:29');
+/*!40000 ALTER TABLE `turret_user_preferences` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `turret_users`
 --
 
@@ -2012,7 +2147,7 @@ CREATE TABLE `turret_users` (
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   UNIQUE KEY `name` (`name`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2021,6 +2156,11 @@ CREATE TABLE `turret_users` (
 
 LOCK TABLES `turret_users` WRITE;
 /*!40000 ALTER TABLE `turret_users` DISABLE KEYS */;
+INSERT INTO `turret_users` VALUES (1,'john_trader','password123','6001',1,NULL,'2026-02-05 11:37:02','2026-02-05 11:37:02');
+INSERT INTO `turret_users` VALUES (2,'sarah_fx','password123','6002',1,NULL,'2026-02-05 11:37:02','2026-02-05 11:37:02');
+INSERT INTO `turret_users` VALUES (3,'mike_bond','password123','6003',1,NULL,'2026-02-05 11:37:02','2026-02-05 11:37:02');
+INSERT INTO `turret_users` VALUES (4,'emily_crypto','password123','6004',1,NULL,'2026-02-05 11:37:02','2026-02-05 11:37:02');
+INSERT INTO `turret_users` VALUES (5,'david_metal','password123','6005',1,NULL,'2026-02-05 11:37:02','2026-02-05 11:37:02');
 /*!40000 ALTER TABLE `turret_users` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -2106,7 +2246,7 @@ CREATE TABLE `users` (
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` VALUES (1,'Root Admin','root@smartcms.local','user_1769995349_697ffc551c1b3.jpg','$2y$10$RhxdhOeRRYvGP8hL3mSRPe88nWqN26Xf9Ef1ZPmcmnedaZFdrv6zK','admin',1,'2026-02-05 05:49:41','2026-02-01 15:37:47','2026-02-05 05:49:41');
+INSERT INTO `users` VALUES (1,'Root Admin','root@smartcms.local','user_1769995349_697ffc551c1b3.jpg','$2y$10$RhxdhOeRRYvGP8hL3mSRPe88nWqN26Xf9Ef1ZPmcmnedaZFdrv6zK','admin',1,'2026-02-05 08:05:26','2026-02-01 15:37:47','2026-02-05 08:05:26');
 INSERT INTO `users` VALUES (2,'CMS Admin','cmsadmin@smartx.local',NULL,'$2y$12$cLO6WBNDC4merbNAH2eMWOIwcE5pY4HbyZnTbJhFS0SlRpO9QEj.e','admin',1,'2026-02-01 18:25:18','2026-02-01 15:37:47','2026-02-01 18:25:18');
 INSERT INTO `users` VALUES (3,'Operator User','operator@smartx.local',NULL,'\\.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi','operator',1,NULL,'2026-02-01 15:37:47','2026-02-01 15:37:47');
 INSERT INTO `users` VALUES (4,'Admin User','admin@smartx.local','user_1770074198_6981305604095.jpg','$2y$12$FFwec5m/ZQ6yo/To8fouXeKYvAlua/JVsJDjPgfuSfT/UfgTyOSgG','admin',1,'2026-02-04 11:26:32','2026-02-01 18:12:14','2026-02-04 11:26:32');
@@ -2157,4 +2297,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2026-02-05 14:36:15
+-- Dump completed on 2026-02-06 19:40:55
