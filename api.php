@@ -103,9 +103,78 @@ $tableMap = [
     'turret-user-preferences' => 'turret_user_preferences',
     'static-routes' => 'static_routes',
     'firewall-rules' => 'firewall_rules',
+    'role-permissions' => 'role_permissions',
 ];
 
 $table = $tableMap[$resource] ?? null;
+
+// Role Permissions endpoint - get all permissions for a role
+if ($resource === 'permissions' && $method === 'GET') {
+    $role = $_GET['role'] ?? '';
+    if (empty($role)) {
+        http_response_code(400);
+        echo json_encode(['error' => 'Role parameter is required']);
+        exit;
+    }
+
+    try {
+        $stmt = $pdo->prepare("SELECT page_key, can_view, can_create, can_edit, can_delete FROM role_permissions WHERE role = ? ORDER BY page_key");
+        $stmt->execute([$role]);
+        $permissions = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        // Convert to keyed object for easy lookup
+        $permMap = [];
+        foreach ($permissions as $p) {
+            $permMap[$p['page_key']] = [
+                'view' => (bool) $p['can_view'],
+                'create' => (bool) $p['can_create'],
+                'edit' => (bool) $p['can_edit'],
+                'delete' => (bool) $p['can_delete'],
+            ];
+        }
+
+        echo json_encode(['success' => true, 'data' => $permMap, 'role' => $role]);
+    } catch (Exception $e) {
+        http_response_code(500);
+        echo json_encode(['error' => 'Failed to fetch permissions: ' . $e->getMessage()]);
+    }
+    exit;
+}
+
+// Bulk save role permissions
+if ($resource === 'role-permissions' && $id === 'bulk' && $method === 'POST') {
+    $permissions = $input['permissions'] ?? [];
+    if (empty($permissions)) {
+        http_response_code(400);
+        echo json_encode(['error' => 'Permissions array is required']);
+        exit;
+    }
+
+    try {
+        $pdo->beginTransaction();
+        $stmt = $pdo->prepare("INSERT INTO role_permissions (role, page_key, can_view, can_create, can_edit, can_delete) 
+            VALUES (?, ?, ?, ?, ?, ?) 
+            ON DUPLICATE KEY UPDATE can_view = VALUES(can_view), can_create = VALUES(can_create), can_edit = VALUES(can_edit), can_delete = VALUES(can_delete)");
+
+        foreach ($permissions as $perm) {
+            $stmt->execute([
+                $perm['role'],
+                $perm['page_key'],
+                $perm['can_view'] ?? 0,
+                $perm['can_create'] ?? 0,
+                $perm['can_edit'] ?? 0,
+                $perm['can_delete'] ?? 0,
+            ]);
+        }
+        $pdo->commit();
+        echo json_encode(['success' => true, 'message' => 'Permissions saved', 'count' => count($permissions)]);
+    } catch (Exception $e) {
+        $pdo->rollBack();
+        http_response_code(500);
+        echo json_encode(['error' => 'Failed to save permissions: ' . $e->getMessage()]);
+    }
+    exit;
+}
 
 // System Config endpoint for Turret (SIP server, etc.)
 if ($resource === 'system-config' && $method === 'GET') {
@@ -567,7 +636,21 @@ if ($resource === 'login' && $method === 'POST') {
             // Ignore logging errors
         }
 
-        echo json_encode(['success' => true, 'user' => ['id' => $user['id'], 'email' => $user['email'], 'name' => $user['name'], 'role' => $user['role'], 'profile_image' => $user['profile_image']], 'token' => bin2hex(random_bytes(32))]);
+        // Fetch user permissions
+        $permStmt = $pdo->prepare("SELECT page_key, can_view, can_create, can_edit, can_delete FROM role_permissions WHERE role = ?");
+        $permStmt->execute([$user['role']]);
+        $perms = $permStmt->fetchAll(PDO::FETCH_ASSOC);
+        $permMap = [];
+        foreach ($perms as $p) {
+            $permMap[$p['page_key']] = [
+                'view' => (bool) $p['can_view'],
+                'create' => (bool) $p['can_create'],
+                'edit' => (bool) $p['can_edit'],
+                'delete' => (bool) $p['can_delete'],
+            ];
+        }
+
+        echo json_encode(['success' => true, 'user' => ['id' => $user['id'], 'email' => $user['email'], 'name' => $user['name'], 'role' => $user['role'], 'profile_image' => $user['profile_image']], 'token' => bin2hex(random_bytes(32)), 'permissions' => $permMap]);
     } else {
         // Log failed login attempt
         try {
