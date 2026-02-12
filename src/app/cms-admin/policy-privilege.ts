@@ -78,6 +78,32 @@ export class PolicyPrivilegeComponent implements OnInit {
             ]
         },
         {
+            label: 'Voice Gateway',
+            pages: [
+                { key: 'voice_gateway.analog_fxo', label: 'Analog FXO' },
+                { key: 'voice_gateway.analog_fxs', label: 'Analog FXS' },
+                { key: 'voice_gateway.e1', label: 'E1' },
+                { key: 'voice_gateway.e1_cas', label: 'E1 CAS' },
+            ]
+        },
+        {
+            label: 'Recording',
+            pages: [
+                { key: 'recording.server', label: 'Recording Server' },
+                { key: 'recording.channel', label: 'Channel' },
+                { key: 'recording.monitor', label: 'Monitor' },
+                { key: 'recording.search', label: 'Search' },
+            ]
+        },
+        {
+            label: 'Device',
+            pages: [
+                { key: 'device.turret_device', label: 'Turret Device' },
+                { key: 'device.third_party_device', label: '3rd Party Device' },
+                { key: 'device.web_device', label: 'Web Device' },
+            ]
+        },
+        {
             label: 'Turret Management',
             pages: [
                 { key: 'turret.users', label: 'Turret Users' },
@@ -103,6 +129,7 @@ export class PolicyPrivilegeComponent implements OnInit {
                 { key: 'logs.activity_log', label: 'Activity Log' },
                 { key: 'logs.call_log', label: 'Call Log' },
                 { key: 'logs.alarm_notification', label: 'Alarm Notification' },
+                { key: 'logs.usage_report', label: 'Usage Report' },
             ]
         },
         {

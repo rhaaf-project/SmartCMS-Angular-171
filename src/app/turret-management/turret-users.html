@@ -14,7 +14,8 @@
                                 stroke-linecap="round" />
                         </svg></div>
                 </div>
-                <button type="button" class="btn btn-warning btn-sm" (click)="openCreateModal()">
+                <button type="button" class="btn btn-warning btn-sm" (click)="openCreateModal()"
+                    *ngIf="perm.canCreate('turret.users')">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
                         stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"
                         class="h-5 w-5 ltr:mr-2 rtl:ml-2">
@@ -73,7 +74,7 @@
                                     </svg>
                                 </button>
                                 <button type="button" class="btn btn-sm btn-outline-primary border-0 p-1"
-                                    (click)="copyRecord(item)" title="Copy">
+                                    (click)="copyRecord(item)" title="Copy" *ngIf="perm.canCreate('turret.users')">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
                                         fill="none" stroke="currentColor" stroke-width="1.5">
                                         <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
@@ -81,7 +82,7 @@
                                     </svg>
                                 </button>
                                 <button type="button" class="btn btn-sm btn-outline-warning border-0 p-1"
-                                    (click)="openEditModal(item)" title="Edit">
+                                    (click)="openEditModal(item)" title="Edit" *ngIf="perm.canEdit('turret.users')">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
                                         fill="none" stroke="currentColor" stroke-width="1.5">
                                         <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
@@ -89,7 +90,7 @@
                                     </svg>
                                 </button>
                                 <button type="button" class="btn btn-sm btn-outline-danger border-0 p-1"
-                                    (click)="deleteRecord(item)" title="Delete">
+                                    (click)="deleteRecord(item)" title="Delete" *ngIf="perm.canDelete('turret.users')">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
                                         fill="none" stroke="currentColor" stroke-width="1.5">
                                         <polyline points="3 6 5 6 21 6"></polyline>

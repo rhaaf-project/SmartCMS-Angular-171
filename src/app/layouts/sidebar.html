@@ -12,7 +12,7 @@
                 <ul class="relative space-y-0.5 p-4 py-0 pb-20 font-semibold">
 
                     <!-- 1. Dashboard -->
-                    <li class="menu nav-item">
+                    <li class="menu nav-item" *ngIf="perm.canView('dashboard')">
                         <a routerLink="/" class="nav-link group" routerLinkActive="active"
                             [routerLinkActiveOptions]="{exact: true}" (click)="toggleMobileMenu()">
                             <div class="flex items-center">
@@ -23,8 +23,9 @@
                         </a>
                     </li>
 
-                    <!-- 2. Organization - icon: users/contacts for org structure -->
-                    <li class="accordion menu nav-item">
+                    <!-- 2. Organization -->
+                    <li class="accordion menu nav-item"
+                        *ngIf="perm.canViewAny(['organization.company','organization.head_office','organization.branch','organization.sub_branch','organization.connectivity_diagram'])">
                         <button type="button" class="nav-link group w-full"
                             [ngClass]="{ active: activeDropdown.includes('organization') }"
                             (click)="toggleAccordion('organization')">
@@ -39,22 +40,28 @@
                         </button>
                         <div [@slideDownUp]="!activeDropdown.includes('organization')" class="accordion-content">
                             <ul class="sub-menu text-gray-500">
-                                <li><a routerLink="/admin/organization/company" routerLinkActive="active"
+                                <li *ngIf="perm.canView('organization.company')"><a
+                                        routerLink="/admin/organization/company" routerLinkActive="active"
                                         (click)="toggleMobileMenu()">Company</a></li>
-                                <li><a routerLink="/admin/organization/head-office" routerLinkActive="active"
+                                <li *ngIf="perm.canView('organization.head_office')"><a
+                                        routerLink="/admin/organization/head-office" routerLinkActive="active"
                                         (click)="toggleMobileMenu()">Head Office</a></li>
-                                <li><a routerLink="/admin/organization/branch" routerLinkActive="active"
+                                <li *ngIf="perm.canView('organization.branch')"><a
+                                        routerLink="/admin/organization/branch" routerLinkActive="active"
                                         (click)="toggleMobileMenu()">Branch</a></li>
-                                <li><a routerLink="/admin/organization/sub-branch" routerLinkActive="active"
+                                <li *ngIf="perm.canView('organization.sub_branch')"><a
+                                        routerLink="/admin/organization/sub-branch" routerLinkActive="active"
                                         (click)="toggleMobileMenu()">Sub Branch</a></li>
-                                <li><a routerLink="/admin/organization/connectivity-diagram" routerLinkActive="active"
+                                <li *ngIf="perm.canView('organization.connectivity_diagram')"><a
+                                        routerLink="/admin/organization/connectivity-diagram" routerLinkActive="active"
                                         (click)="toggleMobileMenu()">Connectivity Diagram</a></li>
                             </ul>
                         </div>
                     </li>
 
-                    <!-- 3. Connectivity - icon: components for connections -->
-                    <li class="accordion menu nav-item">
+                    <!-- 3. Connectivity -->
+                    <li class="accordion menu nav-item"
+                        *ngIf="perm.canViewAny(['connectivity.lines','connectivity.extensions','connectivity.private_wire','connectivity.cas','connectivity.intercoms','connectivity.call_routing','connectivity.trunk'])">
                         <button type="button" class="nav-link group w-full"
                             [ngClass]="{ active: activeDropdown.includes('connectivity') }"
                             (click)="toggleAccordion('connectivity')">
@@ -159,8 +166,9 @@
                         </div>
                     </li>
 
-                    <!-- 4. SBC - icon: elements for network elements -->
-                    <li class="accordion menu nav-item">
+                    <!-- 4. SBC -->
+                    <li class="accordion menu nav-item"
+                        *ngIf="perm.canViewAny(['sbc.sbc','sbc.connection','sbc.routing','sbc.status_monitor'])">
                         <button type="button" class="nav-link group w-full"
                             [ngClass]="{ active: activeDropdown.includes('sbc') }" (click)="toggleAccordion('sbc')">
                             <div class="flex items-center">
@@ -174,20 +182,23 @@
                         </button>
                         <div [@slideDownUp]="!activeDropdown.includes('sbc')" class="accordion-content">
                             <ul class="sub-menu text-gray-500">
-                                <li><a routerLink="/admin/connectivity/sbc" routerLinkActive="active"
-                                        (click)="toggleMobileMenu()">SBC</a></li>
-                                <li><a routerLink="/admin/connectivity/sbc-connections" routerLinkActive="active"
+                                <li *ngIf="perm.canView('sbc.sbc')"><a routerLink="/admin/connectivity/sbc"
+                                        routerLinkActive="active" (click)="toggleMobileMenu()">SBC</a></li>
+                                <li *ngIf="perm.canView('sbc.connection')"><a
+                                        routerLink="/admin/connectivity/sbc-connections" routerLinkActive="active"
                                         (click)="toggleMobileMenu()">Connection</a></li>
-                                <li><a routerLink="/admin/connectivity/sbc-routing" routerLinkActive="active"
-                                        (click)="toggleMobileMenu()">Routing</a></li>
-                                <li><a routerLink="/admin/connectivity/sbc-status-monitor" routerLinkActive="active"
+                                <li *ngIf="perm.canView('sbc.routing')"><a routerLink="/admin/connectivity/sbc-routing"
+                                        routerLinkActive="active" (click)="toggleMobileMenu()">Routing</a></li>
+                                <li *ngIf="perm.canView('sbc.status_monitor')"><a
+                                        routerLink="/admin/connectivity/sbc-status-monitor" routerLinkActive="active"
                                         (click)="toggleMobileMenu()">Status Monitor</a></li>
                             </ul>
                         </div>
                     </li>
 
-                    <!-- 5. Voice Gateway - icon: chat for voice/call -->
-                    <li class="accordion menu nav-item">
+                    <!-- 5. Voice Gateway -->
+                    <li class="accordion menu nav-item"
+                        *ngIf="perm.canViewAny(['voice_gateway.analog_fxo','voice_gateway.analog_fxs','voice_gateway.e1','voice_gateway.e1_cas'])">
                         <button type="button" class="nav-link group w-full"
                             [ngClass]="{ active: activeDropdown.includes('voice-gateway') }"
                             (click)="toggleAccordion('voice-gateway')">
@@ -203,20 +214,24 @@
                         </button>
                         <div [@slideDownUp]="!activeDropdown.includes('voice-gateway')" class="accordion-content">
                             <ul class="sub-menu text-gray-500">
-                                <li><a routerLink="/admin/voice-gateway/analog-fxo" routerLinkActive="active"
+                                <li *ngIf="perm.canView('voice_gateway.analog_fxo')"><a
+                                        routerLink="/admin/voice-gateway/analog-fxo" routerLinkActive="active"
                                         (click)="toggleMobileMenu()">Analog FXO</a></li>
-                                <li><a routerLink="/admin/voice-gateway/analog-fxs" routerLinkActive="active"
+                                <li *ngIf="perm.canView('voice_gateway.analog_fxs')"><a
+                                        routerLink="/admin/voice-gateway/analog-fxs" routerLinkActive="active"
                                         (click)="toggleMobileMenu()">Analog FXS</a></li>
-                                <li><a routerLink="/admin/voice-gateway/e1" routerLinkActive="active"
-                                        (click)="toggleMobileMenu()">E1</a></li>
-                                <li><a routerLink="/admin/voice-gateway/e1-cas" routerLinkActive="active"
+                                <li *ngIf="perm.canView('voice_gateway.e1')"><a routerLink="/admin/voice-gateway/e1"
+                                        routerLinkActive="active" (click)="toggleMobileMenu()">E1</a></li>
+                                <li *ngIf="perm.canView('voice_gateway.e1_cas')"><a
+                                        routerLink="/admin/voice-gateway/e1-cas" routerLinkActive="active"
                                         (click)="toggleMobileMenu()">E1 CAS</a></li>
                             </ul>
                         </div>
                     </li>
 
-                    <!-- 6. Recording - icon: notes for recording/logs -->
-                    <li class="accordion menu nav-item">
+                    <!-- 6. Recording -->
+                    <li class="accordion menu nav-item"
+                        *ngIf="perm.canViewAny(['recording.server','recording.channel','recording.monitor','recording.search'])">
                         <button type="button" class="nav-link group w-full"
                             [ngClass]="{ active: activeDropdown.includes('recording') }"
                             (click)="toggleAccordion('recording')">
@@ -231,20 +246,21 @@
                         </button>
                         <div [@slideDownUp]="!activeDropdown.includes('recording')" class="accordion-content">
                             <ul class="sub-menu text-gray-500">
-                                <li><a routerLink="/admin/recording/server" routerLinkActive="active"
-                                        (click)="toggleMobileMenu()">Recording Server</a></li>
-                                <li><a routerLink="/admin/recording/channel" routerLinkActive="active"
-                                        (click)="toggleMobileMenu()">Channel</a></li>
-                                <li><a routerLink="/admin/recording/monitor" routerLinkActive="active"
-                                        (click)="toggleMobileMenu()">Monitor</a></li>
-                                <li><a routerLink="/admin/recording/search" routerLinkActive="active"
-                                        (click)="toggleMobileMenu()">Search</a></li>
+                                <li *ngIf="perm.canView('recording.server')"><a routerLink="/admin/recording/server"
+                                        routerLinkActive="active" (click)="toggleMobileMenu()">Recording Server</a></li>
+                                <li *ngIf="perm.canView('recording.channel')"><a routerLink="/admin/recording/channel"
+                                        routerLinkActive="active" (click)="toggleMobileMenu()">Channel</a></li>
+                                <li *ngIf="perm.canView('recording.monitor')"><a routerLink="/admin/recording/monitor"
+                                        routerLinkActive="active" (click)="toggleMobileMenu()">Monitor</a></li>
+                                <li *ngIf="perm.canView('recording.search')"><a routerLink="/admin/recording/search"
+                                        routerLinkActive="active" (click)="toggleMobileMenu()">Search</a></li>
                             </ul>
                         </div>
                     </li>
 
-                    <!-- 7. Device - icon: widgets for devices -->
-                    <li class="accordion menu nav-item">
+                    <!-- 7. Device -->
+                    <li class="accordion menu nav-item"
+                        *ngIf="perm.canViewAny(['device.turret_device','device.third_party_device','device.web_device'])">
                         <button type="button" class="nav-link group w-full"
                             [ngClass]="{ active: activeDropdown.includes('device') }"
                             (click)="toggleAccordion('device')">
@@ -259,18 +275,21 @@
                         </button>
                         <div [@slideDownUp]="!activeDropdown.includes('device')" class="accordion-content">
                             <ul class="sub-menu text-gray-500">
-                                <li><a routerLink="/admin/device/turret-device" routerLinkActive="active"
+                                <li *ngIf="perm.canView('device.turret_device')"><a
+                                        routerLink="/admin/device/turret-device" routerLinkActive="active"
                                         (click)="toggleMobileMenu()">Turret Device</a></li>
-                                <li><a routerLink="/admin/device/3rd-party-device" routerLinkActive="active"
+                                <li *ngIf="perm.canView('device.third_party_device')"><a
+                                        routerLink="/admin/device/3rd-party-device" routerLinkActive="active"
                                         (click)="toggleMobileMenu()">3rd Party Device</a></li>
-                                <li><a routerLink="/admin/device/web-device" routerLinkActive="active"
-                                        (click)="toggleMobileMenu()">Web Device</a></li>
+                                <li *ngIf="perm.canView('device.web_device')"><a routerLink="/admin/device/web-device"
+                                        routerLinkActive="active" (click)="toggleMobileMenu()">Web Device</a></li>
                             </ul>
                         </div>
                     </li>
 
-                    <!-- 8. Turret Management - icon: tables for management -->
-                    <li class="accordion menu nav-item">
+                    <!-- 8. Turret Management -->
+                    <li class="accordion menu nav-item"
+                        *ngIf="perm.canViewAny(['turret.users','turret.templates','turret.groups','turret.policies','turret.phone_directory'])">
                         <button type="button" class="nav-link group w-full"
                             [ngClass]="{ active: activeDropdown.includes('turret-management') }"
                             (click)="toggleAccordion('turret-management')">
@@ -287,22 +306,26 @@
                         </button>
                         <div [@slideDownUp]="!activeDropdown.includes('turret-management')" class="accordion-content">
                             <ul class="sub-menu text-gray-500">
-                                <li><a routerLink="/admin/turret-management/users" routerLinkActive="active"
-                                        (click)="toggleMobileMenu()">Turret Users</a></li>
-                                <li><a routerLink="/admin/turret-management/template" routerLinkActive="active"
+                                <li *ngIf="perm.canView('turret.users')"><a routerLink="/admin/turret-management/users"
+                                        routerLinkActive="active" (click)="toggleMobileMenu()">Turret Users</a></li>
+                                <li *ngIf="perm.canView('turret.templates')"><a
+                                        routerLink="/admin/turret-management/template" routerLinkActive="active"
                                         (click)="toggleMobileMenu()">Turret Template</a></li>
-                                <li><a routerLink="/admin/turret-management/group" routerLinkActive="active"
-                                        (click)="toggleMobileMenu()">Turret Group</a></li>
-                                <li><a routerLink="/admin/turret-management/policy" routerLinkActive="active"
+                                <li *ngIf="perm.canView('turret.groups')"><a routerLink="/admin/turret-management/group"
+                                        routerLinkActive="active" (click)="toggleMobileMenu()">Turret Group</a></li>
+                                <li *ngIf="perm.canView('turret.policies')"><a
+                                        routerLink="/admin/turret-management/policy" routerLinkActive="active"
                                         (click)="toggleMobileMenu()">Policy/Privilege</a></li>
-                                <li><a routerLink="/admin/turret-management/phone-directory" routerLinkActive="active"
+                                <li *ngIf="perm.canView('turret.phone_directory')"><a
+                                        routerLink="/admin/turret-management/phone-directory" routerLinkActive="active"
                                         (click)="toggleMobileMenu()">Phone Directory</a></li>
                             </ul>
                         </div>
                     </li>
 
-                    <!-- 9. Network - icon: drag-and-drop for network topology -->
-                    <li class="accordion menu nav-item">
+                    <!-- 9. Network -->
+                    <li class="accordion menu nav-item"
+                        *ngIf="perm.canViewAny(['network.static_route','network.firewall'])">
                         <button type="button" class="nav-link group w-full"
                             [ngClass]="{ active: activeDropdown.includes('network') }"
                             (click)="toggleAccordion('network')">
@@ -317,16 +340,17 @@
                         </button>
                         <div [@slideDownUp]="!activeDropdown.includes('network')" class="accordion-content">
                             <ul class="sub-menu text-gray-500">
-                                <li><a routerLink="/admin/network/static-route" routerLinkActive="active"
+                                <li *ngIf="perm.canView('network.static_route')"><a
+                                        routerLink="/admin/network/static-route" routerLinkActive="active"
                                         (click)="toggleMobileMenu()">Static Route</a></li>
-                                <li><a routerLink="/admin/network/firewall" routerLinkActive="active"
-                                        (click)="toggleMobileMenu()">Firewall</a></li>
+                                <li *ngIf="perm.canView('network.firewall')"><a routerLink="/admin/network/firewall"
+                                        routerLinkActive="active" (click)="toggleMobileMenu()">Firewall</a></li>
                             </ul>
                         </div>
                     </li>
 
-                    <!-- 10. Backup - icon: calendar for scheduled backups -->
-                    <li class="accordion menu nav-item">
+                    <!-- 10. Backup -->
+                    <li class="accordion menu nav-item" *ngIf="perm.canView('backup')">
                         <button type="button" class="nav-link group w-full"
                             [ngClass]="{ active: activeDropdown.includes('backup') }"
                             (click)="toggleAccordion('backup')">
@@ -353,8 +377,9 @@
                         </div>
                     </li>
 
-                    <!-- 11. CMS Administration - icon: authentication for admin -->
-                    <li class="accordion menu nav-item">
+                    <!-- 11. CMS Administration -->
+                    <li class="accordion menu nav-item"
+                        *ngIf="perm.canViewAny(['cms_admin.user_management','cms_admin.group','cms_admin.policy_privilege','cms_admin.layout_customizer'])">
                         <button type="button" class="nav-link group w-full"
                             [ngClass]="{ active: activeDropdown.includes('cms-admin') }"
                             (click)="toggleAccordion('cms-admin')">
@@ -370,20 +395,24 @@
                         </button>
                         <div [@slideDownUp]="!activeDropdown.includes('cms-admin')" class="accordion-content">
                             <ul class="sub-menu text-gray-500">
-                                <li><a routerLink="/admin/cms-admin/user-management" routerLinkActive="active"
+                                <li *ngIf="perm.canView('cms_admin.user_management')"><a
+                                        routerLink="/admin/cms-admin/user-management" routerLinkActive="active"
                                         (click)="toggleMobileMenu()">CMS User Management</a></li>
-                                <li><a routerLink="/admin/cms-admin/group" routerLinkActive="active"
-                                        (click)="toggleMobileMenu()">CMS Group</a></li>
-                                <li><a routerLink="/admin/cms-admin/policy" routerLinkActive="active"
+                                <li *ngIf="perm.canView('cms_admin.group')"><a routerLink="/admin/cms-admin/group"
+                                        routerLinkActive="active" (click)="toggleMobileMenu()">CMS Group</a></li>
+                                <li *ngIf="perm.canView('cms_admin.policy_privilege')"><a
+                                        routerLink="/admin/cms-admin/policy" routerLinkActive="active"
                                         (click)="toggleMobileMenu()">CMS Policy/Privilege</a></li>
-                                <li><a routerLink="/admin/cms-admin/layout-customizer" routerLinkActive="active"
+                                <li *ngIf="perm.canView('cms_admin.layout_customizer')"><a
+                                        routerLink="/admin/cms-admin/layout-customizer" routerLinkActive="active"
                                         (click)="toggleMobileMenu()">Layout Customizer</a></li>
                             </ul>
                         </div>
                     </li>
 
-                    <!-- 12. Alarm & Log - icon: charts for monitoring -->
-                    <li class="accordion menu nav-item">
+                    <!-- 12. Alarm & Log -->
+                    <li class="accordion menu nav-item"
+                        *ngIf="perm.canViewAny(['logs.system_log','logs.activity_log','logs.call_log','logs.alarm_notification','logs.usage_report'])">
                         <button type="button" class="nav-link group w-full"
                             [ngClass]="{ active: activeDropdown.includes('alarm-log') }"
                             (click)="toggleAccordion('alarm-log')">
@@ -399,16 +428,17 @@
                         </button>
                         <div [@slideDownUp]="!activeDropdown.includes('alarm-log')" class="accordion-content">
                             <ul class="sub-menu text-gray-500">
-                                <li><a routerLink="/admin/logs/system-logs" routerLinkActive="active"
-                                        (click)="toggleMobileMenu()">System Log</a></li>
-                                <li><a routerLink="/admin/logs/activity-logs" routerLinkActive="active"
-                                        (click)="toggleMobileMenu()">Activity Log</a></li>
-                                <li><a routerLink="/admin/logs/call-logs" routerLinkActive="active"
-                                        (click)="toggleMobileMenu()">Call Log</a></li>
-                                <li><a routerLink="/admin/logs/alarm-notification" routerLinkActive="active"
+                                <li *ngIf="perm.canView('logs.system_log')"><a routerLink="/admin/logs/system-logs"
+                                        routerLinkActive="active" (click)="toggleMobileMenu()">System Log</a></li>
+                                <li *ngIf="perm.canView('logs.activity_log')"><a routerLink="/admin/logs/activity-logs"
+                                        routerLinkActive="active" (click)="toggleMobileMenu()">Activity Log</a></li>
+                                <li *ngIf="perm.canView('logs.call_log')"><a routerLink="/admin/logs/call-logs"
+                                        routerLinkActive="active" (click)="toggleMobileMenu()">Call Log</a></li>
+                                <li *ngIf="perm.canView('logs.alarm_notification')"><a
+                                        routerLink="/admin/logs/alarm-notification" routerLinkActive="active"
                                         (click)="toggleMobileMenu()">Alarm & Notification</a></li>
-                                <li><a routerLink="/admin/logs/usage-report" routerLinkActive="active"
-                                        (click)="toggleMobileMenu()">Usage Report</a></li>
+                                <li *ngIf="perm.canView('logs.usage_report')"><a routerLink="/admin/logs/usage-report"
+                                        routerLinkActive="active" (click)="toggleMobileMenu()">Usage Report</a></li>
                             </ul>
                         </div>
                     </li>

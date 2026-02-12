@@ -16,6 +16,7 @@ import { IconTwitterComponent } from '../shared/icon/icon-twitter';
 import { IconGoogleComponent } from '../shared/icon/icon-google';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../environments/environment';
+import { PermissionService } from '../service/permission.service';
 
 @Component({
     templateUrl: './boxed-signin.html',
@@ -50,6 +51,7 @@ export class BoxedSigninComponent {
         public router: Router,
         private appSetting: AppService,
         private http: HttpClient,
+        private permissionService: PermissionService,
     ) {
         this.initStore();
     }
@@ -85,12 +87,23 @@ export class BoxedSigninComponent {
                 localStorage.setItem('userEmail', res.user.email);
                 localStorage.setItem('userName', res.user.name);
                 localStorage.setItem('userRole', res.user.role);
-                localStorage.setItem('userId', res.user.id);
+                localStorage.setItem('userId', String(res.user.id));
                 localStorage.setItem('userProfileImage', res.user.profile_image || '');
                 localStorage.setItem('isLoggedIn', 'true');
 
+                // Store role and permissions
+                const perms = res.permissions || {};
+                try {
+                    localStorage.setItem('userPermissions', JSON.stringify(perms));
+                    console.log('[LOGIN] Permissions saved:', Object.keys(perms).length, 'pages for role:', res.user.role);
+                } catch (e) {
+                    console.error('[LOGIN] Failed to save permissions:', e);
+                    localStorage.setItem('userPermissions', '{}');
+                }
+                this.permissionService.setPermissions(perms, res.user.role);
+
                 this.loading = false;
-                this.router.navigate(['/admin']);
+                this.router.navigate(['/']);
             },
             error: (err) => {
                 this.errorMessage = err.error?.error || 'Invalid email or password';

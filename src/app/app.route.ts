@@ -24,7 +24,7 @@ export const routes: Routes = [
         canActivate: [AuthGuard],
         children: [
             // dashboard
-            { path: '', loadComponent: () => import('./index').then((d) => d.IndexComponent), data: { title: 'Dashboard | SmartUCX' } },
+            { path: '', loadComponent: () => import('./index').then((d) => d.IndexComponent), data: { title: 'Dashboard | SmartUCX', pageKey: 'dashboard' } },
             { path: 'analytics', loadComponent: () => import('./analytics').then((d) => d.AnalyticsComponent), data: { title: 'Analytics | SmartUCX' } },
             { path: 'finance', loadComponent: () => import('./finance').then((d) => d.FinanceComponent), data: { title: 'Finance | SmartUCX' } },
             { path: 'crypto', loadComponent: () => import('./crypto').then((d) => d.CryptoComponent), data: { title: 'Crypto | SmartUCX' } },
@@ -80,65 +80,73 @@ export const routes: Routes = [
             {
                 path: 'cms-admin/layout-customizer',
                 loadComponent: () => import('./cms-admin/layout-customizer').then((d) => d.LayoutCustomizerComponent),
-                data: { title: 'Layout Customizer | SmartUCX' }
+                data: { title: 'Layout Customizer | SmartUCX', pageKey: 'cms_admin.layout_customizer' },
+                canActivate: [AuthGuard],
             },
             {
                 path: 'cms-admin/user-management',
                 loadComponent: () => import('./cms-admin/cms-users').then((d) => d.CmsUsersComponent),
-                data: { title: 'CMS User Management | SmartUCX' }
+                data: { title: 'CMS User Management | SmartUCX', pageKey: 'cms_admin.user_management' },
+                canActivate: [AuthGuard],
             },
 
             // Unimplemented Modules (NA)
-            { path: 'voice-gateway', component: NAComponent },
-            { path: 'voice-gateway/:any', component: NAComponent },
-            { path: 'voice-gateway/:any/:any2', component: NAComponent },
-            { path: 'recording', component: NAComponent },
-            { path: 'recording/:any', component: NAComponent },
-            { path: 'recording/:any/:any2', component: NAComponent },
-            { path: 'device', component: NAComponent },
-            { path: 'device/:any', component: NAComponent },
-            { path: 'device/:any/:any2', component: NAComponent },
+            { path: 'voice-gateway', component: NAComponent, data: { pageKey: 'voice_gateway.analog_fxo' }, canActivate: [AuthGuard] },
+            { path: 'voice-gateway/:any', component: NAComponent, data: { pageKey: 'voice_gateway.analog_fxo' }, canActivate: [AuthGuard] },
+            { path: 'voice-gateway/:any/:any2', component: NAComponent, data: { pageKey: 'voice_gateway.analog_fxo' }, canActivate: [AuthGuard] },
+            { path: 'recording', component: NAComponent, data: { pageKey: 'recording.server' }, canActivate: [AuthGuard] },
+            { path: 'recording/:any', component: NAComponent, data: { pageKey: 'recording.server' }, canActivate: [AuthGuard] },
+            { path: 'recording/:any/:any2', component: NAComponent, data: { pageKey: 'recording.server' }, canActivate: [AuthGuard] },
+            { path: 'device', component: NAComponent, data: { pageKey: 'device.turret_device' }, canActivate: [AuthGuard] },
+            { path: 'device/:any', component: NAComponent, data: { pageKey: 'device.turret_device' }, canActivate: [AuthGuard] },
+            { path: 'device/:any/:any2', component: NAComponent, data: { pageKey: 'device.turret_device' }, canActivate: [AuthGuard] },
             // Turret Management
             {
                 path: 'turret-management/users',
                 loadComponent: () => import('./turret-management/turret-users').then((d) => d.TurretUsersComponent),
-                data: { title: 'Turret Users | SmartUCX' }
+                data: { title: 'Turret Users | SmartUCX', pageKey: 'turret.users' },
+                canActivate: [AuthGuard],
             },
-            // NA for other turret-management submenus not yet implemented
             {
                 path: 'turret-management/template',
                 loadComponent: () => import('./turret-management/turret-template').then((d) => d.TurretTemplateComponent),
-                data: { title: 'Turret Templates | SmartUCX' }
+                data: { title: 'Turret Templates | SmartUCX', pageKey: 'turret.templates' },
+                canActivate: [AuthGuard],
             },
             {
                 path: 'turret-management/group',
                 loadComponent: () => import('./turret-management/turret-group').then((d) => d.TurretGroupComponent),
-                data: { title: 'Turret Groups | SmartUCX' }
+                data: { title: 'Turret Groups | SmartUCX', pageKey: 'turret.groups' },
+                canActivate: [AuthGuard],
             },
             {
                 path: 'turret-management/policy',
                 loadComponent: () => import('./turret-management/turret-policy').then((d) => d.TurretPolicyComponent),
-                data: { title: 'Turret Policies | SmartUCX' }
+                data: { title: 'Turret Policies | SmartUCX', pageKey: 'turret.policies' },
+                canActivate: [AuthGuard],
             },
             {
                 path: 'turret-management/phone-directory',
                 loadComponent: () => import('./turret-management/phone-directory').then((d) => d.PhoneDirectoryComponent),
-                data: { title: 'Phone Directory | SmartUCX' }
+                data: { title: 'Phone Directory | SmartUCX', pageKey: 'turret.phone_directory' },
+                canActivate: [AuthGuard],
             },
             // network
             { path: 'network', loadChildren: () => import('./network/network.routes').then((d) => d.routes) },
-            { path: 'backup', component: NAComponent },
-            { path: 'backup/:any', component: NAComponent },
-            { path: 'backup/:any/:any2', component: NAComponent },
+            { path: 'backup', component: NAComponent, data: { pageKey: 'backup' }, canActivate: [AuthGuard] },
+            { path: 'backup/:any', component: NAComponent, data: { pageKey: 'backup' }, canActivate: [AuthGuard] },
+            { path: 'backup/:any/:any2', component: NAComponent, data: { pageKey: 'backup' }, canActivate: [AuthGuard] },
             {
                 path: 'cms-admin/group',
                 loadComponent: () => import('./cms-admin/cms-na/cms-na').then((d) => d.CMSNAComponent),
-                data: { title: 'CMS Group | SmartUCX' }
+                data: { title: 'CMS Group | SmartUCX', pageKey: 'cms_admin.group' },
+                canActivate: [AuthGuard],
             },
             {
                 path: 'cms-admin/policy',
                 loadComponent: () => import('./cms-admin/policy-privilege').then((d) => d.PolicyPrivilegeComponent),
-                data: { title: 'Policy & Privilege | SmartUCX' }
+                data: { title: 'Policy & Privilege | SmartUCX', pageKey: 'cms_admin.policy_privilege' },
+                canActivate: [AuthGuard],
             },
         ],
     },

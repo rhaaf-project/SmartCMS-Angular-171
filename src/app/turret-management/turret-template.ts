@@ -2,6 +2,7 @@ import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
+import { PermissionService } from '../service/permission.service';
 import { Router, RouterModule } from '@angular/router';
 import { toggleAnimation } from '../shared/animations';
 import { environment } from '../../environments/environment';
@@ -42,6 +43,7 @@ export class TurretTemplateComponent implements OnInit {
     search = '';
 
     private http = inject(HttpClient);
+    public perm = inject(PermissionService);
 
     ngOnInit() {
         this.loadItems();

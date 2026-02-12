@@ -35,6 +35,7 @@ import { IconMenuPagesComponent } from '../shared/icon/menu/icon-menu-pages';
 import { IconMenuMoreComponent } from '../shared/icon/menu/icon-menu-more';
 
 import { environment } from '../../environments/environment';
+import { PermissionService } from '../service/permission.service';
 
 @Component({
     selector: 'header',
@@ -110,6 +111,7 @@ export class HeaderComponent {
         public router: Router,
         private appSetting: AppService,
         private sanitizer: DomSanitizer,
+        private permissionService: PermissionService,
     ) {
         this.initStore();
 
@@ -238,7 +240,10 @@ export class HeaderComponent {
             localStorage.removeItem('userEmail');
             localStorage.removeItem('userName');
             localStorage.removeItem('userProfileImage');
+            localStorage.removeItem('userId');
             localStorage.removeItem('isLoggedIn');
+            // Clear permissions
+            this.permissionService.clear();
             // Redirect to login
             this.router.navigate(['/login']);
         });

@@ -3,7 +3,8 @@ import { Router, RouterModule } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { slideDownUp } from '../shared/animations';
-import { NgClass } from '@angular/common';
+import { NgClass, NgIf } from '@angular/common';
+import { PermissionService } from '../service/permission.service';
 import { IconCaretsDownComponent } from '../shared/icon/icon-carets-down';
 import { NgScrollbarModule } from 'ngx-scrollbar';
 import { IconMenuDashboardComponent } from '../shared/icon/menu/icon-menu-dashboard';
@@ -46,6 +47,7 @@ import { IconMenuUserGroupComponent } from '../shared/icon/menu/icon-menu-user-g
     templateUrl: './sidebar.html',
     imports: [
         NgClass,
+        NgIf,
         TranslatePipe,
         NgScrollbarModule,
         RouterModule,
@@ -96,6 +98,7 @@ export class SidebarComponent {
         public translate: TranslateService,
         public storeData: Store<any>,
         public router: Router,
+        public perm: PermissionService,
     ) {
         this.initStore();
     }

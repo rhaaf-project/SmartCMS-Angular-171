@@ -2,6 +2,7 @@ import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
+import { PermissionService } from '../service/permission.service';
 import { Router, RouterModule, ActivatedRoute } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { toggleAnimation } from '../shared/animations';
@@ -49,6 +50,7 @@ export class CmsUsersComponent implements OnInit {
     imageBaseUrl = environment.imageBaseUrl;
 
     private http = inject(HttpClient);
+    public perm = inject(PermissionService);
     private route = inject(ActivatedRoute);
     private router = inject(Router);
 

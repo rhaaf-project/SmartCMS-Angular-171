@@ -8,6 +8,7 @@ import { OrganizationService, Company, Branch, SubBranch } from '../services/org
 import { environment } from '../../../environments/environment';
 import { IconCircleCheckComponent } from '../../shared/icon/icon-circle-check';
 import Swal from 'sweetalert2';
+import { PermissionService } from '../../service/permission.service';
 
 @Component({
     selector: 'app-sub-branch-list',
@@ -60,7 +61,7 @@ export class SubBranchListComponent implements OnInit {
     rows: any[] = [];
     filteredRows: any[] = [];
 
-    constructor(private organizationService: OrganizationService) { }
+    constructor(private organizationService: OrganizationService, public perm: PermissionService) { }
 
     ngOnInit(): void {
         this.loadData();

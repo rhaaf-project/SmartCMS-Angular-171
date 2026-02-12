@@ -16,6 +16,7 @@ import { IconGoogleComponent } from '../shared/icon/icon-google';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../environments/environment';
+import { PermissionService } from '../service/permission.service';
 
 @Component({
     selector: 'app-cover-login',
@@ -53,6 +54,7 @@ export class CoverLoginComponent {
         public router: Router,
         private appSetting: AppService,
         private http: HttpClient,
+        private permissionService: PermissionService,
     ) {
         this.initStore();
     }
@@ -85,8 +87,25 @@ export class CoverLoginComponent {
                     // Store user info in localStorage
                     localStorage.setItem('userEmail', response.user.email);
                     localStorage.setItem('userName', response.user.name);
+                    localStorage.setItem('userId', String(response.user.id));
+                    localStorage.setItem('userProfileImage', response.user.profile_image || '');
                     localStorage.setItem('isLoggedIn', 'true');
                     localStorage.setItem('token', response.token);
+                    localStorage.setItem('auth_token', response.token);
+
+                    // Store role and permissions
+                    const role = response.user.role || '';
+                    const perms = response.permissions || {};
+                    localStorage.setItem('userRole', role);
+                    try {
+                        const permsJson = JSON.stringify(perms);
+                        localStorage.setItem('userPermissions', permsJson);
+                        console.log('[LOGIN] Permissions saved:', Object.keys(perms).length, 'pages for role:', role);
+                    } catch (e) {
+                        console.error('[LOGIN] Failed to save permissions:', e);
+                        localStorage.setItem('userPermissions', '{}');
+                    }
+                    this.permissionService.setPermissions(perms, role);
 
                     this.isLoading = false;
                     this.router.navigate(['/']);

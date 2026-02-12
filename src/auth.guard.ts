@@ -1,21 +1,27 @@
-// import { AuthService } from 'src/app/shared/auth.service';
 import { Injectable } from '@angular/core';
-import { Router, RouterStateSnapshot } from '@angular/router';
-import { AppService } from './app/service/app.service';
+import { ActivatedRouteSnapshot, Router } from '@angular/router';
+import { PermissionService } from './app/service/permission.service';
 
 @Injectable({ providedIn: 'root' })
 export class AuthGuard {
     constructor(
         private router: Router,
-        private service: AppService,
-        // private authService: AuthService,
-    ) {}
+        private permissionService: PermissionService,
+    ) { }
 
-    async canActivate(state: RouterStateSnapshot) {
-        const bearerToken = localStorage.getItem('auth_token');
+    canActivate(route?: ActivatedRouteSnapshot) {
+        const token = localStorage.getItem('auth_token') || localStorage.getItem('token');
 
-        if (!bearerToken) {
+        if (!token) {
             this.router.navigate(['/login']);
+            return false;
+        }
+
+        // Page-level permission check
+        const pageKey = route?.data?.['pageKey'];
+        if (pageKey && !this.permissionService.canView(pageKey)) {
+            console.warn(`[GUARD] Access denied for page: ${pageKey}`);
+            this.router.navigate(['/admin']);
             return false;
         }
 
