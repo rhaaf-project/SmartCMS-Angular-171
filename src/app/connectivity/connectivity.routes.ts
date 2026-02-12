@@ -5,7 +5,7 @@ export const CONNECTIVITY_ROUTES: Routes = [
     {
         path: 'call-servers',
         loadComponent: () => import('./call-servers').then((d) => d.CallServersComponent),
-        data: { title: 'Call Servers | SmartUCX', pageKey: 'connectivity.lines' },
+        data: { title: 'Call Servers | SmartUCX', pageKey: 'connectivity.call_server' },
         canActivate: [AuthGuard],
     },
     {
@@ -23,7 +23,7 @@ export const CONNECTIVITY_ROUTES: Routes = [
     {
         path: 'vpw',
         loadComponent: () => import('./vpw').then((d) => d.VPWComponent),
-        data: { title: 'VPW | SmartUCX', pageKey: 'connectivity.private_wire' },
+        data: { title: 'VPW | SmartUCX', pageKey: 'connectivity.vpw' },
         canActivate: [AuthGuard],
     },
     {
@@ -35,7 +35,7 @@ export const CONNECTIVITY_ROUTES: Routes = [
     {
         path: 'sip-3rd-party',
         loadComponent: () => import('./sip-3rd-party').then((d) => d.Sip3rdPartyComponent),
-        data: { title: 'SIP/3rd Party | SmartUCX', pageKey: 'connectivity.extensions' },
+        data: { title: 'SIP/3rd Party | SmartUCX', pageKey: 'connectivity.sip_3rd_party' },
         canActivate: [AuthGuard],
     },
     {
@@ -83,13 +83,13 @@ export const CONNECTIVITY_ROUTES: Routes = [
     {
         path: 'feature/ivr',
         loadComponent: () => import('./ivr-list').then((d) => d.IvrListComponent),
-        data: { title: 'IVR | SmartUCX', pageKey: 'connectivity.call_routing' },
+        data: { title: 'IVR | SmartUCX', pageKey: 'connectivity.ivr' },
         canActivate: [AuthGuard],
     },
     {
         path: 'feature/black-list',
         loadComponent: () => import('./black-list').then((d) => d.BlackListComponent),
-        data: { title: 'Black List | SmartUCX', pageKey: 'connectivity.call_routing' },
+        data: { title: 'Black List | SmartUCX', pageKey: 'connectivity.black_list' },
         canActivate: [AuthGuard],
     },
     {
@@ -101,13 +101,13 @@ export const CONNECTIVITY_ROUTES: Routes = [
     {
         path: 'feature/customs-destination',
         loadComponent: () => import('./custom-destination').then((d) => d.CustomDestinationComponent),
-        data: { title: 'Custom Destination | SmartUCX', pageKey: 'connectivity.call_routing' },
+        data: { title: 'Custom Destination | SmartUCX', pageKey: 'connectivity.custom_destination' },
         canActivate: [AuthGuard],
     },
     {
         path: 'feature/misc-destination',
         loadComponent: () => import('./misc-destination').then((d) => d.MiscDestinationComponent),
-        data: { title: 'Misc Destination | SmartUCX', pageKey: 'connectivity.call_routing' },
+        data: { title: 'Misc Destination | SmartUCX', pageKey: 'connectivity.misc_destination' },
         canActivate: [AuthGuard],
     },
     {
@@ -125,37 +125,37 @@ export const CONNECTIVITY_ROUTES: Routes = [
     {
         path: 'feature/broadcast',
         loadComponent: () => import('./broadcast').then((d) => d.BroadcastComponent),
-        data: { title: 'Broadcast | SmartUCX', pageKey: 'connectivity.call_routing' },
+        data: { title: 'Broadcast | SmartUCX', pageKey: 'connectivity.broadcast' },
         canActivate: [AuthGuard],
     },
     {
         path: 'feature/music-on-hold',
         loadComponent: () => import('./music-on-hold').then((d) => d.MusicOnHoldComponent),
-        data: { title: 'Music on Hold | SmartUCX', pageKey: 'connectivity.call_routing' },
+        data: { title: 'Music on Hold | SmartUCX', pageKey: 'connectivity.music_on_hold' },
         canActivate: [AuthGuard],
     },
     {
         path: 'feature/paging-intercom',
         loadComponent: () => import('./paging-intercom').then((d) => d.PagingIntercomComponent),
-        data: { title: 'Paging & Intercom | SmartUCX', pageKey: 'connectivity.intercoms' },
+        data: { title: 'Paging & Intercom | SmartUCX', pageKey: 'connectivity.paging_intercom' },
         canActivate: [AuthGuard],
     },
     {
         path: 'feature/recording',
         loadComponent: () => import('./recording').then((d) => d.RecordingComponent),
-        data: { title: 'Recording | SmartUCX', pageKey: 'connectivity.call_routing' },
+        data: { title: 'Recording | SmartUCX', pageKey: 'connectivity.recording' },
         canActivate: [AuthGuard],
     },
     {
         path: 'feature/ring-group',
         loadComponent: () => import('./ring-group').then((d) => d.RingGroupComponent),
-        data: { title: 'Ring Group | SmartUCX', pageKey: 'connectivity.call_routing' },
+        data: { title: 'Ring Group | SmartUCX', pageKey: 'connectivity.ring_group' },
         canActivate: [AuthGuard],
     },
     {
         path: 'feature/time-conditions',
         loadComponent: () => import('./time-conditions').then((d) => d.TimeConditionsComponent),
-        data: { title: 'Time Conditions | SmartUCX', pageKey: 'connectivity.call_routing' },
+        data: { title: 'Time Conditions | SmartUCX', pageKey: 'connectivity.time_conditions' },
         canActivate: [AuthGuard],
     },
     {

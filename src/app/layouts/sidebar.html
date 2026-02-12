@@ -61,7 +61,7 @@
 
                     <!-- 3. Connectivity -->
                     <li class="accordion menu nav-item"
-                        *ngIf="perm.canViewAny(['connectivity.lines','connectivity.extensions','connectivity.private_wire','connectivity.cas','connectivity.intercoms','connectivity.call_routing','connectivity.trunk'])">
+                        *ngIf="perm.canViewAny(['connectivity.call_server','connectivity.lines','connectivity.extensions','connectivity.vpw','connectivity.cas','connectivity.intercoms','connectivity.sip_3rd_party','connectivity.private_wire','connectivity.trunk','connectivity.call_routing','connectivity.inbound','connectivity.outbound','connectivity.conference','connectivity.black_list','connectivity.broadcast','connectivity.custom_destination','connectivity.ivr','connectivity.misc_destination','connectivity.music_on_hold','connectivity.paging_intercom','connectivity.recording','connectivity.ring_group','connectivity.time_conditions'])">
                         <button type="button" class="nav-link group w-full"
                             [ngClass]="{ active: activeDropdown.includes('connectivity') }"
                             (click)="toggleAccordion('connectivity')">
@@ -76,7 +76,8 @@
                         </button>
                         <div [@slideDownUp]="!activeDropdown.includes('connectivity')" class="accordion-content">
                             <ul class="sub-menu text-gray-500">
-                                <li><a routerLink="/admin/connectivity/call-servers" routerLinkActive="active"
+                                <li *ngIf="perm.canView('connectivity.call_server')"><a
+                                        routerLink="/admin/connectivity/call-servers" routerLinkActive="active"
                                         (click)="toggleMobileMenu()">Call Server</a></li>
                                 <!-- Feature submenu -->
                                 <li class="accordion menu nav-item">
@@ -91,36 +92,47 @@
                                     </button>
                                     <div [@slideDownUp]="!activeDropdown.includes('feature')" class="accordion-content">
                                         <ul class="sub-menu text-gray-500 !pl-4">
-                                            <li><a routerLink="/admin/connectivity/feature/black-list"
+                                            <li *ngIf="perm.canView('connectivity.black_list')"><a
+                                                    routerLink="/admin/connectivity/feature/black-list"
                                                     routerLinkActive="active" (click)="toggleMobileMenu()">Black
                                                     List</a></li>
-                                            <li><a routerLink="/admin/connectivity/feature/broadcast"
+                                            <li *ngIf="perm.canView('connectivity.broadcast')"><a
+                                                    routerLink="/admin/connectivity/feature/broadcast"
                                                     routerLinkActive="active" (click)="toggleMobileMenu()">Broadcast</a>
                                             </li>
-                                            <li><a routerLink="/admin/connectivity/feature/conference"
+                                            <li *ngIf="perm.canView('connectivity.conference')"><a
+                                                    routerLink="/admin/connectivity/feature/conference"
                                                     routerLinkActive="active"
                                                     (click)="toggleMobileMenu()">Conference</a></li>
-                                            <li><a routerLink="/admin/connectivity/feature/customs-destination"
+                                            <li *ngIf="perm.canView('connectivity.custom_destination')"><a
+                                                    routerLink="/admin/connectivity/feature/customs-destination"
                                                     routerLinkActive="active" (click)="toggleMobileMenu()">Customs
                                                     Destination</a></li>
-                                            <li><a routerLink="/admin/connectivity/feature/ivr"
+                                            <li *ngIf="perm.canView('connectivity.ivr')"><a
+                                                    routerLink="/admin/connectivity/feature/ivr"
                                                     routerLinkActive="active" (click)="toggleMobileMenu()">IVR</a></li>
-                                            <li><a routerLink="/admin/connectivity/feature/misc-destination"
+                                            <li *ngIf="perm.canView('connectivity.misc_destination')"><a
+                                                    routerLink="/admin/connectivity/feature/misc-destination"
                                                     routerLinkActive="active" (click)="toggleMobileMenu()">Misc
                                                     Destination</a></li>
-                                            <li><a routerLink="/admin/connectivity/feature/music-on-hold"
+                                            <li *ngIf="perm.canView('connectivity.music_on_hold')"><a
+                                                    routerLink="/admin/connectivity/feature/music-on-hold"
                                                     routerLinkActive="active" (click)="toggleMobileMenu()">Music on
                                                     Hold</a></li>
-                                            <li><a routerLink="/admin/connectivity/feature/paging-intercom"
+                                            <li *ngIf="perm.canView('connectivity.paging_intercom')"><a
+                                                    routerLink="/admin/connectivity/feature/paging-intercom"
                                                     routerLinkActive="active" (click)="toggleMobileMenu()">Paging &
                                                     Intercom</a></li>
-                                            <li><a routerLink="/admin/connectivity/feature/recording"
+                                            <li *ngIf="perm.canView('connectivity.recording')"><a
+                                                    routerLink="/admin/connectivity/feature/recording"
                                                     routerLinkActive="active" (click)="toggleMobileMenu()">Recording</a>
                                             </li>
-                                            <li><a routerLink="/admin/connectivity/feature/ring-group"
+                                            <li *ngIf="perm.canView('connectivity.ring_group')"><a
+                                                    routerLink="/admin/connectivity/feature/ring-group"
                                                     routerLinkActive="active" (click)="toggleMobileMenu()">Ring
                                                     Group</a></li>
-                                            <li><a routerLink="/admin/connectivity/feature/time-conditions"
+                                            <li *ngIf="perm.canView('connectivity.time_conditions')"><a
+                                                    routerLink="/admin/connectivity/feature/time-conditions"
                                                     routerLinkActive="active" (click)="toggleMobileMenu()">Time
                                                     Conditions</a></li>
                                         </ul>
@@ -139,28 +151,37 @@
                                     </button>
                                     <div [@slideDownUp]="!activeDropdown.includes('line')" class="accordion-content">
                                         <ul class="sub-menu text-gray-500 !pl-4">
-                                            <li><a routerLink="/admin/connectivity/lines" routerLinkActive="active"
+                                            <li *ngIf="perm.canView('connectivity.lines')"><a
+                                                    routerLink="/admin/connectivity/lines" routerLinkActive="active"
                                                     (click)="toggleMobileMenu()">Line</a></li>
-                                            <li><a routerLink="/admin/connectivity/extensions" routerLinkActive="active"
-                                                    (click)="toggleMobileMenu()">Extension</a></li>
-                                            <li><a routerLink="/admin/connectivity/vpw" routerLinkActive="active"
+                                            <li *ngIf="perm.canView('connectivity.extensions')"><a
+                                                    routerLink="/admin/connectivity/extensions"
+                                                    routerLinkActive="active" (click)="toggleMobileMenu()">Extension</a>
+                                            </li>
+                                            <li *ngIf="perm.canView('connectivity.vpw')"><a
+                                                    routerLink="/admin/connectivity/vpw" routerLinkActive="active"
                                                     (click)="toggleMobileMenu()">VPW</a></li>
-                                            <li><a routerLink="/admin/connectivity/cas" routerLinkActive="active"
+                                            <li *ngIf="perm.canView('connectivity.cas')"><a
+                                                    routerLink="/admin/connectivity/cas" routerLinkActive="active"
                                                     (click)="toggleMobileMenu()">CAS</a></li>
-                                            <li><a routerLink="/admin/connectivity/intercoms" routerLinkActive="active"
+                                            <li *ngIf="perm.canView('connectivity.intercoms')"><a
+                                                    routerLink="/admin/connectivity/intercoms" routerLinkActive="active"
                                                     (click)="toggleMobileMenu()">Intercom</a></li>
-                                            <li><a routerLink="/admin/connectivity/sip-3rd-party"
+                                            <li *ngIf="perm.canView('connectivity.sip_3rd_party')"><a
+                                                    routerLink="/admin/connectivity/sip-3rd-party"
                                                     routerLinkActive="active" (click)="toggleMobileMenu()">SIP/3rd
                                                     Party</a></li>
                                         </ul>
                                     </div>
                                 </li>
-                                <li><a routerLink="/admin/connectivity/private-wire" routerLinkActive="active"
+                                <li *ngIf="perm.canView('connectivity.private_wire')"><a
+                                        routerLink="/admin/connectivity/private-wire" routerLinkActive="active"
                                         (click)="toggleMobileMenu()">Private Wire</a></li>
-                                <li><a routerLink="/admin/connectivity/trunk" routerLinkActive="active"
-                                        (click)="toggleMobileMenu()">Trunk</a></li>
+                                <li *ngIf="perm.canView('connectivity.trunk')"><a routerLink="/admin/connectivity/trunk"
+                                        routerLinkActive="active" (click)="toggleMobileMenu()">Trunk</a></li>
 
-                                <li><a routerLink="/admin/connectivity/call-routing" routerLinkActive="active"
+                                <li *ngIf="perm.canView('connectivity.call_routing')"><a
+                                        routerLink="/admin/connectivity/call-routing" routerLinkActive="active"
                                         (click)="toggleMobileMenu()">Call Routing</a></li>
                             </ul>
                         </div>
