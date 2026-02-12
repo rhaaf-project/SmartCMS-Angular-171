@@ -57,6 +57,17 @@ export class PolicyPrivilegeComponent implements OnInit {
             label: 'Connectivity',
             pages: [
                 { key: 'connectivity.call_server', label: 'Call Server' },
+                { key: 'connectivity.black_list', label: 'Black List' },
+                { key: 'connectivity.broadcast', label: 'Broadcast' },
+                { key: 'connectivity.conference', label: 'Conference' },
+                { key: 'connectivity.custom_destination', label: 'Customs Destination' },
+                { key: 'connectivity.ivr', label: 'IVR' },
+                { key: 'connectivity.misc_destination', label: 'Misc Destination' },
+                { key: 'connectivity.music_on_hold', label: 'Music on Hold' },
+                { key: 'connectivity.paging_intercom', label: 'Paging & Intercom' },
+                { key: 'connectivity.recording', label: 'Recording' },
+                { key: 'connectivity.ring_group', label: 'Ring Group' },
+                { key: 'connectivity.time_conditions', label: 'Time Conditions' },
                 { key: 'connectivity.lines', label: 'Lines' },
                 { key: 'connectivity.extensions', label: 'Extensions' },
                 { key: 'connectivity.vpw', label: 'VPW' },
@@ -68,17 +79,6 @@ export class PolicyPrivilegeComponent implements OnInit {
                 { key: 'connectivity.call_routing', label: 'Call Routing' },
                 { key: 'connectivity.inbound', label: 'Inbound Routing' },
                 { key: 'connectivity.outbound', label: 'Outbound Routing' },
-                { key: 'connectivity.conference', label: 'Conference' },
-                { key: 'connectivity.black_list', label: 'Black List' },
-                { key: 'connectivity.broadcast', label: 'Broadcast' },
-                { key: 'connectivity.custom_destination', label: 'Customs Destination' },
-                { key: 'connectivity.ivr', label: 'IVR' },
-                { key: 'connectivity.misc_destination', label: 'Misc Destination' },
-                { key: 'connectivity.music_on_hold', label: 'Music on Hold' },
-                { key: 'connectivity.paging_intercom', label: 'Paging & Intercom' },
-                { key: 'connectivity.recording', label: 'Recording' },
-                { key: 'connectivity.ring_group', label: 'Ring Group' },
-                { key: 'connectivity.time_conditions', label: 'Time Conditions' },
             ]
         },
         {
@@ -127,6 +127,19 @@ export class PolicyPrivilegeComponent implements OnInit {
             ]
         },
         {
+            label: 'Network',
+            pages: [
+                { key: 'network.static_route', label: 'Static Route' },
+                { key: 'network.firewall', label: 'Firewall' },
+            ]
+        },
+        {
+            label: 'Backup',
+            pages: [
+                { key: 'backup.backup', label: 'Backup' },
+            ]
+        },
+        {
             label: 'CMS Administration',
             pages: [
                 { key: 'cms_admin.user_management', label: 'User Management' },
@@ -143,19 +156,6 @@ export class PolicyPrivilegeComponent implements OnInit {
                 { key: 'logs.call_log', label: 'Call Log' },
                 { key: 'logs.alarm_notification', label: 'Alarm Notification' },
                 { key: 'logs.usage_report', label: 'Usage Report' },
-            ]
-        },
-        {
-            label: 'Network',
-            pages: [
-                { key: 'network.static_route', label: 'Static Route' },
-                { key: 'network.firewall', label: 'Firewall' },
-            ]
-        },
-        {
-            label: 'Other',
-            pages: [
-                { key: 'backup', label: 'Backup' },
             ]
         },
     ];
