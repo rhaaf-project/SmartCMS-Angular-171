@@ -34,3 +34,8 @@ ssh root@103.154.80.171 "cd /var/www/html/SmartCMS-Visto/ && tar -xzf deploy.tar
 - Server: 103.154.80.171
 - Path: /var/www/html/SmartCMS-Visto/
 - Images are excluded (already on server)
+
+> [!CAUTION]
+> **api.php sbc-status endpoint on 171 uses AMI (fsockopen to PBX on 172:5038).**
+> **DO NOT copy api.php from 173 — it uses docker exec which only works on all-in-one.**
+> See `guide/SBC_STATUS_MONITOR_DEPLOY.md` for full details.

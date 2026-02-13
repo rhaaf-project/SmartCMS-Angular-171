@@ -1,5 +1,5 @@
 ---
-description: Deploy SmartCMS to server 173 (all-in-one) with correct DB credentials
+description: Deploy SmartCMS to server 173 (all-in-one) with correct DB credentials. ⚠️ api.php sbc-status uses docker exec (NOT AMI). See guide/SBC_STATUS_MONITOR_DEPLOY.md
 ---
 
 # Deploy to Server 173
