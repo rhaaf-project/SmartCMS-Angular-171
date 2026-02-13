@@ -80,6 +80,11 @@ export class TrunkComponent implements OnInit {
     resetForm() { this.formData = { call_server_id: null, name: '', sip_server: '', sip_server_port: 5060, outcid: null, maxchans: 2, transport: 'udp', context: 'from-pstn', disabled: false }; }
 
     handleSubmit() {
+        // Validate outcid: must not start with 0, max 6 digits
+        if (this.formData.outcid && !/^[1-9][0-9]{0,5}$/.test(this.formData.outcid)) {
+            this.showErrorMessage('Outbound CID must start with non-zero digit, max 6 digits');
+            return;
+        }
         if (this.modalMode === 'create') { this.createTrunk(); }
         else if (this.modalMode === 'edit') { this.updateTrunk(); }
     }

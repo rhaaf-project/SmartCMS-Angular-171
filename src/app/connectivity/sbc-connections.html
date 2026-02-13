@@ -138,7 +138,10 @@
                                 <div>
                                     <label for="outcid">Outbound CID</label>
                                     <input id="outcid" type="text" [(ngModel)]="formData.outcid" name="outcid"
-                                        class="form-input" />
+                                        class="form-input" #outcidField="ngModel" pattern="[0-9]{6,}" minlength="6" />
+                                    <div *ngIf="outcidField.invalid && outcidField.touched" class="text-danger text-xs mt-1">
+                                        Must be at least 6 digits (numbers only)
+                                    </div>
                                 </div>
                                 <div>
                                     <label for="maxchans">Outbound Max</label>

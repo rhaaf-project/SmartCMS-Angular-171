@@ -105,7 +105,8 @@
             <div class="panel my-8 w-full max-w-3xl overflow-hidden rounded-lg border-0 p-0"
                 (click)="$event.stopPropagation()" [@toggleAnimation]>
                 <div class="flex items-center justify-between px-5 py-4 bg-[#1a2941] rounded-t-md">
-                    <h5 class="text-lg font-semibold text-white">{{ modalMode === 'create' ? 'Create Trunk' : 'Edit Trunk' }}</h5>
+                    <h5 class="text-lg font-semibold text-white">{{ modalMode === 'create' ? 'Create Trunk' : 'Edit
+                        Trunk' }}</h5>
                     <button type="button" class="text-white-dark hover:text-dark" (click)="closeModal()"><svg width="20"
                             height="20" viewBox="0 0 24 24" fill="none">
                             <path d="M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
@@ -133,7 +134,11 @@
                             <div>
                                 <label for="outcid">Outbound CID</label>
                                 <input id="outcid" type="text" [(ngModel)]="formData.outcid" name="outcid"
-                                    class="form-input" />
+                                    class="form-input" #outcidField="ngModel" pattern="[1-9][0-9]{0,5}" maxlength="6" />
+                                <div *ngIf="outcidField.invalid && outcidField.touched"
+                                    class="text-danger text-xs mt-1">
+                                    Must start with non-zero digit, max 6 digits
+                                </div>
                             </div>
                             <div>
                                 <label for="maxchans">Max Channels</label>

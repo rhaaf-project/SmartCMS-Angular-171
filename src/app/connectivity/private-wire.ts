@@ -21,6 +21,7 @@ interface PrivateWire {
     name: string;
     number: string | null;
     destination: string | null;
+    destination_local: boolean;
     description: string | null;
     is_active: boolean;
 }
@@ -41,7 +42,7 @@ export class PrivateWireComponent implements OnInit {
     showModal = false;
     modalMode: 'create' | 'edit' | 'view' = 'create';
 
-    formData: PrivateWire = { call_server_id: null, name: '', number: null, destination: null, description: null, is_active: true };
+    formData: PrivateWire = { call_server_id: null, name: '', number: null, destination: null, destination_local: false, description: null, is_active: true };
 
     private http = inject(HttpClient);
 
@@ -72,7 +73,7 @@ export class PrivateWireComponent implements OnInit {
     openEditModal(pw: PrivateWire) { this.modalMode = 'edit'; this.formData = { ...pw }; this.showModal = true; }
     copyRecord(pw: PrivateWire) { this.modalMode = 'create'; this.formData = { ...pw, id: undefined, name: pw.name + ' - New' }; this.showModal = true; }
     closeModal() { this.showModal = false; this.resetForm(); }
-    resetForm() { this.formData = { call_server_id: null, name: '', number: null, destination: null, description: null, is_active: true }; }
+    resetForm() { this.formData = { call_server_id: null, name: '', number: null, destination: null, destination_local: false, description: null, is_active: true }; }
 
     handleSubmit() {
         if (this.modalMode === 'create') { this.createPrivateWire(); }
@@ -80,7 +81,7 @@ export class PrivateWireComponent implements OnInit {
     }
 
     createPrivateWire() {
-        const createData = { call_server_id: this.formData.call_server_id, name: this.formData.name, number: this.formData.number, destination: this.formData.destination, description: this.formData.description, is_active: this.formData.is_active };
+        const createData = { call_server_id: this.formData.call_server_id, name: this.formData.name, number: this.formData.number, destination: this.formData.destination, destination_local: this.formData.destination_local, description: this.formData.description, is_active: this.formData.is_active };
         this.http.post<any>(`${environment.apiUrl}/v1/private-wires`, createData).subscribe({
             next: () => { this.showSuccessMessage('Private Wire created successfully'); this.closeModal(); this.loadPrivateWires(); },
             error: (error) => { this.showErrorMessage(error.error?.error || 'Failed to create private wire'); },
@@ -88,7 +89,7 @@ export class PrivateWireComponent implements OnInit {
     }
 
     updatePrivateWire() {
-        const updateData = { call_server_id: this.formData.call_server_id, name: this.formData.name, number: this.formData.number, destination: this.formData.destination, description: this.formData.description, is_active: this.formData.is_active };
+        const updateData = { call_server_id: this.formData.call_server_id, name: this.formData.name, number: this.formData.number, destination: this.formData.destination, destination_local: this.formData.destination_local, description: this.formData.description, is_active: this.formData.is_active };
         this.http.put<any>(`${environment.apiUrl}/v1/private-wires/${this.formData.id}`, updateData).subscribe({
             next: () => { this.showSuccessMessage('Private Wire updated successfully'); this.closeModal(); this.loadPrivateWires(); },
             error: (error) => { this.showErrorMessage(error.error?.error || 'Failed to update private wire'); },
