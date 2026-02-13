@@ -367,7 +367,7 @@ if (preg_match('/^sbc-status\/(\d+)$/', $resource . '/' . $id, $matches)) {
             $pbxHost = $server['host'];
             $amiPort = 5038;
             $amiUser = 'admin';
-            $amiSecret = 'admin';
+            $amiSecret = 'admin1234';
 
             // Connect to AMI
             $socket = @fsockopen($pbxHost, $amiPort, $errno, $errstr, 3);
