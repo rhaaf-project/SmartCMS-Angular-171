@@ -35,7 +35,7 @@ export const CONNECTIVITY_ROUTES: Routes = [
     {
         path: 'sip-3rd-party',
         loadComponent: () => import('./sip-3rd-party').then((d) => d.Sip3rdPartyComponent),
-        data: { title: 'SIP/3rd Party | SmartUCX', pageKey: 'connectivity.sip_3rd_party' },
+        data: { title: 'SIP/3rd Party Line | SmartUCX', pageKey: 'connectivity.sip_3rd_party' },
         canActivate: [AuthGuard],
     },
     {

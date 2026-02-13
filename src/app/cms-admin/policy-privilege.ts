@@ -73,7 +73,7 @@ export class PolicyPrivilegeComponent implements OnInit {
                 { key: 'connectivity.vpw', label: 'VPW' },
                 { key: 'connectivity.cas', label: 'CAS' },
                 { key: 'connectivity.intercoms', label: 'Intercoms' },
-                { key: 'connectivity.sip_3rd_party', label: 'SIP/3rd Party' },
+                { key: 'connectivity.sip_3rd_party', label: 'SIP/3rd Party Line' },
                 { key: 'connectivity.private_wire', label: 'Private Wire' },
                 { key: 'connectivity.trunk', label: 'Trunk' },
                 { key: 'connectivity.call_routing', label: 'Call Routing' },
