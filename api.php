@@ -352,30 +352,25 @@ if ($resource === 'usage-report' && $method === 'GET') {
     exit;
 }
 
-// SBC Status Monitor endpoint - get connection statuses for a specific SBC
+// SBC Status Monitor endpoint - get connections for a specific SBC (from sbc_connections table)
 if (preg_match('/^sbc-status\/(\d+)$/', $resource . '/' . $id, $matches)) {
     $sbcId = $matches[1];
     try {
         $stmt = $pdo->prepare("
             SELECT 
-                scs.id,
-                scs.sbc_id,
-                scs.peer_name,
-                scs.peer_type,
-                scs.remote_address,
-                scs.local_user,
-                scs.registration_status,
-                scs.connection_status,
-                scs.latency_ms,
-                scs.active_calls,
-                scs.max_calls,
-                scs.last_activity,
+                sc.id,
+                sc.call_server_id as sbc_id,
+                sc.name as peer_name,
+                sc.registration as peer_type,
+                CONCAT(sc.sip_server, ':', sc.sip_server_port) as remote_address,
+                sc.auth_username as local_user,
+                sc.maxchans as max_calls,
                 cs.name as sbc_name,
                 cs.host as sbc_host
-            FROM sbc_connection_status scs
-            LEFT JOIN call_servers cs ON scs.sbc_id = cs.id
-            WHERE scs.sbc_id = ?
-            ORDER BY scs.peer_type ASC, scs.peer_name ASC
+            FROM sbc_connections sc
+            LEFT JOIN call_servers cs ON sc.call_server_id = cs.id
+            WHERE sc.call_server_id = ?
+            ORDER BY sc.name ASC
         ");
         $stmt->execute([$sbcId]);
         $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
