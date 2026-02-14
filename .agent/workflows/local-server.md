@@ -27,7 +27,8 @@ Start PHP development server for SmartCMS API on localhost:8000.
 ### Servers
 - **Local API**: http://localhost:8000
 - **Angular Dev**: http://localhost:4200
-- **Production**: 103.154.80.171
+- **171 Production**: http://103.154.80.171:8082 (nginx, PHP-FPM)
+- **173 All-in-One**: http://103.154.80.173 (nginx port 80, API proxied to PHP :8000)
 
 ### Database
 - **Local DB**: db_ucx (MariaDB, user: root, no password)
