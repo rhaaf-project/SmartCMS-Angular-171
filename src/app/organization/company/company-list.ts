@@ -6,7 +6,6 @@ import { DataTableModule } from '@bhplugin/ng-datatable';
 import { OrganizationService, Company } from '../services/organization.service';
 import { IconCircleCheckComponent } from '../../shared/icon/icon-circle-check';
 import Swal from 'sweetalert2';
-import { PermissionService } from '../../service/permission.service';
 
 @Component({
     selector: 'app-company-list',
@@ -45,7 +44,7 @@ export class CompanyListComponent implements OnInit {
     rows: any[] = [];
     filteredRows: any[] = [];
 
-    constructor(private organizationService: OrganizationService, public perm: PermissionService) { }
+    constructor(private organizationService: OrganizationService) { }
 
     ngOnInit(): void {
         this.loadData();

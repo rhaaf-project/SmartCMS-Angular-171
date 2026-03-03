@@ -8,7 +8,6 @@ import { OrganizationService, Company, HeadOffice } from '../services/organizati
 import { environment } from '../../../environments/environment';
 import { IconCircleCheckComponent } from '../../shared/icon/icon-circle-check';
 import Swal from 'sweetalert2';
-import { PermissionService } from '../../service/permission.service';
 
 interface CallServerSlot {
     callServerId: number | null;
@@ -78,7 +77,7 @@ export class HeadOfficeListComponent implements OnInit {
         fo: 'FO',
     };
 
-    constructor(private organizationService: OrganizationService, public perm: PermissionService) { }
+    constructor(private organizationService: OrganizationService) { }
 
     ngOnInit(): void {
         this.loadData();

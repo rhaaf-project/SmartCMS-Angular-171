@@ -129,11 +129,6 @@ export class SBCConnectionsComponent implements OnInit {
     }
 
     handleSubmit() {
-        // Validate outcid: must be at least 6 digits, numbers only
-        if (this.formData.outcid && !/^[0-9]{6,}$/.test(this.formData.outcid)) {
-            this.showErrorMessage('Outbound CID must be at least 6 digits (numbers only)');
-            return;
-        }
         if (this.modalMode === 'create') { this.createConnection(); }
         else if (this.modalMode === 'edit') { this.updateConnection(); }
     }
