@@ -2387,7 +2387,7 @@ if ($resource === 'users' && $method === 'GET' && !$id) {
     $perPage = max(1, intval($_GET['per_page'] ?? 50));
     $offset = ($page - 1) * $perPage;
 
-    $where = "WHERE COALESCE(r.level, 0) <= ?";
+    $where = "WHERE COALESCE(r.level, 99) >= ?";
     $params = [$_uLevel];
     if ($search) {
         $where .= " AND (u.name LIKE ? OR u.email LIKE ?)";
